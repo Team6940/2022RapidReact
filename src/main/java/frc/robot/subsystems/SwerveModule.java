@@ -179,7 +179,7 @@ public class SwerveModule extends SubsystemBase {
     /**
      * Prevent robot from driving automatically.
      */
-    if(Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.01)){
+    if(Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.05)){
       state.speedMetersPerSecond = 0;
     }
 

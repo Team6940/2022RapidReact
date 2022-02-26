@@ -133,7 +133,7 @@ public class SwerveControll extends CommandBase {
 
     RobotContainer.m_swerve.Drive(
       translation,
-      /*-  (llastz + yawCorrection) * Constants.kMaxOmega*/rotation + yawCorrection * Constants.kMaxOmega,
+      -  (llastz + yawCorrection) * Constants.kMaxOmega/*rotation + yawCorrection * Constants.kMaxOmega*/,
       true,
       RobotContainer.m_swerve.isOpenLoop);
 
