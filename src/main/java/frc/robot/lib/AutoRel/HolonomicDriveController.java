@@ -105,7 +105,7 @@ public class HolonomicDriveController {
       thetaFF = 0;
     }*/
 
-    thetaFF *= -1;
+    //thetaFF *= -1;
 
     SmartDashboard.putNumber("thetAff", thetaFF);
 

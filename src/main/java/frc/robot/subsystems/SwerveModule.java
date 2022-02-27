@@ -60,8 +60,10 @@ public class SwerveModule extends SubsystemBase {
                       boolean pivotEncoderInvert) {
     drive_motor_ = new WPI_TalonFX(driveDeviceNumber);
     pivot_motor_ = new WPI_TalonSRX(pivotDeviceNumber); 
-    drive_motor_.configFactoryDefault();
-    pivot_motor_.configFactoryDefault();
+
+    //These two 
+    //drive_motor_.configFactoryDefault();
+    //pivot_motor_.configFactoryDefault();
     
     drive_motor_.setNeutralMode(NeutralMode.Brake);
     pivot_motor_.setNeutralMode(NeutralMode.Coast);

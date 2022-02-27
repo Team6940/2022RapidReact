@@ -45,6 +45,7 @@ public class RobotContainer {
   public static JoystickButton resetyawButton;
   public static JoystickButton controlopenlooptypeButton;
   public static JoystickButton controlclosedlooptypeButton;
+  public static JoystickButton resetOdometryButton;
 
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
   private final BouncePathAuto bounceAuto; 
@@ -69,6 +70,7 @@ public class RobotContainer {
 
     limelightButton = new JoystickButton(m_driverController, 6);
     resetyawButton = new JoystickButton(m_driverController, 3);
+    resetOdometryButton = new JoystickButton(m_driverController, 1);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
 
@@ -117,6 +119,8 @@ public class RobotContainer {
     //Reset Yaw Button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
     resetyawButton.whenReleased(new InstantCommand(() -> m_swerve.WhetherStoreYaw()));
+
+    resetOdometryButton.whenPressed(new InstantCommand(() -> m_swerve.resetOdometry()));
 
     controlopenlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeOpen()));
     controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
