@@ -45,6 +45,10 @@ public class Limelight extends SubsystemBase {
     return tv;
   }
 
+  public boolean isTargetVisible() {
+    return (Get_tv() == 1.0);
+}
+
   public void setLightMode(int mode){
     m_limTable.getEntry("ledMode").setNumber(mode);
   }
