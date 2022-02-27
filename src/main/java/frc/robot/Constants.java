@@ -21,13 +21,32 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    // Limelight Constants
 
-    public static final double LL_MOUNT_HEIGHT = 1.0;  /* limelight 固定height */
-    public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */
+    // Turret Constants
+
+    public static final int turretID = 22; //TODO
+    public static final int kTurretMaxSpeed = 400; //TODO
+    public static final int kTurretStartingAngle = 0; //TODO
+    public static final int kTurretAngleTolerance = 0; //TODO
+    public static final boolean kOutputTelemetry = false;
+
+    //LED Constants
+    public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
+    public static final int LED_LENGTH = 60;  /*LEDs pixels length */ //TODO
+
+    // Limelight Constants
+  
+    public static final double kHorizAngleCorrection = 2.5;   // + is left
+    public static final double LL_MOUNT_HEIGHT = 1.0;  /* limelight 固定height */  //TODO
+    public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
     // Shooter Constants
-    public static final double SHOOTER_LAUNCH_ANGLE = 70; //SHOOTER固定角度
-    public static final double SHOOTER_MOUNT_HEIGHT = 1.1;  //SHOOTER高度
+    public static final double SHOOTER_LAUNCH_ANGLE = 70; //SHOOTER固定角度  //TODO
+    public static final double SHOOTER_MOUNT_HEIGHT = 1.1;  //SHOOTER高度  //TODO
+    public static final int SHOOT_L_MASTER_ID = 20;  //TODO
+    public static final int SHOOT_R_MASTER_ID = 21;  //TODO
+    public static final int kCloseEnough = 1000;     //TODO
+    public static final int kStableCounts = 5;  
+
     
     // Goal Constants
     public static final double LL_UPPER_HUB_HEIGHT = 2.64;

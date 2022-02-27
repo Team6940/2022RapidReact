@@ -386,7 +386,7 @@ public class SwerveModule extends SubsystemBase {
     //int unit;
     //unit = (int)pivot_motor_.getSelectedSensorPosition(1) & 0xFFF;
     //pivot_motor_.setSelectedSensorPosition(unit);
-    int position = pivot_motor_.getSensorCollection().getPulseWidthPosition();
+    int position = pivot_motor_.getSensorCollection().getPulseWidthPosition()/* & 0xFFF*/;
     SmartDashboard.putNumber("SetAbsPosition", position);
     pivot_motor_.getSensorCollection().setQuadraturePosition(position, 100);
   }
