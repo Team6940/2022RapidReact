@@ -25,6 +25,9 @@ import frc.robot.subsystems.Limelight.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.turret.Turret;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,7 +41,10 @@ public class RobotContainer {
 
   public static SwerveDriveTrain m_swerve;
 
+  public static LedSubsystem m_leds;
   public static Limelight m_limelight;
+  public static Turret m_turret;
+
 
   // limelight button
   public static JoystickButton limelightButton;
@@ -64,7 +70,12 @@ public class RobotContainer {
     m_swerve = new SwerveDriveTrain();
 
     m_limelight = new Limelight();
-
+    boolean runNewFeature = false;
+    if(runNewFeature){
+      m_leds = new LedSubsystem();
+      m_leds.conformToState(LedSubsystem.State.RAINBOW);
+      m_turret = new Turret();
+    }
     m_limelight.getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
 
     limelightButton = new JoystickButton(m_driverController, 6);
@@ -73,6 +84,7 @@ public class RobotContainer {
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
 
     m_swerve.setDefaultCommand(new SwerveControll());
+
 
     bounceAuto = new BouncePathAuto(m_swerve);
     exampleAuto = new ExamplePath(m_swerve);

@@ -43,6 +43,8 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public boolean whetherstoreyaw = false;
 
+  private double[] fieldCentricSpeeds = { 0, 0 };
+
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
         new Translation2d( Constants.kLength / 2,  Constants.kWidth / 2),//front left
@@ -211,10 +213,12 @@ public class SwerveDriveTrain extends SubsystemBase {
 }
   @Override
   public void periodic() {
+
+    SwerveModuleState[] moduleStates = getStates();
     // This method will be called once per scheduler run
       odometry_.update(
       GetGyroRotation2d(), 
-      getStates());
+      moduleStates);
 
     SmartDashboard.putNumber("x meters", odometry_.getPoseMeters().getX());
     SmartDashboard.putNumber("y meters", odometry_.getPoseMeters().getY());
@@ -238,6 +242,33 @@ public class SwerveDriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("fr3 angle", swerve_modules_[3].GetState().angle.getDegrees());
     SmartDashboard.putNumber("robot angle", GetGyroRotation2d().getDegrees());*/
     SmartDashboard.putBoolean("isOpenloop", isOpenLoop);
-    
+    boolean runNewFeature = false;
+    if(runNewFeature){
+      ChassisSpeeds  chassisSpeeds = Constants.swerveKinematics.toChassisSpeeds(moduleStates);
+      // robot calculated X, Y velocity
+      double dX = chassisSpeeds.vxMetersPerSecond;
+      double dY = chassisSpeeds.vyMetersPerSecond;   
+      double velMag = Math.sqrt((dX * dX) + (dY * dY)); // magnitude of the velocity vector
+      double velAngle = Math.atan2(dY, dX) + Math.toRadians(-GetGyroRotation2d().getDegrees() % 360); // angle of velocity
+      // vector +
+      // actual robot angle
+      //SmartDashboard.putNumber("Field Centric Robot velAngle", Math.toDegrees(getHeading()));
+      // field centric X and Y acceleration
+      double fieldCentricDX = velMag * Math.cos(velAngle);
+      double fieldCentricDY = velMag * Math.sin(velAngle);
+
+      SmartDashboard.putNumber("Field Centric Robot dX", fieldCentricDX);
+      SmartDashboard.putNumber("Field Centric Robot dY", fieldCentricDY);
+
+      setFieldCentricSpeeds(fieldCentricDX, fieldCentricDY);
+    }
+  }
+
+  public synchronized double[] getFieldCentricSpeeds() {
+    return fieldCentricSpeeds;
+  }
+  public void setFieldCentricSpeeds(double xVelocity, double yVelocity) {
+    fieldCentricSpeeds[0] = xVelocity;
+    fieldCentricSpeeds[1] = yVelocity;
   }
 }
