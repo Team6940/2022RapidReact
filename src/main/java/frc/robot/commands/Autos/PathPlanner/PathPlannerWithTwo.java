@@ -39,7 +39,7 @@ public class PathPlannerWithTwo extends SequentialCommandGroup {
   public PathPlannerWithTwo(SwerveDriveTrain m_swerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory Path1 = PathPlanner.loadPath("Test Path 1", 1, 2);
+    PathPlannerTrajectory Path1 = PathPlanner.loadPath("Test Path 1", 4, 6);
 
     PathPlannerTrajectory Path2 = PathPlanner.loadPath("Test Path 2", 1, 1);
 
@@ -53,7 +53,7 @@ public class PathPlannerWithTwo extends SequentialCommandGroup {
           AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    thetaController.setTolerance(0.1,0.1);
+    //thetaController.setTolerance(0.1,0.1);
 
     SmartDashboard.putData("thetaController", thetaController);
     SmartDashboard.putNumber("current rotation", m_swerve.GetPose().getRotation().getRadians());

@@ -89,7 +89,7 @@ public final class Constants {
     public static double kPivotMotorF = 0;
     public static double kPivotMotorkIZone = 0;
     public static int continuousCurrentLimit = 10;
-    public static double motionCruiseVelocity = 800;
+    public static double motionCruiseVelocity = 1200;
     public static double motionAcceleration = 3500;
     public static double velocityMeasurementWindow = 64;
     public static double voltageCompSaturation = 12;
@@ -112,6 +112,7 @@ public final class Constants {
 
     public static double kPeriod = 20;//The unit is 20_ms
 
+    public static double kMaxSpeedinTeleop = 4;
     public static double kMaxSpeed = 4;//The unit is meters per second
     public static double kMaxOmega = 5;//The unit is 12_rad_per_s
 
@@ -160,14 +161,14 @@ public final class Constants {
 		
         public static final double kPXController = 1;
         public static final double kPYController = 1;
-        public static final double kPThetaController = 3;
+        public static final double kPThetaController = 2;
         public static final double kIThetaController = 0;
         public static final double kDThetaController = 0;
     
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
-				Math.PI, Math.PI);
+				3*Math.PI, 3*Math.PI);
 				
 		// Trajectory Speed Configs
 		public static final TrajectoryConfig defaultConfig = 

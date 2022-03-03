@@ -36,7 +36,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   double preverror;
   double responsetime = 0.02;
   int i = 1;
-  double HEAD_P = 0.036;
+  double HEAD_P = 0.01;
   double HEAD_I = 0;
   double HEAD_D = 0;
   PIDController headController = new PIDController(HEAD_P, HEAD_I, HEAD_D);
@@ -210,6 +210,10 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public void setControlModeClosed(){
     isOpenLoop = true;
+  }
+
+  public void resetOdometry(){
+    odometry_.resetPosition(new Pose2d(), new Rotation2d());
   }
 
   public SwerveModuleState[] getStates(){

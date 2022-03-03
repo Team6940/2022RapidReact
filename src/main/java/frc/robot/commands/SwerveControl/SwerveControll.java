@@ -118,10 +118,10 @@ public class SwerveControll extends CommandBase {
     tAxes = applyTranslationalDeadband(new Translation2d(yAxis, xAxis));
     rAxis = applyRotationalDeadband(rAxis);
 
-    translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.kMaxSpeed);
+    translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.kMaxSpeedinTeleop);
     rotation = rAxis * Constants.kMaxOmega;
 
-    if(RobotContainer.m_swerve.whetherstoreyaw || rotation != 0){
+    if(RobotContainer.m_swerve.whetherstoreyaw || llastz != 0){
       storedYaw = yaw;
     }else{
       if(Math.abs(tAxes.getX()) > 0|| Math.abs(tAxes.getY()) > 0){
