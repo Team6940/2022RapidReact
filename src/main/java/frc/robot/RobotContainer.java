@@ -27,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.commands.Autos.AutonomousSelector;
 
 
 /**
@@ -44,6 +46,7 @@ public class RobotContainer {
   public static LedSubsystem m_leds;
   public static Limelight m_limelight;
   public static Turret m_turret;
+  public static Shooter m_shooter;
 
 
   // limelight button
@@ -51,8 +54,9 @@ public class RobotContainer {
   public static JoystickButton resetyawButton;
   public static JoystickButton controlopenlooptypeButton;
   public static JoystickButton controlclosedlooptypeButton;
-
+  private final AutonomousSelector autonomousSelector;
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  
   private final BouncePathAuto bounceAuto; 
   private final ExamplePath exampleAuto;
   private final Count321Path count321Auto;
@@ -67,14 +71,17 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    m_swerve = new SwerveDriveTrain();
+    m_swerve = SwerveDriveTrain.getInstance();
 
-    m_limelight = new Limelight();
+    m_limelight = Limelight.getInstance();
     boolean runNewFeature = false;
     if(runNewFeature){
-      m_leds = new LedSubsystem();
-      m_leds.conformToState(LedSubsystem.State.RAINBOW);
-      m_turret = new Turret();
+      m_leds = LedSubsystem.getInstance();
+      m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
+      m_turret = Turret.getInstance();
+      m_shooter = Shooter.getInstance();
+      double speed = m_shooter.RpmToMeterSpeed(3000);
+      double rpm = m_shooter.meterSpeedToRpm(speed);
     }
     m_limelight.getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
 
@@ -97,6 +104,9 @@ public class RobotContainer {
     curveLineWayPoint = new CurveLineWayPoint(m_swerve);
     pathplannerwithtwo = new PathPlannerWithTwo(m_swerve);
  
+
+    autonomousSelector = new AutonomousSelector();
+
     // Add autos to SmartDashboard
     autoChooser.setDefaultOption("PathPlannerWithTwo", pathplannerwithtwo);
     autoChooser.addOption("Bounce Path", bounceAuto);
@@ -141,6 +151,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    boolean newAuto = true;
+    if( !newAuto){
+      return autoChooser.getSelected();
+    }
+    else{
+      return autonomousSelector.getCommand(m_swerve);
+    }
   }
 }

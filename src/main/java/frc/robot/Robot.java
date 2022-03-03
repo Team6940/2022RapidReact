@@ -7,7 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.shooter.Shooter;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -46,11 +48,14 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     boolean runNewFeature = false;
     if(runNewFeature){
-      RobotContainer.m_leds.writePeriodicOutputs();
-      RobotContainer.m_turret.readPeriodicInputs();
-      RobotContainer.m_turret.writePeriodicOutputs();
+      LedSubsystem.getInstance().writePeriodicOutputs();
+      Turret.getInstance().readPeriodicInputs();
+      Turret.getInstance().writePeriodicOutputs();
+      //Turret.getInstance().outputTelemetry();
+      Shooter.getInstance().readPeriodicInputs();
+      Shooter.getInstance().writePeriodicOutputs();
+      //Shooter.getInstance().outputTelemetry();
     }
-
 
   }
 
