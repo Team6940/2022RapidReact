@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
+
+  private static Limelight instance = null;
   /** Creates a new Limelight. */
   public NetworkTable m_limTable;
 
@@ -23,6 +25,12 @@ public class Limelight extends SubsystemBase {
     m_limTable = NetworkTableInstance.getDefault().getTable("limelight");
   }
 
+  public static Limelight getInstance() {
+    if (instance == null){
+      instance = new Limelight();
+    }
+    return instance;
+  }
   public double Get_tx(){
     tx = m_limTable.getEntry("tx").getDouble(0);
     SmartDashboard.putNumber("tx", tx);
@@ -103,7 +111,7 @@ public class Limelight extends SubsystemBase {
     if( (v >= vMin) && (beta >= betaMinLimit )){
       speed = v;
     }
-    SmartDashboard.putNumber("ShootSpeed", speed);
+    SmartDashboard.putNumber("calcShootSpeed", speed);
     return speed;
 	}
   @Override

@@ -22,6 +22,8 @@ import frc.robot.subsystems.pixy.PixyCamSPI;
 import io.github.pseudoresonance.pixy2api.*;
 
 public class SwerveDriveTrain extends SubsystemBase {
+
+  private static SwerveDriveTrain instance = null;
   /** Creates a new SwerveDriveTrain. */
   private SwerveModule swerve_modules_[] = new SwerveModule[4];
 
@@ -76,6 +78,12 @@ public class SwerveDriveTrain extends SubsystemBase {
     /* select cargo color for sig */
     PixySignature = SmartDashboard.getBoolean("Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
 
+  }
+  public static SwerveDriveTrain getInstance() {
+    if (instance == null){
+      instance = new SwerveDriveTrain();
+    }
+    return instance;
   }
 
   public void Drive(Translation2d translation,double omega,boolean fieldRelative,boolean isOpenloop){

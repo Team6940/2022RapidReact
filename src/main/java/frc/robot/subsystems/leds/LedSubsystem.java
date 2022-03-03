@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class LedSubsystem  extends SubsystemBase {
-
+    private static LedSubsystem instance = null;
     AddressableLED ledStrip = new AddressableLED(Constants.LED_PORT);
     AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(Constants.LED_LENGTH);
     int m_rainbowFirstPixelHue = 0;
@@ -31,6 +31,12 @@ public class LedSubsystem  extends SubsystemBase {
         ledStrip.start();
     }
 
+    public static LedSubsystem getInstance() {
+        if (instance == null){
+          instance = new LedSubsystem();
+        }
+        return instance;
+      }
     public enum State{
         OFF(0, 0, 0, Double.POSITIVE_INFINITY, 0.0, false),
         DISABLED(255, 20, 30, Double.POSITIVE_INFINITY, 0.0, false), // solid pink

@@ -23,12 +23,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 public final class Constants {
 
     // Turret Constants
-
     public static final int turretID = 22; //TODO
     public static final int kTurretMaxSpeed = 400; //TODO
     public static final int kTurretStartingAngle = 0; //TODO
     public static final int kTurretAngleTolerance = 0; //TODO
-    public static final boolean kOutputTelemetry = false;
+    public static final boolean kOutputTelemetry = true;
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
@@ -40,12 +39,17 @@ public final class Constants {
     public static final double LL_MOUNT_HEIGHT = 1.0;  /* limelight 固定height */  //TODO
     public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
     // Shooter Constants
-    public static final double SHOOTER_LAUNCH_ANGLE = 70; //SHOOTER固定角度  //TODO
+    public static final double SHOOTER_LAUNCH_ANGLE = 70.0; //SHOOTER固定角度  //TODO
     public static final double SHOOTER_MOUNT_HEIGHT = 1.1;  //SHOOTER高度  //TODO
     public static final int SHOOT_L_MASTER_ID = 20;  //TODO
     public static final int SHOOT_R_MASTER_ID = 21;  //TODO
-    public static final int kCloseEnough = 1000;     //TODO
-    public static final int kStableCounts = 5;  
+
+    public static final double kFlywheelIdleVelocity = 1.0; //meters/s //TODO
+    public static double kFlyWheelEncoderReductionRatio =  1.0 / 2.0 ;  //TODO
+    public static double kFlyWheelWheelDiameter = 0.093;//The unit is meter //TODO
+    public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
+    public static double kShooterTolerance = 0.01;  //meters/s //TODO
+    
 
     
     // Goal Constants
