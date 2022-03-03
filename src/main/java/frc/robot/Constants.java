@@ -83,7 +83,7 @@ public final class Constants {
     public static double kDriveMotorkF = 0.06;//   0.045       0.06
     public static double kDriveMotorIZone = 240;// 90          240
 
-    public static double kPivotMotorkP = 2;//3
+    public static double kPivotMotorkP = 3;//3
     public static double kPivotMotorkI = 0;
     public static double kPivotMotorkD = 100;//100
     public static double kPivotMotorF = 0;
