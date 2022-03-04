@@ -1,7 +1,7 @@
 package frc.robot.commands.leds;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.LedSubsystem;
 
 public class cmdSetLeds extends CommandBase {
 
