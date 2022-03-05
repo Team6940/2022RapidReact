@@ -1,4 +1,4 @@
-package frc.robot.subsystems.turret;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.lib.team503.util.Util;
-import frc.robot.subsystems.SwerveDriveTrain;
-import frc.robot.subsystems.Limelight.Limelight;
 
 
 public class Turret extends SubsystemBase {
@@ -55,8 +54,8 @@ public class Turret extends SubsystemBase {
         setBrakeMode(false);
 
         configurationOne();
-        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(maxSoftLimit), 10);
-        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(minSoftLimit), 10);
+        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(maxSoftLimit), 10); //TODO
+        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(minSoftLimit), 10); //TODO
         mTurretMotor.configForwardSoftLimitEnable(true, 10);
         mTurretMotor.configReverseSoftLimitEnable(true, 10);
         mTurretMotor.configOpenloopRamp(0.20, 10);
@@ -184,13 +183,13 @@ public class Turret extends SubsystemBase {
     }
 
     public double getFieldCentricAngleToTarget() {
-        return getFieldCentricAngle() + Limelight.getInstance().Get_tx();
+        return getFieldCentricAngle() + LimelightSubsystem.getInstance().Get_tx();
         //return getFieldCentricAngle() + LimelightProcessor.getInstance().getPowerPortTurretError();
     }
 
     public double getCorrectiveSkewAngle() {
 
-        double distance = Limelight.getInstance().getRobotToTargetDistance();
+        double distance = LimelightSubsystem.getInstance().getRobotToTargetDistance();
         Rotation2d theta = Rotation2d.fromDegrees(-getFieldCentricAngleToTarget());
 
         return theta.getDegrees() - Math.atan2(distance * theta.getSin(), 29.375 + distance * theta.getCos());
@@ -244,7 +243,7 @@ public class Turret extends SubsystemBase {
     }
 
     public boolean isTurretReady() {
-        return Limelight.getInstance().isTargetVisible() && (Limelight.getInstance().Get_tx() < 1.0);
+        return LimelightSubsystem.getInstance().isTargetVisible() && (LimelightSubsystem.getInstance().Get_tx() < 1.0);
     }
 
     public void writePeriodicOutputs() {
@@ -256,13 +255,16 @@ public class Turret extends SubsystemBase {
                 // if (!overrideSkew) {
                 // setVisionTarget(getCorrectiveSkewAngle() * 0.1);
                 // }
-                double desiredAngle = Limelight.getInstance().Get_tx() + getAngle(); //TODO
+                double desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngle(); //TODO
                 //        + (getVisionTarget() * Limelight.getInstance().Get_tv());
-                desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
+
+                desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
+
+                //desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
 
                 periodicIO.demand = turretAngleToEncUnits(desiredAngle);
 
-                if (!Limelight.getInstance().isTargetVisible()) {
+                if (!LimelightSubsystem.getInstance().isTargetVisible()) {
                     trackFieldForward();
                 }
 
@@ -275,13 +277,13 @@ public class Turret extends SubsystemBase {
                 // if (!overrideSkew) {
                 // setVisionTarget(getCorrectiveSkewAngle() * 0.1);
                 // }
-                double desiredAngle = Limelight.getInstance().Get_tx() + getAngle();
+                double desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngle();
                       //  + (getVisionTarget() * LimelightProcessor.getInstance().getTV());
                 desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
 
                 periodicIO.demand = turretAngleToEncUnits(desiredAngle);
 
-                if (!Limelight.getInstance().isTargetVisible()) {
+                if (!LimelightSubsystem.getInstance().isTargetVisible()) {
                     trackFieldForward();
                 }
 
@@ -290,17 +292,20 @@ public class Turret extends SubsystemBase {
                 mTurretMotor.set(ControlMode.Position, periodicIO.demand, DemandType.ArbitraryFeedForward, ff);
 
             } else if (currentState == TurretControlState.VISION_MOVING) {
-                double desiredAngle =  Limelight.getInstance().Get_tx()  + getAngle();
+                double desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
                        // + (getVisionTarget() * LimelightProcessor.getInstance().getTV());
-                desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
+
+                desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
+                
+                //desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
 
                 periodicIO.demand = turretAngleToEncUnits(desiredAngle);
 
-                if (!Limelight.getInstance().isTargetVisible()) {
+                if (!LimelightSubsystem.getInstance().isTargetVisible()) {
                     trackFieldForward();
                 }
 
-                if (Math.abs(Limelight.getInstance().Get_tx()) < 1.0) {
+                if (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < 1.0) {
                     //    + (getVisionTarget() * LimelightProcessor.getInstance().getTV())) < 1.0) {
                     lockOnTarget();
                 }
@@ -314,7 +319,7 @@ public class Turret extends SubsystemBase {
 
                 periodicIO.demand = turretAngleToEncUnits(desiredAngle);
 
-                if (Limelight.getInstance().isTargetVisible()) {
+                if (LimelightSubsystem.getInstance().isTargetVisible()) {
                     moveToTarget();
                 }
 

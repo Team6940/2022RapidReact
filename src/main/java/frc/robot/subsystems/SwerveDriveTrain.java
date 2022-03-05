@@ -18,7 +18,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.pixy.PixyCamSPI;
 import io.github.pseudoresonance.pixy2api.*;
 
 public class SwerveDriveTrain extends SubsystemBase {

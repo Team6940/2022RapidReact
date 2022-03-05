@@ -7,9 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.leds.LedSubsystem;
-import frc.robot.subsystems.turret.Turret;
-import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.LedSubsystem;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Turret;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
