@@ -27,6 +27,7 @@ public final class Constants {
     public static final int kTurretMaxSpeed = 400; //TODO
     public static final int kTurretStartingAngle = 0; //TODO
     public static final int kTurretAngleTolerance = 0; //TODO
+    public static final int kTurretStep = 10;
     public static final boolean kOutputTelemetry = true;
 
     //LED Constants
@@ -83,7 +84,7 @@ public final class Constants {
     public static double kDriveMotorkF = 0.06;//   0.045       0.06
     public static double kDriveMotorIZone = 240;// 90          240
 
-    public static double kPivotMotorkP = 2;//3
+    public static double kPivotMotorkP = 3;//3
     public static double kPivotMotorkI = 0;
     public static double kPivotMotorkD = 100;//100
     public static double kPivotMotorF = 0;
@@ -91,6 +92,7 @@ public final class Constants {
     public static int continuousCurrentLimit = 10;
     public static double motionCruiseVelocity = 1200;
     public static double motionAcceleration = 3500;
+
     public static double velocityMeasurementWindow = 64;
     public static double voltageCompSaturation = 12;
     
@@ -142,9 +144,9 @@ public final class Constants {
         public static final double angleGearRatio = 56/6*60/10; 
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = (0.58526 / 12); //divide by 12 to convert from volts to percent output for CTRE
-        public static final double driveKV = (2.8652 / 12);
-        public static final double driveKA = (0.17455 / 12);
+        public static final double driveKS = (0.58052 / 12); //divide by 12 to convert from volts to percent output for CTRE
+        public static final double driveKV = (2.7609 / 12);
+        public static final double driveKA = (0.21531 / 12);
     }
 
     public static final class AutoConstants {

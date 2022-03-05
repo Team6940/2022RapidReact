@@ -17,6 +17,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Limelight": "Subsystem",
+      "/LiveWindow/LimelightSubsystem": "Subsystem",
       "/LiveWindow/PixyCamSPI": "Subsystem",
       "/LiveWindow/SwerveDriveTrain": "Subsystem",
       "/LiveWindow/SwerveModule": "Subsystem",
@@ -100,7 +101,14 @@
       "/LiveWindow/Ungrouped/PIDController[84]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[85]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[86]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[87]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[88]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[89]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[90]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[91]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[92]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[93]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
@@ -112,15 +120,24 @@
       "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [8]": "Motor Controller",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/Shuffleboard/Auto settings/autoMode": "String Chooser",
       "/SmartDashboard/Auto": "String Chooser"
     }
   },
   "NetworkTables": {
-    "SmartDashboard": {
-      "Auto": {
+    "Shuffleboard": {
+      "Auto settings": {
+        "autoMode": {
+          "open": true
+        },
         "open": true
       },
       "open": true
+    },
+    "SmartDashboard": {
+      "Auto": {
+        "open": true
+      }
     }
   }
 }

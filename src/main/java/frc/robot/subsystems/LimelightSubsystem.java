@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Limelight;
+package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Limelight extends SubsystemBase {
+public class LimelightSubsystem extends SubsystemBase {
 
-  private static Limelight instance = null;
+  private static LimelightSubsystem instance = null;
   /** Creates a new Limelight. */
   public NetworkTable m_limTable;
 
@@ -21,13 +21,13 @@ public class Limelight extends SubsystemBase {
   public double tx ;
   public double ty ;
   
-  public Limelight() {
+  public LimelightSubsystem() {
     m_limTable = NetworkTableInstance.getDefault().getTable("limelight");
   }
 
-  public static Limelight getInstance() {
+  public static LimelightSubsystem getInstance() {
     if (instance == null){
-      instance = new Limelight();
+      instance = new LimelightSubsystem();
     }
     return instance;
   }

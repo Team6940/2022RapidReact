@@ -1,4 +1,4 @@
-package frc.robot.subsystems.shooter;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
-import frc.robot.subsystems.Limelight.Limelight;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team503.util.InterpolatingDouble;
 import frc.robot.lib.team503.util.InterpolatingTreeMap;
@@ -202,10 +201,10 @@ public class Shooter extends SubsystemBase {
         if (getState() == ControlState.OPEN_LOOP) {
             mShooter.set(ControlMode.PercentOutput, periodicIO.flywheel_demand);
         } else if (getState() == ControlState.VISION) {
-            double targetRpm = getShooterSpeedForDistance(Limelight.getInstance().getRobotToTargetDistance());
+            double targetRpm = getShooterSpeedForDistance(LimelightSubsystem.getInstance().getRobotToTargetDistance());
             double targetVelocity = RpmToMeterSpeed(targetRpm);
 
-            if (Limelight.getInstance().Get_tv() == 0.0) {
+            if (LimelightSubsystem.getInstance().Get_tv() == 0.0) {
                 targetVelocity = Constants.kFlyWheelWheelDefaultSpeed;  //TODO
             }
             periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
