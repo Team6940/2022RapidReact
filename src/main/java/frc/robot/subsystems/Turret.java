@@ -73,9 +73,7 @@ public class Turret extends SubsystemBase {
         mTurretMotor.getSensorCollection().setQuadraturePosition(position, 100);
 
         setOpenLoop(0.0);
-
-        currentState = TurretControlState.VISION_MOVING;
-
+        
         // while (encUnitsToTurretAngle((int) mTurretMotor.getSelectedSensorPosition())
         // < -220) {
         // turretEncoderZero -= 4096;
