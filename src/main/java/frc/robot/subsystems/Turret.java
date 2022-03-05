@@ -23,6 +23,7 @@ public class Turret extends SubsystemBase {
 
     private static final double maxSoftLimit = 100; //度数  //TODO
     private static final double minSoftLimit = -193;  //TODO
+    private static int direction = 0;
     private static Turret instance = null;
     WPI_TalonSRX mTurretMotor;
     DigitalInput mCwLimit, mCcwLimit;
@@ -72,6 +73,8 @@ public class Turret extends SubsystemBase {
         mTurretMotor.getSensorCollection().setQuadraturePosition(position, 100);
 
         setOpenLoop(0.0);
+
+        currentState = TurretControlState.VISION_MOVING;
 
         // while (encUnitsToTurretAngle((int) mTurretMotor.getSelectedSensorPosition())
         // < -220) {
@@ -247,94 +250,65 @@ public class Turret extends SubsystemBase {
     }
 
     public void writePeriodicOutputs() {
-
         if (currentState == TurretControlState.PERCENT_ROTATION) {
             mTurretMotor.set(ControlMode.PercentOutput, periodicIO.demand);
-        } else {
-            if (currentState == TurretControlState.AUTON_LOCKED) {
-                // if (!overrideSkew) {
-                // setVisionTarget(getCorrectiveSkewAngle() * 0.1);
-                // }
-                double desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngle(); //TODO
-                //        + (getVisionTarget() * Limelight.getInstance().Get_tv());
 
-                desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
+        }
+        else if(currentState == TurretControlState.VISION_LOCKED) {                
+            double desiredAngle = getAngle();
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
 
-                //desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
-
-                periodicIO.demand = turretAngleToEncUnits(desiredAngle);
-
-                if (!LimelightSubsystem.getInstance().isTargetVisible()) {
-                    trackFieldForward();
+        }
+        else if (currentState == TurretControlState.VISION_MOVING) {
+            double desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
+            desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            if (!LimelightSubsystem.getInstance().isTargetVisible()) {
+                currentState = TurretControlState.VISION_FINDING;
+                if(desiredAngle < 0){
+                    direction = 0;
                 }
-
-                double ff = 0;
-
-                mTurretMotor.set(ControlMode.Position, periodicIO.demand, DemandType.ArbitraryFeedForward, ff);
-
+                else{
+                    direction = 1;
+                }
             }
-            if (currentState == TurretControlState.VISION_LOCKED) {
-                // if (!overrideSkew) {
-                // setVisionTarget(getCorrectiveSkewAngle() * 0.1);
-                // }
-                double desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngle();
-                      //  + (getVisionTarget() * LimelightProcessor.getInstance().getTV());
-                desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
-
-                periodicIO.demand = turretAngleToEncUnits(desiredAngle);
-
-                if (!LimelightSubsystem.getInstance().isTargetVisible()) {
-                    trackFieldForward();
-                }
-
-                double ff = (1.35 * RobotContainer.m_swerve.getFieldCentricSpeeds()[1] / 240);
-
-                mTurretMotor.set(ControlMode.Position, periodicIO.demand, DemandType.ArbitraryFeedForward, ff);
-
-            } else if (currentState == TurretControlState.VISION_MOVING) {
-                double desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
-                       // + (getVisionTarget() * LimelightProcessor.getInstance().getTV());
-
-                desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
-                
-                //desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
-
-                periodicIO.demand = turretAngleToEncUnits(desiredAngle);
-
-                if (!LimelightSubsystem.getInstance().isTargetVisible()) {
-                    trackFieldForward();
-                }
-
-                if (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < 1.0) {
-                    //    + (getVisionTarget() * LimelightProcessor.getInstance().getTV())) < 1.0) {
-                    lockOnTarget();
-                }
-
-                mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-
-            } else if (currentState == TurretControlState.FIELD_FORWARD) {
-                double desiredAngle = Util.boundAngleNeg180to180Degrees(
-                        180.0 - Util.boundToScope(-225, 135, RobotContainer.m_swerve.getHeading()));
-                desiredAngle = Math.min(Math.max(desiredAngle, minSoftLimit), maxSoftLimit);
-
-                periodicIO.demand = turretAngleToEncUnits(desiredAngle);
-
-                if (LimelightSubsystem.getInstance().isTargetVisible()) {
-                    moveToTarget();
-                }
-
-                mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            } else if (currentState == TurretControlState.AUTO_HOME) {
-                mTurretMotor.configForwardSoftLimitEnable(false, 10);
-                mTurretMotor.configReverseSoftLimitEnable(false, 10);
-                periodicIO.demand = -.4;
-                if (getCwLimitPressed() || getCcwLimitPressed()) {
-                    mTurretMotor.configForwardSoftLimitEnable(true, 10);
-                    mTurretMotor.configReverseSoftLimitEnable(true, 10);
-                    trackFieldForward();
-                }
-                mTurretMotor.set(ControlMode.PercentOutput, periodicIO.demand);
+            if (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < 1.0 && LimelightSubsystem.getInstance().isTargetVisible()) {
+                lockOnTarget();
             }
+            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+
+        }else if (currentState == TurretControlState.VISION_FINDING) {
+            double desiredAngle = getAngle();
+            if(direction == 0 ){
+                desiredAngle -= Constants.kTurretStep;
+                desiredAngle = Math.max(desiredAngle, minSoftLimit);
+                if(desiredAngle <= minSoftLimit){
+                    direction = 1;
+                }
+            }else{
+                desiredAngle += Constants.kTurretStep;
+                desiredAngle = Math.min(desiredAngle, maxSoftLimit);
+                if(desiredAngle >= maxSoftLimit){
+                    direction = 0;
+                }
+            }
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            if (LimelightSubsystem.getInstance().isTargetVisible()) {
+                moveToTarget();
+            }
+            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+
+        }else if (currentState == TurretControlState.AUTO_HOME) {
+            mTurretMotor.configForwardSoftLimitEnable(false, 10);
+            mTurretMotor.configReverseSoftLimitEnable(false, 10);
+            periodicIO.demand = -.4;
+            if (getCwLimitPressed() || getCcwLimitPressed()) {
+                mTurretMotor.configForwardSoftLimitEnable(true, 10);
+                mTurretMotor.configReverseSoftLimitEnable(true, 10);
+                trackFieldForward();
+            }
+            mTurretMotor.set(ControlMode.PercentOutput, periodicIO.demand);
         }
     }
 
@@ -408,7 +382,7 @@ public class Turret extends SubsystemBase {
 
 
     public enum TurretControlState {
-        PERCENT_ROTATION, VISION_LOCKED, AUTON_LOCKED, VISION_MOVING, POSITION, FIELD_FORWARD, AUTO_HOME
+        PERCENT_ROTATION, VISION_LOCKED, AUTON_LOCKED, VISION_MOVING, POSITION, FIELD_FORWARD, AUTO_HOME, VISION_FINDING
     }
 
     public static class PeriodicIO {

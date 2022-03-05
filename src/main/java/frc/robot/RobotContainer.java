@@ -51,15 +51,12 @@ public class RobotContainer {
     m_swerve = SwerveDriveTrain.getInstance();
 
     m_limelight = LimelightSubsystem.getInstance();
-    boolean runNewFeature = false;
-    if(runNewFeature){
-      m_leds = LedSubsystem.getInstance();
-      m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
-      m_turret = Turret.getInstance();
-      m_shooter = Shooter.getInstance();
-      double speed = m_shooter.RpmToMeterSpeed(3000);
-      double rpm = m_shooter.meterSpeedToRpm(speed);
-    }
+    m_leds = LedSubsystem.getInstance();
+    m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
+    m_turret = Turret.getInstance();
+    m_shooter = Shooter.getInstance();
+    double speed = m_shooter.RpmToMeterSpeed(3000);
+    double rpm = m_shooter.meterSpeedToRpm(speed);
     m_limelight.getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
 
     limelightButton = new JoystickButton(m_driverController, 6);

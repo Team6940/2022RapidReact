@@ -27,6 +27,7 @@ public final class Constants {
     public static final int kTurretMaxSpeed = 400; //TODO
     public static final int kTurretStartingAngle = 0; //TODO
     public static final int kTurretAngleTolerance = 0; //TODO
+    public static final int kTurretStep = 10;
     public static final boolean kOutputTelemetry = true;
 
     //LED Constants
