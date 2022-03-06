@@ -6,6 +6,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import org.opencv.features2d.FlannBasedMatcher;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -35,7 +38,8 @@ public class Turret extends SubsystemBase {
     private TurretControlState currentState = TurretControlState.PERCENT_ROTATION;
     private double kTranslationFeedforward = 0.0; // TODO
     private double kRotationFeedForward = 0.0; // TODO
-
+    private boolean simuOn = FlannBasedMatcher;
+  
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
         mTurretMotor.configFactoryDefault();
@@ -73,6 +77,7 @@ public class Turret extends SubsystemBase {
         mTurretMotor.getSensorCollection().setQuadraturePosition(position, 100);
 
         setOpenLoop(0.0);
+        setTurretState(TurretControlState.VISION_FINDING);
         
         // while (encUnitsToTurretAngle((int) mTurretMotor.getSelectedSensorPosition())
         // < -220) {
@@ -108,8 +113,12 @@ public class Turret extends SubsystemBase {
         mTurretMotor.setNeutralMode(brake ? NeutralMode.Brake : NeutralMode.Coast);
     }
 
-    public TurretControlState getCurrentState() {
+    public TurretControlState getTurretState() {
         return currentState;
+    }
+
+    public void setTurretState(TurretControlState state) {
+        currentState = state;
     }
 
     public void setTurretAutoHome() {
@@ -213,7 +222,7 @@ public class Turret extends SubsystemBase {
     }
 
     public double encUnitsToTurretAngle(int encUnits) {
-        return Constants.kTurretStartingAngle + encUnitsToDegrees(encUnits - (int) turretEncoderZero);
+        return Constants.kTurretStartingAngle + encUnitsToDegrees(encUnits - (int) turretEncoderZero);//TODO
     }
 
     public int turretAngleToEncUnits(double mTurretMotorAngle) {
@@ -237,7 +246,12 @@ public class Turret extends SubsystemBase {
     }
 
     public void readPeriodicInputs() {
-        periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);
+        if(simuOn){
+            periodicIO.position = (int)periodicIO.demand;
+        }
+        else{
+            periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);
+        }
         periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
         periodicIO.voltage = mTurretMotor.getMotorOutputVoltage();
         periodicIO.current = mTurretMotor.getStatorCurrent();
@@ -248,18 +262,19 @@ public class Turret extends SubsystemBase {
     }
 
     public void writePeriodicOutputs() {
+        double desiredAngle = 0;
         if (currentState == TurretControlState.PERCENT_ROTATION) {
             mTurretMotor.set(ControlMode.PercentOutput, periodicIO.demand);
 
         }
         else if(currentState == TurretControlState.VISION_LOCKED) {                
-            double desiredAngle = getAngle();
+            desiredAngle = getAngle();
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
 
         }
         else if (currentState == TurretControlState.VISION_MOVING) {
-            double desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
+            desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
             if (!LimelightSubsystem.getInstance().isTargetVisible()) {
@@ -277,7 +292,7 @@ public class Turret extends SubsystemBase {
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
 
         }else if (currentState == TurretControlState.VISION_FINDING) {
-            double desiredAngle = getAngle();
+            desiredAngle = getAngle();
             if(direction == 0 ){
                 desiredAngle -= Constants.kTurretStep;
                 desiredAngle = Math.max(desiredAngle, minSoftLimit);
@@ -296,7 +311,7 @@ public class Turret extends SubsystemBase {
                 moveToTarget();
             }
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-
+            
         }else if (currentState == TurretControlState.AUTO_HOME) {
             mTurretMotor.configForwardSoftLimitEnable(false, 10);
             mTurretMotor.configReverseSoftLimitEnable(false, 10);
@@ -308,6 +323,7 @@ public class Turret extends SubsystemBase {
             }
             mTurretMotor.set(ControlMode.PercentOutput, periodicIO.demand);
         }
+
     }
 
     public void stop() {
@@ -315,6 +331,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void outputTelemetry() {
+        SmartDashboard.putString("Turret State", getTurretState().name());   
         SmartDashboard.putNumber("Turret Angle", getAngle());
         SmartDashboard.putNumber("Turret Field Centric", getFieldCentricAngle());
         SmartDashboard.putNumber("Turret Angle To Target", getFieldCentricAngleToTarget());
@@ -322,11 +339,10 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("Turret Encoder Zero", turretEncoderZero);
 
         if (Constants.kOutputTelemetry) {
-            SmartDashboard.putNumber("Turret Current", periodicIO.current);
+            //SmartDashboard.putNumber("Turret Current", periodicIO.current);
             SmartDashboard.putNumber("Turret Voltage", periodicIO.voltage);
             SmartDashboard.putNumber("Turret Encoder", periodicIO.position);
             SmartDashboard.putNumber("Turret Demand", periodicIO.demand);
-            SmartDashboard.putString("Turret State", getCurrentState().name());
             //SmartDashboard.putNumber("Turret Arb Demand", -512 * OI.getDriverRightXValue());
             SmartDashboard.putNumber("Turret Pulse Width Position",
                     mTurretMotor.getSensorCollection().getPulseWidthPosition());

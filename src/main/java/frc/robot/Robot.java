@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LedSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
 /**
@@ -47,11 +48,14 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     LedSubsystem.getInstance().writePeriodicOutputs();
-    Turret.getInstance().readPeriodicInputs();
-    Turret.getInstance().writePeriodicOutputs();
-    //Turret.getInstance().outputTelemetry();
-    Shooter.getInstance().readPeriodicInputs();
-    Shooter.getInstance().writePeriodicOutputs();
+    if(LimelightSubsystem.getInstance().getLightMode() == 3){
+      Turret.getInstance().readPeriodicInputs();
+      Turret.getInstance().writePeriodicOutputs();
+      Turret.getInstance().outputTelemetry();
+      Shooter.getInstance().readPeriodicInputs();
+      Shooter.getInstance().writePeriodicOutputs();
+    }
+
     //Shooter.getInstance().outputTelemetry();
 
   }
