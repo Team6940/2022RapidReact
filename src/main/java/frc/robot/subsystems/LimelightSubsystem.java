@@ -61,6 +61,11 @@ public class LimelightSubsystem extends SubsystemBase {
     m_limTable.getEntry("ledMode").setNumber(mode);
   }
 
+  public double getLightMode(){
+    return m_limTable.getEntry("ledMode").getDouble(0);
+  }
+
+
   public double limelightXPID(double tx){
     double kP = 0.008;
     double correctionMin = 0.003;
@@ -118,4 +123,10 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public enum LedMode {
+    PIPELINE, OFF, BLINK, ON
+}
+
+
 }
