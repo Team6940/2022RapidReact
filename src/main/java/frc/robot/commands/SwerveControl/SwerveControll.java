@@ -79,23 +79,6 @@ public class SwerveControll extends CommandBase {
     double yaw = RobotContainer.m_swerve.GetYaw();
     double yawCorrection = 0;
 
-    //storedYaw = yaw; //This may be a bug!
-
-    if(llastz != 0){
-      storedYaw = yaw;
-    }
-    else{
-      if(Math.abs(llastx) > 0|| Math.abs(llasty) > 0){
-        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw, 0.01, 0);
-      }
-    }
-
-    /*RobotContainer.m_swerve.Drive(
-      - RobotContainer.m_swerve.deadband(llastx) * Constants.kMaxSpeed, 
-      - RobotContainer.m_swerve.deadband(llasty) * Constants.kMaxSpeed, 
-      -  (llastz + yawCorrection) * Constants.kMaxOmega, //Add Drive straight mode
-      true);*/
-    
     SmartDashboard.putNumber("yaw", yaw);
     SmartDashboard.putNumber("storedyaw", storedYaw);
     SmartDashboard.putNumber("llastz", llastz);
