@@ -23,46 +23,6 @@ public class SwerveControll extends CommandBase {
     addRequirements(RobotContainer.m_swerve);
   }
 
-  private double applyRotationalDeadband(double input){
-    double deadband = Constants.stickDeadband;
-    if (Math.abs(input) < deadband) {
-        return 0.0;
-    } else {
-        return (input - (Math.signum(input) * deadband)) / (1 - deadband);
-    }
-  }
-
-  private Translation2d applyTranslationalDeadband(Translation2d input) {
-    double deadband = Constants.stickDeadband;
-    if (Math.abs(input.getNorm()) < deadband) {
-        return new Translation2d();
-    } else {
-        Rotation2d deadband_direction = new Rotation2d(input.getX(), input.getY());
-        Translation2d deadband_vector = new Translation2d(deadband, deadband_direction);
-
-        double scaled_x = input.getX() - (deadband_vector.getX()) / (1 - deadband_vector.getX());
-        double scaled_y = input.getY() - (deadband_vector.getY()) / (1 - deadband_vector.getY());
-        return new Translation2d(scaled_x, scaled_y);
-    }
-
-  }
-
-  public double[] getAxes() {
-    double yAxis = -RobotContainer.m_driverController.getLeftY();
-    double xAxis = -RobotContainer.m_driverController.getLeftX();
-    double rAxis = -RobotContainer.m_driverController.getRightX();
-
-    Translation2d tAxes;
-    
-    /* Deadbands */
-    tAxes = applyTranslationalDeadband(new Translation2d(yAxis, xAxis));
-    rAxis = applyRotationalDeadband(rAxis);
-
-    double[] axes = {tAxes.getX(), tAxes.getY(), rAxis};
-
-    return axes;
-}
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -136,5 +96,46 @@ public class SwerveControll extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  
+  private double applyRotationalDeadband(double input){
+    double deadband = Constants.stickDeadband;
+    if (Math.abs(input) < deadband) {
+        return 0.0;
+    } else {
+        return (input - (Math.signum(input) * deadband)) / (1 - deadband);
+    }
+  }
+
+  private Translation2d applyTranslationalDeadband(Translation2d input) {
+    double deadband = Constants.stickDeadband;
+    if (Math.abs(input.getNorm()) < deadband) {
+        return new Translation2d();
+    } else {
+        Rotation2d deadband_direction = new Rotation2d(input.getX(), input.getY());
+        Translation2d deadband_vector = new Translation2d(deadband, deadband_direction);
+
+        double scaled_x = input.getX() - (deadband_vector.getX()) / (1 - deadband_vector.getX());
+        double scaled_y = input.getY() - (deadband_vector.getY()) / (1 - deadband_vector.getY());
+        return new Translation2d(scaled_x, scaled_y);
+    }
+
+  }
+
+  public double[] getAxes() {
+    double yAxis = -RobotContainer.m_driverController.getLeftY();
+    double xAxis = -RobotContainer.m_driverController.getLeftX();
+    double rAxis = -RobotContainer.m_driverController.getRightX();
+
+    Translation2d tAxes;
+    
+    /* Deadbands */
+    tAxes = applyTranslationalDeadband(new Translation2d(yAxis, xAxis));
+    rAxis = applyRotationalDeadband(rAxis);
+
+    double[] axes = {tAxes.getX(), tAxes.getY(), rAxis};
+
+    return axes;
   }
 }
