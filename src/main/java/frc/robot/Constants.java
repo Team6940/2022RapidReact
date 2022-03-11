@@ -22,6 +22,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
+    //Swerve Control Constants
+    public static final double joystickslewrate = 3;
+    public static final double linarslewrate = 3;
+    public static final double omegaslewrate = 3;
+
     // Turret Constants
     public static final int turretID = 22; //TODO
     public static final int kTurretMaxSpeed = 400; //TODO
@@ -114,7 +119,6 @@ public final class Constants {
 
     public static double kPeriod = 20;//The unit is 20_ms
 
-    public static double kMaxSpeedinTeleop = 4;
     public static double kMaxSpeed = 4;//The unit is meters per second
     public static double kMaxOmega = 5;//The unit is 12_rad_per_s
 

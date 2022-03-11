@@ -181,21 +181,9 @@ public class SwerveDriveTrain extends SubsystemBase {
     return ((x < 0 ? -x : x) < 0.05) ? 0 : x;
   }
 
-  public double calcYawStraight(double targetAngle, double currentAngle,double kP, double kD){
+  public double calcYawStraight(double targetAngle, double currentAngle){
     //The WPILIB's version
     double headadjust = headController.calculate(currentAngle, targetAngle);
-
-    double errorAngle = remainderf((targetAngle - currentAngle), (double)360);
-    if(i == 1){
-      preverror = errorAngle;
-    }
-    double derative = (errorAngle - preverror) / responsetime;
-    double correction = errorAngle * kP + derative * kD;
-    preverror = errorAngle;
-    i++;
-
-    SmartDashboard.putNumber("origin_correction", correction);
-    SmartDashboard.putNumber("headadjust", headadjust);
     return headadjust;
   }
 

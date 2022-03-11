@@ -7,6 +7,7 @@ package frc.robot.commands.SwerveControl;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +18,19 @@ public class SwerveControll extends CommandBase {
   
   private double rotation;
   private Translation2d translation;
+
+  private double rotationlimit;
+  private Translation2d translationlimit;
+
+  //That means the joystick will reach the max range in 1/3 second
+  private SlewRateLimiter xJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
+  private SlewRateLimiter yJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
+  private SlewRateLimiter omegaJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
+
+  //The means reaching the max speed will take 1/3 seconds.The max Liner Speed is 4m/s. Omega is 
+  private SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(Constants.linarslewrate * Constants.kMaxSpeed);
+  private SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(Constants.linarslewrate * Constants.kMaxSpeed);
+  private SlewRateLimiter omegaSpeedLimiter = new SlewRateLimiter(Constants.omegaslewrate * Constants.kMaxOmega);
 
   public SwerveControll() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -36,6 +50,8 @@ public class SwerveControll extends CommandBase {
     double llasty = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getLeftX());
     double llastz = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getRightX());
 
+    double limitllastz = xJoyStickLimiter.calculate(llastz);
+
     double yaw = RobotContainer.m_swerve.GetYaw();
     double yawCorrection = 0;
 
@@ -50,6 +66,11 @@ public class SwerveControll extends CommandBase {
     double xAxis;
     double rAxis;
 
+    //Try to further optimize the input with slewratelimiter
+    double yAxisLimit;
+    double xAxisLimit;
+    double rAxislimit;
+
     Translation2d tAxes; // translational axis
 
     /* Inversions */
@@ -57,18 +78,25 @@ public class SwerveControll extends CommandBase {
     xAxis = -RobotContainer.m_driverController.getLeftX();
     rAxis = RobotContainer.m_driverController.getRightX();
 
+    yAxisLimit = yJoyStickLimiter.calculate(yAxis);
+    xAxisLimit = xJoyStickLimiter.calculate(xAxis);
+
     /* Deadbands */
-    tAxes = applyTranslationalDeadband(new Translation2d(yAxis, xAxis));
+    tAxes = applyTranslationalDeadband(new Translation2d(yAxisLimit, xAxisLimit));
     rAxis = applyRotationalDeadband(rAxis);
 
-    translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.kMaxSpeedinTeleop);
+    translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.kMaxSpeed);
     rotation = rAxis * Constants.kMaxOmega;
 
-    if(RobotContainer.m_swerve.whetherstoreyaw || llastz != 0){
+    translationlimit = new Translation2d(
+      xSpeedLimiter.calculate(translation.getX()),
+      ySpeedLimiter.calculate(translation.getY()));
+
+    if(RobotContainer.m_swerve.whetherstoreyaw || limitllastz != 0){
       storedYaw = yaw;
     }else{
       if(Math.abs(tAxes.getX()) > 0|| Math.abs(tAxes.getY()) > 0){
-        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw, 0.006, 0);
+        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw);
       }
     }
 
@@ -76,7 +104,7 @@ public class SwerveControll extends CommandBase {
 
     RobotContainer.m_swerve.Drive(
       translation,
-      -  (llastz + yawCorrection) * Constants.kMaxOmega/*rotation + yawCorrection * Constants.kMaxOmega*/,
+      -  (limitllastz + yawCorrection) * Constants.kMaxOmega/*rotation + yawCorrection * Constants.kMaxOmega*/,
       true,
       RobotContainer.m_swerve.isOpenLoop);
 
