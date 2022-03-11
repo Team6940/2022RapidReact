@@ -23,6 +23,7 @@ public class SwerveControll extends CommandBase {
   private Translation2d translationlimit;
 
   //That means the joystick will reach the max range in 1/3 second
+  //The may let the robot move smoothly.
   private SlewRateLimiter xJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
   private SlewRateLimiter yJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
   private SlewRateLimiter omegaJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
