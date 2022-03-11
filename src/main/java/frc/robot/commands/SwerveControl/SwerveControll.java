@@ -56,12 +56,6 @@ public class SwerveControll extends CommandBase {
     double yaw = RobotContainer.m_swerve.GetYaw();
     double yawCorrection = 0;
 
-    SmartDashboard.putNumber("yaw", yaw);
-    SmartDashboard.putNumber("storedyaw", storedYaw);
-    SmartDashboard.putNumber("llastz", llastz);
-    SmartDashboard.putNumber("yawcorrection", yawCorrection);
-    SmartDashboard.putBoolean("WhetherStroeYaw", RobotContainer.m_swerve.whetherstoreyaw);
-
     //Try to optimize the input
     double yAxis;
     double xAxis;
