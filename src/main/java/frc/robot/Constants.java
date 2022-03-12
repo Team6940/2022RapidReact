@@ -22,6 +22,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
+    // Climber port
+    public static int leftClimberMotorPort = 25; // TODO
+    public static int rghtClimberMotorPort = 26; //TODO
+    public static int ClimberSolenoidPort = 0;
+
     // Ball Loader port
     public static int BallLoaderPort = 24; //TODO
 
