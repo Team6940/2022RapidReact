@@ -17,7 +17,7 @@ public class Intaker extends SubsystemBase {
   PeriodicIO periodicIO = new PeriodicIO();
   private IntakerControlState currentState = IntakerControlState.Intake_Off;
   private static Intaker instance = null;
-  private int num = 1;
+  private boolean whetherintakeron = false;
 
   public Intaker() {
     m_intakermotor = new WPI_TalonFX(Constants.IntakerPort);
@@ -31,7 +31,7 @@ public class Intaker extends SubsystemBase {
   }
 
   public void writePeriodicOutputs(){
-    if(num % 2 == 0){
+    if(whetherintakeron){
       currentState = IntakerControlState.Intake_On;
     }
     else{
@@ -49,8 +49,12 @@ public class Intaker extends SubsystemBase {
     SmartDashboard.putNumber("Intake output", m_intakermotor.getMotorOutputPercent());
   }
 
-  public void switchstate(){
-    num += 1;
+  public void turnonintaker(){
+    whetherintakeron = true;
+  }
+
+  public void turnoffintaker(){
+    whetherintakeron = false;
   }
 
   @Override

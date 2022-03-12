@@ -89,7 +89,8 @@ public class RobotContainer {
     limelightButton.whenHeld(new AutoAim());
 
     //Intake Button
-    IntakeButton.whenPressed(new InstantCommand(() -> m_intaker.switchstate()));
+    IntakeButton.whenHeld(new InstantCommand(() -> m_intaker.turnonintaker()));
+    IntakeButton.whenReleased(new InstantCommand(() -> m_intaker.turnoffintaker()));
 
     //Reset Yaw Button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
