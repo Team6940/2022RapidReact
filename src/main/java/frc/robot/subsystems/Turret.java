@@ -7,8 +7,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import org.opencv.features2d.FlannBasedMatcher;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -38,7 +36,6 @@ public class Turret extends SubsystemBase {
     private TurretControlState currentState = TurretControlState.PERCENT_ROTATION;
     private double kTranslationFeedforward = 0.0; // TODO
     private double kRotationFeedForward = 0.0; // TODO
-    private boolean simuOn = FlannBasedMatcher;
   
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
@@ -246,12 +243,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void readPeriodicInputs() {
-        if(simuOn){
-            periodicIO.position = (int)periodicIO.demand;
-        }
-        else{
-            periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);
-        }
+        periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);
         periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
         periodicIO.voltage = mTurretMotor.getMotorOutputVoltage();
         periodicIO.current = mTurretMotor.getStatorCurrent();
