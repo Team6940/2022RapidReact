@@ -19,9 +19,6 @@ public class SwerveControll extends CommandBase {
   private double rotation;
   private Translation2d translation;
 
-  private double rotationlimit;
-  private Translation2d translationlimit;
-
   //That means the joystick will reach the max range in 1/3 second
   //The may let the robot move smoothly.
   private SlewRateLimiter xJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
@@ -61,11 +58,6 @@ public class SwerveControll extends CommandBase {
     double xAxis;
     double rAxis;
 
-    //Try to further optimize the input with slewratelimiter
-    double yAxisLimit;
-    double xAxisLimit;
-    double rAxislimit;
-
     Translation2d tAxes; // translational axis
 
     /* Inversions */
@@ -73,24 +65,20 @@ public class SwerveControll extends CommandBase {
     xAxis = -RobotContainer.m_driverController.getLeftX();
     rAxis = RobotContainer.m_driverController.getRightX();
 
-    yAxisLimit = yJoyStickLimiter.calculate(yAxis);
-    xAxisLimit = xJoyStickLimiter.calculate(xAxis);
-
     /* Deadbands */
-    tAxes = applyTranslationalDeadband(new Translation2d(yAxisLimit, xAxisLimit));
+    tAxes = applyTranslationalDeadband(new Translation2d(yAxis, xAxis));
     rAxis = applyRotationalDeadband(rAxis);
 
-    translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.kMaxSpeed);
+    translation = new Translation2d(
+      xJoyStickLimiter.calculate(tAxes.getX()),
+      yJoyStickLimiter.calculate(tAxes.getY())
+      ).times(Constants.kMaxSpeed);
     rotation = rAxis * Constants.kMaxOmega;
-
-    translationlimit = new Translation2d(
-      xSpeedLimiter.calculate(translation.getX()),
-      ySpeedLimiter.calculate(translation.getY()));
 
     if(RobotContainer.m_swerve.whetherstoreyaw || limitllastz != 0){
       storedYaw = yaw;
     }else{
-      if(Math.abs(tAxes.getX()) > 0|| Math.abs(tAxes.getY()) > 0){
+      if(Math.abs(translation.getX()) > 0|| Math.abs(translation.getY()) > 0){
         yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw);
       }
     }
