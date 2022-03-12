@@ -22,7 +22,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
-    //Swerve Control Constants
+    // Intaker port
+    public static final int IntakerPort = 23; //TODO
+
+    // Pigeon Port
+    public static final int PigeonIMUPort = 16;
+
+    // Swerve Control Constants
     public static final double joystickslewrate = 3;
     public static final double linarslewrate = 3;
     public static final double omegaslewrate = 3;
@@ -40,10 +46,10 @@ public final class Constants {
     public static final int LED_LENGTH = 60;  /*LEDs pixels length */ //TODO
 
     // Limelight Constants
-  
     public static final double kHorizAngleCorrection = 2.5;   // + is left
     public static final double LL_MOUNT_HEIGHT = 1.0;  /* limelight 固定height */  //TODO
     public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
+
     // Shooter Constants
     public static final double SHOOTER_LAUNCH_ANGLE = 70.0; //SHOOTER固定角度  //TODO
     public static final double SHOOTER_MOUNT_HEIGHT = 1.1;  //SHOOTER高度  //TODO
@@ -55,8 +61,6 @@ public final class Constants {
     public static double kFlyWheelWheelDiameter = 0.093;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
     public static double kShooterTolerance = 0.01;  //meters/s //TODO
-    
-
     
     // Goal Constants
     public static final double LL_UPPER_HUB_HEIGHT = 2.64;
@@ -141,6 +145,8 @@ public final class Constants {
     public static final double MAX_SPEED_RADIANSperSECOND = MAX_SPEED_METERSperSECOND/METERSperROBOT_REVOLUTION*(2*Math.PI);
 
     public static final class SwerveConstants {	
+        public static final boolean invertGyro = false; // Always ensure Gyro is CCW+ CW-
+
         public static final double openLoopRamp = 0.25;
         public static final double closedLoopRamp = 0.0;
     

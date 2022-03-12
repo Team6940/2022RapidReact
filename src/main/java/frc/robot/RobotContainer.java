@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.commands.Limelight.AutoAim;
+import frc.robot.subsystems.Intaker;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -35,6 +36,7 @@ public class RobotContainer {
   public static LimelightSubsystem m_limelight;
   public static Turret m_turret;
   public static Shooter m_shooter;
+  public static Intaker m_intaker;
 
 
   // limelight button
@@ -42,6 +44,7 @@ public class RobotContainer {
   public static JoystickButton resetyawButton;
   public static JoystickButton controlopenlooptypeButton;
   public static JoystickButton controlclosedlooptypeButton;
+  public static JoystickButton IntakeButton;
   private final AutonomousSelector autonomousSelector;
   public static JoystickButton resetOdometryButton;
 
@@ -55,6 +58,7 @@ public class RobotContainer {
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
     m_turret = Turret.getInstance();
     m_shooter = Shooter.getInstance();
+    m_intaker = Intaker.getInstance();
     double speed = m_shooter.RpmToMeterSpeed(3000);
     double rpm = m_shooter.meterSpeedToRpm(speed);
     m_limelight.getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
@@ -62,6 +66,7 @@ public class RobotContainer {
     limelightButton = new JoystickButton(m_driverController, 6);
     resetyawButton = new JoystickButton(m_driverController, 3);
     resetOdometryButton = new JoystickButton(m_driverController, 1);
+    IntakeButton = new JoystickButton(m_driverController, 7);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
 
@@ -82,6 +87,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Limelight Button
     limelightButton.whenHeld(new AutoAim());
+
+    //Intake Button
+    IntakeButton.whenPressed(new InstantCommand(() -> m_intaker.switchstate()));
 
     //Reset Yaw Button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
