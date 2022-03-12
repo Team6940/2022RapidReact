@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.commands.Limelight.AutoAim;
-import frc.robot.subsystems.BallLoader;
-import frc.robot.subsystems.Intaker;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
@@ -38,8 +37,7 @@ public class RobotContainer {
   public static LimelightSubsystem m_limelight;
   public static Turret m_turret;
   public static Shooter m_shooter;
-  public static Intaker m_intaker;
-  public static BallLoader m_ballLoader;
+  public static Feeder m_feeder;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -64,8 +62,7 @@ public class RobotContainer {
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
     m_turret = Turret.getInstance();
     m_shooter = Shooter.getInstance();
-    m_intaker = Intaker.getInstance();
-    m_ballLoader = BallLoader.getInstance();
+    m_feeder = Feeder.getInstance();
 
     double speed = m_shooter.RpmToMeterSpeed(3000);
     double rpm = m_shooter.meterSpeedToRpm(speed);
@@ -101,12 +98,11 @@ public class RobotContainer {
     limelightButton.whenHeld(new AutoAim());
 
     // Intake Button
-    IntakeButton.whenHeld(new InstantCommand(() -> m_intaker.turnonintaker()));
-    IntakeButton.whenReleased(new InstantCommand(() -> m_intaker.turnoffintaker()));
-
+    IntakeButton.whenPressed(new InstantCommand(() -> m_feeder.autoturnintaker()));
+  
     // Ball Lodaer button
-    BallLoadButton.whenHeld(new InstantCommand(() -> m_ballLoader.turnonballloader()));
-    BallLoadButton.whenReleased(new InstantCommand(() -> m_ballLoader.turnoffballloader()));
+    BallLoadButton.whenHeld(new InstantCommand(() -> m_feeder.turnonballLoader()));
+    BallLoadButton.whenReleased(new InstantCommand(() -> m_feeder.turnoffballLoader()));
 
     // Reset Yaw Button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
