@@ -22,6 +22,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
+    // Ball Loader port
+    public static int BallLoaderPort = 24; //TODO
+
     // Intaker port
     public static final int IntakerPort = 23; //TODO
 

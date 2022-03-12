@@ -26,6 +26,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/BallLoader": "Subsystem",
       "/LiveWindow/Intaker": "Subsystem",
       "/LiveWindow/LedSubsystem": "Subsystem",
       "/LiveWindow/Limelight": "Subsystem",
@@ -131,6 +132,7 @@
       "/LiveWindow/Ungrouped/Talon FX [20]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [21]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [23]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [24]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [3]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [5]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [7]": "Motor Controller",

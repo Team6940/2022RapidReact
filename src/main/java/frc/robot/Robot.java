@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.BallLoader;
 import frc.robot.subsystems.Intaker;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -48,11 +49,14 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    
+
     LedSubsystem.getInstance().writePeriodicOutputs();
 
     Intaker.getInstance().writePeriodicOutputs();
     Intaker.getInstance().outputTelemetry();
+
+    BallLoader.getInstance().writePeriodicOutputs();
+    BallLoader.getInstance().outputTelemetry();
 
     if(LimelightSubsystem.getInstance().getLightMode() == 3){
       Turret.getInstance().readPeriodicInputs();
