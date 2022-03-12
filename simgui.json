@@ -147,6 +147,9 @@
     }
   },
   "NetworkTables": {
+    "LiveWindow": {
+      "open": true
+    },
     "Shuffleboard": {
       "Auto settings": {
         "autoMode": {
