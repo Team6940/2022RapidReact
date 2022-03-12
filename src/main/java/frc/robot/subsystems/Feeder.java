@@ -42,16 +42,13 @@ public class Feeder extends SubsystemBase {
       m_intakermotor.set(ControlMode.PercentOutput, 1);
       m_ballloadermotor.set(ControlMode.PercentOutput, Constants.BallLoadSpeed);
       setSolenoidState(true);
-    }
-    else if(currentState == FeederControlState.IntakeAndBallLoader_Off){
+    }else if(currentState == FeederControlState.IntakeAndBallLoader_Off){
       m_intakermotor.set(ControlMode.PercentOutput, 0);
       m_ballloadermotor.set(ControlMode.PercentOutput, 0);
       setSolenoidState(false);
-    }
-    else if(currentState == FeederControlState.OnlyBallLoader_On){
+    }else if(currentState == FeederControlState.OnlyBallLoader_On){
       m_ballloadermotor.set(ControlMode.PercentOutput, Constants.BallLoadSpeed);
-    }
-    else if(currentState == FeederControlState.OnlyBallLoader_Off){
+    }else if(currentState == FeederControlState.OnlyBallLoader_Off){
       m_ballloadermotor.set(ControlMode.PercentOutput, 0);
     }
   }
