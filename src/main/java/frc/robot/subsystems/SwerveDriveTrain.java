@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
@@ -26,6 +27,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   /** Creates a new SwerveDriveTrain. */
   private SwerveModule swerve_modules_[] = new SwerveModule[4];
 
+  public PigeonIMU gyro;
   public AHRS ahrs;
   public PixyCamSPI PixyCamSPI;
   byte PixySignature;
@@ -64,6 +66,8 @@ public class SwerveDriveTrain extends SubsystemBase {
   private double lastHeading = 0; //The unit is radian
 
   public SwerveDriveTrain() {
+    gyro = new PigeonIMU(Constants.PigeonIMUPort);
+
     // The coordinate system may be wrong 
     swerve_modules_[0] = new SwerveModule(1, 2, true,  false, 1814, false, false);//front left
     swerve_modules_[1] = new SwerveModule(3, 4, true, false, 3570, true,  true);//front right
@@ -71,7 +75,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     swerve_modules_[3] = new SwerveModule(7, 8, true, false, 2302,  true, true);//back right
     
     ahrs = new AHRS(SPI.Port.kMXP);
-    //ZeroHeading();
 
     PixyCamSPI = new PixyCamSPI(0);
     /* select cargo color for sig */
@@ -133,12 +136,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     whetherstoreyaw = false;
   }
 
-  public double GetTurnRate(){
-    double ret = (GetHeading() - lastHeading) / Constants.kPeriod;
-    lastHeading = GetHeading();
-    return ret;
-  }
-
   public Pose2d GetPose(){
     return odometry_.getPoseMeters();
   }
@@ -148,20 +145,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     //for (int i = 0 ; i < swerve_modules_.length; i++){
     //  swerve_modules_[i].setPose(pose);
     //}
-  }
-
-  /**
-  * Set the odometry readings
-  * It seems that it will be used in autonomous mode
-  * 
-  * @param pose Pose to be written to odometry
-  * @param rotation Roatation to be written to odometry
-  */
-  public void autoresetOdometry (Pose2d pose, Rotation2d rotation) {
-    odometry_.resetPosition(pose, rotation);
-  }
-  public double  getGyroAngelDegree()  {
-    return ahrs.getAngle();
   }
 
   public double getHeading(){
@@ -209,7 +192,23 @@ public class SwerveDriveTrain extends SubsystemBase {
       states[i] = swerve_modules_[i].GetState();
     }
     return states;
-}
+  }
+
+  public void zeroGyro(){
+    gyro.setFusedHeading(0);
+  }
+
+  public void zeroGyro(double reset){
+      gyro.setFusedHeading(reset);
+  }
+
+  public Rotation2d getYaw() {
+      //double[] ypr = new double[3];
+      //gyro.getYawPitchRoll(ypr);
+      //return (Constants.SwerveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+      return Rotation2d.fromDegrees(gyro.getFusedHeading());
+  }
+
   @Override
   public void periodic() {
 

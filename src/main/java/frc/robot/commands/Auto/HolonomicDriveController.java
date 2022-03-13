@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.lib.AutoRel;
+package frc.robot.commands.Auto;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 
 /**
  * This holonomic drive controller can be used to follow trajectories using a holonomic drivetrain
@@ -101,16 +100,10 @@ public class HolonomicDriveController {
     double thetaFF =
         m_thetaController.calculate(currentPose.getRotation().getRadians(), angleRef.getRadians());
 
-    /*if(thetaFF < 0.05){
-      thetaFF = 0;
-    }*/
-
     //thetaFF *= -1;
 
     SmartDashboard.putNumber("thetAff", thetaFF);
-
-    //thetaFF*=(Constants.kMaxOmega+2);
-
+    
     m_poseError = poseRef.relativeTo(currentPose);
     m_rotationError = angleRef.minus(currentPose.getRotation());
 

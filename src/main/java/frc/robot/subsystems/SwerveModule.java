@@ -10,12 +10,9 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
@@ -30,20 +27,6 @@ public class SwerveModule extends SubsystemBase {
   private double lastAngle;
   
   SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.SwerveConstants.driveKS, Constants.SwerveConstants.driveKV, Constants.SwerveConstants.driveKA);
-
-  private final ProfiledPIDController pivot_pid_controller_ = 
-      new ProfiledPIDController(
-        0.3,
-        1e-2,
-        0,
-        new TrapezoidProfile.Constraints(
-          10, //kMaxModuleAngularSpeedRadiansPerSecond
-          100 //kMaxModuleAngularAccelerationRadiansPerSecondSquared
-        ),
-        Constants.kPeriod
-      );
-
-  //private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
 
   private int offset_;
 
@@ -61,7 +44,7 @@ public class SwerveModule extends SubsystemBase {
     drive_motor_ = new WPI_TalonFX(driveDeviceNumber);
     pivot_motor_ = new WPI_TalonSRX(pivotDeviceNumber); 
 
-    //These two 
+    //These two may let the swerve rotate itself many times when startup
     //drive_motor_.configFactoryDefault();
     //pivot_motor_.configFactoryDefault();
     
@@ -73,44 +56,27 @@ public class SwerveModule extends SubsystemBase {
     pivot_motor_.configPeakOutputReverse(-Constants.kPivotMotorMaxOutput);
 
     drive_motor_.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
-    pivot_motor_.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 1, 10);
-    pivot_motor_.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
-    
-    //pivot_motor_.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
+    pivot_motor_.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
     drive_motor_.config_kP(0, Constants.kDriveMotorkP);
     drive_motor_.config_kI(0, Constants.kDriveMotorkI);
     drive_motor_.config_kD(0, Constants.kDriveMotorkD);
     drive_motor_.config_kF(0, Constants.kDriveMotorkF);
     drive_motor_.config_IntegralZone(0, Constants.kDriveMotorIZone);
-    //drive_motor_.configMotionCruiseVelocity(15000);
-    //drive_motor_.configMotionAcceleration(6000);
   
     pivot_motor_.config_kP(0, Constants.kPivotMotorkP);
     pivot_motor_.config_kI(0, Constants.kPivotMotorkI);
     pivot_motor_.config_kD(0, Constants.kPivotMotorkD);
     pivot_motor_.config_kF(0, Constants.kPivotMotorF);
     pivot_motor_.config_IntegralZone(0, Constants.kPivotMotorkIZone);
-    //pivot_motor_.configContinuousCurrentLimit(Constants.continuousCurrentLimit);
     pivot_motor_.configMotionCruiseVelocity(Constants.motionCruiseVelocity);
     pivot_motor_.configMotionAcceleration(Constants.motionAcceleration);
-    //pivot_motor_.configVoltageCompSaturation(Constants.voltageCompSaturation);
-    //pivot_motor_.enableCurrentLimit(true);
-    //pivot_motor_.enableVoltageCompensation(true);
-
-
 
     drive_motor_.configOpenloopRamp(Constants.kLoopSeconds);
     drive_motor_.configClosedloopRamp(Constants.kLoopSeconds);
 
     pivot_motor_.configOpenloopRamp(Constants.kLoopSeconds);
     pivot_motor_.configClosedloopRamp(Constants.kLoopSeconds);
-    
-    pivot_pid_controller_.enableContinuousInput(
-      -Math.PI * 1, //1_rad
-      Math.PI * 1);  //1_rad
-    pivot_pid_controller_.setTolerance(3);//3_deg
 
     pivot_encoder_inverted = pivotEncoderInvert ? -1.0 : 1.0;
 
@@ -118,7 +84,6 @@ public class SwerveModule extends SubsystemBase {
     SetPivotMotorInverted(pivotMotorInvert);
     SetPivotEncoderOffset((int)pivot_encoder_inverted * pivotEncoderOffset);
     SetPivotEncoderPhase(pivotEncoderPhase);
-    PivotEncoderSetToAbsPosition();
 
     lastAngle = GetState().angle.getRadians();
   }
@@ -169,9 +134,6 @@ public class SwerveModule extends SubsystemBase {
       GetSpeed(),
       new Rotation2d(GetAngle())
     );
-    //double velocity = Conversions.falconToMPS(drive_motor_.getSelectedSensorVelocity(), Constants.SwerveConstants.wheelCircumference, Constants.SwerveConstants.driveGearRatio);
-    //Rotation2d angle = Rotation2d.fromDegrees(Conversions.falconToDegrees(pivot_motor_.getSelectedSensorPosition(), Constants.SwerveConstants.angleGearRatio));
-    //return new SwerveModuleState(velocity, angle);
   }
 
   public void SetDesiredState(SwerveModuleState state,boolean isOpenLoop){
@@ -320,29 +282,20 @@ public class SwerveModule extends SubsystemBase {
 
   public double GetAngle(){
     /*The unit is radian*/
-    return MathUtil.angleModulus( 
-        (pivot_motor_.getSelectedSensorPosition(0)- offset_) /
-      Constants.kPivotEncoderResolution *
-      Constants.kPivotEncoderReductionRatio *
-      pivot_encoder_inverted);
-    /*return MathUtil.angleModulus( 
-        (pivot_motor_.getSelectedSensorPosition() - offset_) /
-        Constants.kPivotEncoderResolution *
-        Constants.kPivotEncoderReductionRatio *
-        pivot_encoder_inverted);*/
-
+    return MathUtil.angleModulus(      
+    (pivot_motor_.getSelectedSensorPosition() - offset_) /
+    Constants.kPivotEncoderResolution *
+    Constants.kPivotEncoderReductionRatio *
+    pivot_encoder_inverted);
   }
 
   public double GetRawAngle(){
     /*The unit is radian*/
-    return (pivot_motor_.getSelectedSensorPosition(0)- offset_) /
-      Constants.kPivotEncoderResolution *
-      Constants.kPivotEncoderReductionRatio *
-      pivot_encoder_inverted;
-    /*return (pivot_motor_.getSelectedSensorPosition() - offset_) /
+    return 
+        (pivot_motor_.getSelectedSensorPosition() - offset_) /
         Constants.kPivotEncoderResolution *
         Constants.kPivotEncoderReductionRatio *
-        pivot_encoder_inverted;*/
+        pivot_encoder_inverted;
   }
 
   public double GetAngleRelUnits(){

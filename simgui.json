@@ -6,16 +6,45 @@
           "open": true
         }
       },
+      "Talon FX[21]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX[23]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon SRX[2]": {
         "header": {
           "open": true
         }
+      }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
+      }
+    },
+    "Solenoids": {
+      "0": {
+        "header": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": true
       }
     }
   },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/BallLoader": "Subsystem",
+      "/LiveWindow/Climber": "Subsystem",
+      "/LiveWindow/Feeder": "Subsystem",
+      "/LiveWindow/Intaker": "Subsystem",
       "/LiveWindow/LedSubsystem": "Subsystem",
       "/LiveWindow/Limelight": "Subsystem",
       "/LiveWindow/LimelightSubsystem": "Subsystem",
@@ -119,6 +148,11 @@
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [20]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [21]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [23]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [24]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [25]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [26]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [27]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [3]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [5]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [7]": "Motor Controller",
@@ -133,6 +167,12 @@
     }
   },
   "NetworkTables": {
+    "LiveWindow": {
+      "Intaker": {
+        "open": true
+      },
+      "open": true
+    },
     "Shuffleboard": {
       "Auto settings": {
         "autoMode": {
@@ -145,7 +185,8 @@
     "SmartDashboard": {
       "Auto": {
         "open": true
-      }
+      },
+      "open": true
     }
   }
 }
