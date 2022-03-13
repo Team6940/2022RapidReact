@@ -308,4 +308,29 @@ public void resetFlywheelPosition() {
         * Constants.kFlyWheelWheelDiameter * Math.PI;
         return speed;
     }
+    public double getRobotToTargetDistance() {
+		return (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
+             / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + LimelightSubsystem.getInstance().Get_ty()));
+	}
+
+    public double getShooterLaunchVelocity(double shooterAngle) {
+        double speed = 0;
+        double d = Constants.CARGO_DIAMETER;
+        double D = Constants.UPPER_HUB_DIAMETER;
+            double g = 9.81;
+            double H = Constants.LL_UPPER_HUB_HEIGHT;
+        double h = Constants.SHOOTER_MOUNT_HEIGHT;
+            double L = 10 + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
+            double alpha = Math.toRadians(shooterAngle); // Set to proper value
+        /* v is mini speed  */
+        double vMin = Math.sqrt(g * (H-h+Math.sqrt(Math.pow(L,2)+Math.pow(H-h,2))));
+            double v = L / Math.cos(alpha) * Math.sqrt( g / (2 * ( L *Math.tan(alpha) - H + h )));
+        double beta = Math.toDegrees(Math.atan(Math.tan(alpha) - 2*(H-h) / L));
+        double betaMinLimit = Math.toDegrees(Math.asin(d/D));
+        if( (v >= vMin) && (beta >= betaMinLimit )){
+        speed = v;
+        }
+        SmartDashboard.putNumber("calcShootSpeed", speed);
+        return speed;
+	}
 }
