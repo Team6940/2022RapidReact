@@ -51,6 +51,7 @@ public class RobotContainer {
 
   // Operator's buttons
   public static JoystickButton BallLoadButton;
+  public static JoystickButton BlockerButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -78,6 +79,7 @@ public class RobotContainer {
 
     // The operator's buttons
     BallLoadButton = new JoystickButton(m_operatorController, 1);
+    BlockerButton = new JoystickButton(m_operatorController, 2);
 
     m_swerve.setDefaultCommand(new SwerveControll());
 
@@ -103,6 +105,10 @@ public class RobotContainer {
     // Ball Lodaer button
     BallLoadButton.whenHeld(new InstantCommand(() -> m_feeder.turnonballLoader()));
     BallLoadButton.whenReleased(new InstantCommand(() -> m_feeder.turnoffballLoader()));
+
+    //Blocker button
+    BlockerButton.whenHeld(new InstantCommand(() -> m_feeder.turnonballLocker()));
+    BlockerButton.whenReleased(new InstantCommand(() -> m_feeder.turnoffballLocker()));
 
     // Reset Yaw Button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));

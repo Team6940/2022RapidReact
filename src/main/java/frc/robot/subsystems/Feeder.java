@@ -17,6 +17,7 @@ public class Feeder extends SubsystemBase {
   /** Creates a new Intaker. */
   WPI_TalonFX m_intakermotor;
   WPI_TalonFX m_ballloadermotor;
+  WPI_TalonFX m_blockermotor;
   Solenoid m_intakesolenoid;
   PeriodicIO periodicIO = new PeriodicIO();
   private FeederControlState currentState = FeederControlState.IntakeAndBallLoader_Off;
@@ -28,6 +29,8 @@ public class Feeder extends SubsystemBase {
     m_intakesolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort);
 
     m_ballloadermotor = new WPI_TalonFX(Constants.BallLoaderPort);
+
+    m_blockermotor = new WPI_TalonFX(Constants.BlockerMotorPort);
   }
 
   public static Feeder getInstance() {
@@ -50,12 +53,17 @@ public class Feeder extends SubsystemBase {
       m_ballloadermotor.set(ControlMode.PercentOutput, Constants.BallLoadSpeed);
     }else if(currentState == FeederControlState.OnlyBallLoader_Off){
       m_ballloadermotor.set(ControlMode.PercentOutput, 0);
+    }else if(currentState == FeederControlState.BallLocker_On){
+      m_blockermotor.set(ControlMode.PercentOutput, Constants.BlockerMotorSpeed);
+    }else if(currentState == FeederControlState.BallLocker_Off){
+      m_blockermotor.set(ControlMode.PercentOutput, 0);
     }
   }
 
   public void outputTelemetry(){
     SmartDashboard.putNumber("Intake output", m_intakermotor.getMotorOutputPercent());
     SmartDashboard.putNumber("Ball Loader output", m_ballloadermotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Blocker Speed", m_blockermotor.getMotorOutputPercent());
   }
 
   public void autoturnintaker(){
@@ -80,13 +88,21 @@ public class Feeder extends SubsystemBase {
     currentState = FeederControlState.OnlyBallLoader_Off;
   }
 
+  public void turnonballLocker(){
+    currentState = FeederControlState.BallLocker_On;
+  }
+
+  public void turnoffballLocker(){
+    currentState = FeederControlState.BallLocker_Off;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
 
   public enum FeederControlState {
-    IntakeAndBallLoader_On,IntakeAndBallLoader_Off,OnlyBallLoader_On,OnlyBallLoader_Off
+    IntakeAndBallLoader_On,IntakeAndBallLoader_Off,OnlyBallLoader_On,OnlyBallLoader_Off,BallLocker_On,BallLocker_Off
   }
 
   public static class PeriodicIO {

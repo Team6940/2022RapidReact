@@ -24,6 +24,7 @@ public final class Constants {
 
     // Blocker port
     public static int BlockerMotorPort = 27; //TODO
+    public static double BlockerMotorSpeed = 0.4;
 
     // Climber port
     public static int leftClimberMotorPort = 25; // TODO
