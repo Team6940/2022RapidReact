@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,11 +10,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.lib.team503.util.Util;
 
 
@@ -30,26 +26,15 @@ public class Turret extends SubsystemBase {
     DigitalInput mCwLimit, mCcwLimit;
     PeriodicIO periodicIO = new PeriodicIO();
     private double turretEncoderZero = 4087;  //TODO
-    private boolean overrideSkew = true;
     private double targetAngle = 0.0;
     private double visionTarget = 0.0;
     private TurretControlState currentState = TurretControlState.PERCENT_ROTATION;
-    private double kTranslationFeedforward = 0.0; // TODO
-    private double kRotationFeedForward = 0.0; // TODO
   
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
         mTurretMotor.configFactoryDefault();
         mCwLimit = new DigitalInput(0);  //TODO
         mCcwLimit = new DigitalInput(1); //TODO
-
-        mTurretMotor.configVoltageCompSaturation(12.0, 10);
-        mTurretMotor.enableVoltageCompensation(true);
-        mTurretMotor.configNominalOutputForward(0.0 / 12.0, 10);
-        mTurretMotor.configContinuousCurrentLimit(80, 10);
-        mTurretMotor.configPeakCurrentLimit(80, 10);
-        mTurretMotor.configPeakCurrentDuration(100, 10);
-        mTurretMotor.enableCurrentLimit(true);
 
         mTurretMotor.setInverted(false);
         mTurretMotor.setSensorPhase(false);
@@ -60,13 +45,9 @@ public class Turret extends SubsystemBase {
         mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(minSoftLimit), 10); //TODO
         mTurretMotor.configForwardSoftLimitEnable(true, 10);
         mTurretMotor.configReverseSoftLimitEnable(true, 10);
-        mTurretMotor.configOpenloopRamp(0.20, 10);
-        mTurretMotor.configClosedloopRamp(0.20, 10);
 
-        mTurretMotor.configPeakOutputForward(0.50, 10);
-        mTurretMotor.configPeakOutputReverse(-0.50, 10);
-
-        mTurretMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 10);
+        mTurretMotor.configPeakOutputForward(0.50, 10);//TODO
+        mTurretMotor.configPeakOutputReverse(-0.50, 10);//TODO
 
         int position = mTurretMotor.getSensorCollection().getPulseWidthPosition();
 
@@ -95,12 +76,11 @@ public class Turret extends SubsystemBase {
     }
 
     private void configurationOne() {
-        mTurretMotor.selectProfileSlot(0, 0);
-        mTurretMotor.config_kP(0, 3.66, 10);
-        mTurretMotor.config_kI(0, 0.01, 10);
-        mTurretMotor.config_kD(0, 10.0, 10);
+        mTurretMotor.config_kP(0, 3.66, 10);//TODO
+        mTurretMotor.config_kI(0, 0, 10);
+        mTurretMotor.config_kD(0, 10.0, 10);//TODO
         mTurretMotor.config_kF(0, 0.00, 10);
-        mTurretMotor.config_IntegralZone(0, 15, 10);
+        mTurretMotor.config_IntegralZone(0, 0, 10);
         mTurretMotor.configMotionCruiseVelocity(600, 10);
         mTurretMotor.configMotionAcceleration(1200, 10);
         // mTurretMotor.configMotionSCurveStrength(6);
@@ -200,10 +180,6 @@ public class Turret extends SubsystemBase {
         Rotation2d theta = Rotation2d.fromDegrees(-getFieldCentricAngleToTarget());
 
         return theta.getDegrees() - Math.atan2(distance * theta.getSin(), 29.375 + distance * theta.getCos());
-    }
-
-    public void setOverrideSkew(boolean override) {
-        this.overrideSkew = override;
     }
 
     public boolean hasReachedTargetAngle() {

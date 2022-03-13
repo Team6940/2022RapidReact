@@ -4,12 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team503.util.InterpolatingDouble;
@@ -56,28 +53,20 @@ public class Shooter extends SubsystemBase {
   private void configTalons() {
     TalonFXConfiguration lMasterConfig = new TalonFXConfiguration();
 
-    lMasterConfig.supplyCurrLimit.currentLimit = 40.0;
-    lMasterConfig.supplyCurrLimit.triggerThresholdCurrent = 50.0;
-    lMasterConfig.supplyCurrLimit.triggerThresholdTime = 2.0;
-    lMasterConfig.supplyCurrLimit.enable = true;
     lMasterConfig.slot0.kP = 1.5;
     lMasterConfig.slot0.kI = 0;
     lMasterConfig.slot0.kD = 5;
     lMasterConfig.slot0.kF = 0.048;
     lMasterConfig.peakOutputForward = 1.0;
     lMasterConfig.peakOutputReverse = 0.0;
-    lMasterConfig.velocityMeasurementPeriod = SensorVelocityMeasPeriod.Period_20Ms;
-    lMasterConfig.velocityMeasurementWindow = 16;
     mShooter = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
     mShooter.configAllSettings(lMasterConfig);
     mShooter.setNeutralMode(NeutralMode.Coast);
-    mShooter.enableVoltageCompensation(false);
     mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     mFollower = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
     mFollower.configAllSettings(lMasterConfig);
     mFollower.setNeutralMode(NeutralMode.Coast);
     mFollower.setInverted(true);
-    mFollower.enableVoltageCompensation(false);
     mFollower.follow(mShooter);
     mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
