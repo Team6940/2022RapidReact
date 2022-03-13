@@ -206,24 +206,6 @@ public class Shooter extends SubsystemBase {
       mShooter.set(ControlMode.PercentOutput, power);
     }
 
-    public enum ControlState {
-        IDLE, OPEN_LOOP, VELOCITY, VISION, DISTANCE
-    }
-
-    public class PeriodicIO {
-        public double timestamp;
-        
-        public double flywheel_velocity;
-        public double flywheel_voltage;
-        public double slave_voltage;
-        public double flywheel_current;
-        public double flywheel_temperature;
-
-        //OUTPUTS
-        public double flywheel_demand;
-        public double kickerDemand;
-    }
-
     public void shootFlywheel(double meterSpeed) {
         // meters per second
         double driveOutput = meterSpeed 
@@ -331,4 +313,22 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("calcShootSpeed", speed);
         return speed;
 	}
+
+    public enum ControlState {
+        IDLE, OPEN_LOOP, VELOCITY, VISION, DISTANCE, Algorithm_Shoot, Table_Shoot
+    }
+
+    public class PeriodicIO {
+        public double timestamp;
+        
+        public double flywheel_velocity;
+        public double flywheel_voltage;
+        public double slave_voltage;
+        public double flywheel_current;
+        public double flywheel_temperature;
+
+        //OUTPUTS
+        public double flywheel_demand;
+        public double kickerDemand;
+    }
 }
