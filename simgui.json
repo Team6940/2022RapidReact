@@ -42,6 +42,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/BallLoader": "Subsystem",
+      "/LiveWindow/Climber": "Subsystem",
       "/LiveWindow/Feeder": "Subsystem",
       "/LiveWindow/Intaker": "Subsystem",
       "/LiveWindow/LedSubsystem": "Subsystem",
@@ -149,6 +150,8 @@
       "/LiveWindow/Ungrouped/Talon FX [21]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [23]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [24]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [25]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [26]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [27]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [3]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [5]": "Motor Controller",

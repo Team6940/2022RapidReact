@@ -30,6 +30,8 @@ public final class Constants {
     public static int leftClimberMotorPort = 25; // TODO
     public static int rghtClimberMotorPort = 26; //TODO
     public static int ClimberSolenoidPort = 0; //TODO
+    public static double ClimberForwardSpeed = 0.3; //TODO
+    public static double ClimberBackwardSpeed = -0.3;// TODO
 
     // Ball Loader port
     public static int BallLoaderPort = 24; //TODO
