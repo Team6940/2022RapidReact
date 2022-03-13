@@ -317,14 +317,14 @@ public void resetFlywheelPosition() {
         double speed = 0;
         double d = Constants.CARGO_DIAMETER;
         double D = Constants.UPPER_HUB_DIAMETER;
-            double g = 9.81;
-            double H = Constants.LL_UPPER_HUB_HEIGHT;
+        double g = 9.81;
+        double H = Constants.LL_UPPER_HUB_HEIGHT;
         double h = Constants.SHOOTER_MOUNT_HEIGHT;
-            double L = 10 + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
-            double alpha = Math.toRadians(shooterAngle); // Set to proper value
+        double L = 10 + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
+        double alpha = Math.toRadians(shooterAngle); // Set to proper value
         /* v is mini speed  */
         double vMin = Math.sqrt(g * (H-h+Math.sqrt(Math.pow(L,2)+Math.pow(H-h,2))));
-            double v = L / Math.cos(alpha) * Math.sqrt( g / (2 * ( L *Math.tan(alpha) - H + h )));
+        double v = L / Math.cos(alpha) * Math.sqrt( g / (2 * ( L *Math.tan(alpha) - H + h )));
         double beta = Math.toDegrees(Math.atan(Math.tan(alpha) - 2*(H-h) / L));
         double betaMinLimit = Math.toDegrees(Math.asin(d/D));
         if( (v >= vMin) && (beta >= betaMinLimit )){
