@@ -32,7 +32,6 @@ public class Shooter extends SubsystemBase {
     kDistanceToShooterSpeed.put(new InterpolatingDouble(7.620), new InterpolatingDouble(4000.0));
 }
   private static WPI_TalonFX mShooter;
-  private static WPI_TalonFX mFollower;
   private final PeriodicIO periodicIO = new PeriodicIO();
   ControlState state = ControlState.OPEN_LOOP;
   //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
@@ -63,11 +62,6 @@ public class Shooter extends SubsystemBase {
     mShooter.configAllSettings(lMasterConfig);
     mShooter.setNeutralMode(NeutralMode.Coast);
     mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    mFollower = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
-    mFollower.configAllSettings(lMasterConfig);
-    mFollower.setNeutralMode(NeutralMode.Coast);
-    mFollower.setInverted(true);
-    mFollower.follow(mShooter);
     mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
   }
 
@@ -180,7 +174,6 @@ public class Shooter extends SubsystemBase {
         
     periodicIO.flywheel_velocity = getFlywheelVelocity();
     periodicIO.flywheel_voltage = mShooter.getMotorOutputVoltage();
-    periodicIO.slave_voltage = mFollower.getMotorOutputVoltage();
     periodicIO.flywheel_current = mShooter.getSupplyCurrent();
     periodicIO.flywheel_temperature = mShooter.getTemperature();
 
@@ -213,7 +206,6 @@ public class Shooter extends SubsystemBase {
 
     public void testShooter(double power, boolean input1, boolean input2) {
       mShooter.set(ControlMode.PercentOutput, power);
-      mFollower.set(ControlMode.PercentOutput, power);
     }
 
     public enum ControlState {
