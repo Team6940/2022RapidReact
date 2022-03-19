@@ -25,9 +25,9 @@ public class PathPlannerWithTwo extends SequentialCommandGroup {
   public PathPlannerWithTwo(SwerveDriveTrain m_swerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory Path1 = PathPlanner.loadPath("Test Path 1", 4, 6);
+    PathPlannerTrajectory Path1 = PathPlanner.loadPath("5Ball-1", 4, 6);
 
-    PathPlannerTrajectory Path2 = PathPlanner.loadPath("Test Path 2", 1, 1);
+    PathPlannerTrajectory Path2 = PathPlanner.loadPath("5Ball-2", 1, 1);
 
     var thetaController =
       new ProfiledPIDController(
