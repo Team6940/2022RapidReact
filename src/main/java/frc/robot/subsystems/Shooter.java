@@ -20,6 +20,7 @@ public class Shooter extends SubsystemBase {
   
     static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kDistanceToShooterSpeed = new InterpolatingTreeMap<>();
     private static Shooter instance = null;
+    private int num = 1;
 
     static { //TODO first is meters fou distance,second is RPM
         kDistanceToShooterSpeed.put(new InterpolatingDouble(0.0), new InterpolatingDouble(1000.0));
@@ -60,7 +61,6 @@ public class Shooter extends SubsystemBase {
         mShooter = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
         mShooter.configAllSettings(lMasterConfig);
         mShooter.setNeutralMode(NeutralMode.Coast);
-        mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
 
@@ -180,10 +180,9 @@ public class Shooter extends SubsystemBase {
     public void writePeriodicOutputs() {
         if (getState() == ControlState.OPEN_LOOP) {
             mShooter.set(ControlMode.PercentOutput, periodicIO.flywheel_demand);
-        } else if (getState() == ControlState.VISION) {
+        } else if (getState() == ControlState.Table_Shoot) {
             double targetRpm = getShooterSpeedForDistance(LimelightSubsystem.getInstance().getRobotToTargetDistance());
             double targetVelocity = RpmToMeterSpeed(targetRpm);
-
             if (LimelightSubsystem.getInstance().Get_tv() == 0.0) {
                 targetVelocity = Constants.kFlyWheelWheelDefaultSpeed;  //TODO
             }
@@ -197,7 +196,15 @@ public class Shooter extends SubsystemBase {
             periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
 
             mShooter.set(ControlMode.Velocity,periodicIO.flywheel_demand); 
-        } else {
+        } else if(getState() == ControlState.Algorithm_Shoot){
+            double targetVelocity = getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
+            if (LimelightSubsystem.getInstance().Get_tv() == 0.0) {
+                targetVelocity = Constants.kFlyWheelWheelDefaultSpeed;  //TODO
+            }
+            periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
+            mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand);
+        }
+        else {
             mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand); 
         }
     }
@@ -300,7 +307,7 @@ public class Shooter extends SubsystemBase {
         double g = 9.81;
         double H = Constants.LL_UPPER_HUB_HEIGHT;
         double h = Constants.SHOOTER_MOUNT_HEIGHT;
-        double L = 10 + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
+        double L = getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
         double alpha = Math.toRadians(shooterAngle); // Set to proper value
         /* v is mini speed  */
         double vMin = Math.sqrt(g * (H-h+Math.sqrt(Math.pow(L,2)+Math.pow(H-h,2))));
@@ -313,6 +320,16 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("calcShootSpeed", speed);
         return speed;
 	}
+
+    public void autoSwitchShooterMode(){
+        if(num % 2 == 1){
+            state = ControlState.Algorithm_Shoot;
+          }
+          else{
+            state = ControlState.Table_Shoot;
+          }
+          num += 1;
+    }
 
     public enum ControlState {
         IDLE, OPEN_LOOP, VELOCITY, VISION, DISTANCE, Algorithm_Shoot, Table_Shoot

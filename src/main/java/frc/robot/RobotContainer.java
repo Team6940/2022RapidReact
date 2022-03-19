@@ -15,6 +15,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Turret.TurretControlState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -57,6 +58,8 @@ public class RobotContainer {
   public static JoystickButton ElasticClimberButton;
   public static JoystickButton ElasticClimberStopButton;
   public static JoystickButton StraightClimberButton;
+  public static JoystickButton ShooterSwitchModeButton;
+  public static JoystickButton TurretButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -70,10 +73,6 @@ public class RobotContainer {
     m_shooter = Shooter.getInstance();
     m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
-
-    double speed = m_shooter.RpmToMeterSpeed(3000);
-    double rpm = m_shooter.meterSpeedToRpm(speed);
-    m_limelight.getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
@@ -89,6 +88,8 @@ public class RobotContainer {
     ElasticClimberButton = new JoystickButton(m_operatorController, 3);
     ElasticClimberStopButton = new JoystickButton(m_operatorController, 4);
     StraightClimberButton = new JoystickButton(m_operatorController, 5);
+    ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
+    TurretButton = new JoystickButton(m_operatorController, 7);
 
     m_swerve.setDefaultCommand(new SwerveControll());
 
@@ -123,6 +124,13 @@ public class RobotContainer {
     ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
     ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
     StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
+
+    // Shooter button
+    ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter.autoSwitchShooterMode()));
+
+    // Turret button
+    TurretButton.whenHeld(new InstantCommand(() -> m_turret.startVisionFind()));
+    TurretButton.whenReleased(new InstantCommand(() -> m_turret.VisionLock()));
 
     // Reset Yaw button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));

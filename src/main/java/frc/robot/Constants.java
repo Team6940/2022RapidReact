@@ -73,7 +73,7 @@ public final class Constants {
     public static final int SHOOT_R_MASTER_ID = 21;  //TODO
 
     public static final double kFlywheelIdleVelocity = 1.0; //meters/s //TODO
-    public static double kFlyWheelEncoderReductionRatio =  1.0 / 2.0 ;  //TODO
+    public static double kFlyWheelEncoderReductionRatio =  15.0 / 8.0 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.093;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
     public static double kShooterTolerance = 0.01;  //meters/s //TODO
