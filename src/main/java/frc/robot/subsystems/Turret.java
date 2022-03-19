@@ -85,6 +85,22 @@ public class Turret extends SubsystemBase {
         currentState = TurretControlState.VISION_LOCKED;
     }
 
+    public boolean isVisionFinding(){
+        return (currentState == TurretControlState.VISION_FINDING);
+    }
+
+    public boolean isVisionMoving(){
+        return (currentState == TurretControlState.VISION_MOVING);
+    }
+
+    public boolean isVisionLocked(){
+        return (currentState == TurretControlState.VISION_LOCKED);
+    }
+
+    public boolean isStop(){
+        return (currentState == TurretControlState.STOP);
+    }
+
     public double getAngle() {
         double rawTurretAngle = encUnitsToTurretAngle(periodicIO.position - offset);
         double Angle = Util.boundAngleNeg180to180Degrees(rawTurretAngle);
@@ -107,14 +123,6 @@ public class Turret extends SubsystemBase {
         return degreesToEncUnits(mTurretMotorAngle - Constants.kTurretStartingAngle);//Todo
     }
 
-    public boolean isSensorConnected() {
-        int pulseWidthPeriod = mTurretMotor.getSensorCollection().getPulseWidthRiseToRiseUs();
-        boolean connected = pulseWidthPeriod != 0;
-        //if (!connected)
-        //    hasEmergency = true;
-        return connected;
-    }
-
     public void readPeriodicInputs() {
         periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);
         periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
@@ -131,15 +139,15 @@ public class Turret extends SubsystemBase {
         if (currentState == TurretControlState.ZERO_TURRET) {
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-
-        }
-        else if(currentState == TurretControlState.VISION_LOCKED) {                
+        }else if(currentState == TurretControlState.STOP){
             desiredAngle = getAngle();
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-
-        }
-        else if (currentState == TurretControlState.VISION_MOVING) {
+        }else if(currentState == TurretControlState.VISION_LOCKED) {                
+            desiredAngle = getAngle();
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+        }else if (currentState == TurretControlState.VISION_MOVING) {
             desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
@@ -156,7 +164,6 @@ public class Turret extends SubsystemBase {
             if (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < 1.0 && LimelightSubsystem.getInstance().isTargetVisible()) {
                 lockOnTarget();
             }
-
         }else if (currentState == TurretControlState.VISION_FINDING) {
             desiredAngle = getAngle();
             if(direction == 0 ){
@@ -211,9 +218,12 @@ public class Turret extends SubsystemBase {
         currentState = TurretControlState.VISION_LOCKED;
     }
 
+    public void Stop(){
+        currentState = TurretControlState.STOP;
+    }
 
     public enum TurretControlState {
-        ZERO_TURRET, VISION_LOCKED, VISION_MOVING, VISION_FINDING
+        ZERO_TURRET, VISION_LOCKED, VISION_MOVING, VISION_FINDING, STOP
     }
 
     public static class PeriodicIO {

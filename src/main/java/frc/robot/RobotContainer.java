@@ -18,6 +18,7 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Turret.TurretControlState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Auto.AutonomousSelector;
 
@@ -129,8 +130,16 @@ public class RobotContainer {
     ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter.autoSwitchShooterMode()));
 
     // Turret button
-    TurretButton.whenHeld(new InstantCommand(() -> m_turret.startVisionFind()));
-    TurretButton.whenReleased(new InstantCommand(() -> m_turret.VisionLock()));
+    TurretButton.whenHeld(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> m_limelight.setLightMode(3)),
+        new InstantCommand(() -> m_turret.startVisionFind()))
+      );
+    TurretButton.whenReleased(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> m_limelight.setLightMode(1)),
+        new InstantCommand(() -> m_turret.Stop()))
+      );
 
     // Reset Yaw button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
