@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class RevColorSensor extends SubsystemBase {
+  private static RevColorSensor instance = null;
   /** Creates a new RevColorSensor. */
   public final ColorSensorV3 m_ColorSensor;
   public final ColorMatch m_ColorMatcher;
@@ -21,6 +22,8 @@ public class RevColorSensor extends SubsystemBase {
   private final Color kGreenTarget = new Color(0.197, 0.561, 0.240);
   private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
   private final Color kYellowTarget = new Color(0.361, 0.524, 0.113);
+  private final Color kBlueCargo =  new Color(0.1763, 0.4508, 0.3728);
+  private final Color kRedCargo =  new Color(0.3546, 0.4361, 0.2093);
 
   // set color inits
   public Color detectedColor;
@@ -30,6 +33,30 @@ public class RevColorSensor extends SubsystemBase {
     m_ColorMatcher = new ColorMatch();
 
   }
+
+  public static RevColorSensor getInstance() {
+    if (instance == null){
+        instance = new RevColorSensor();
+    }
+    return instance;
+  }
+
+  public boolean isMyBallColor(Color myCargoColor) {
+     
+     Color detectedColor = m_ColorSensor.getColor();
+
+     /**
+      * Run the color match algorithm on our detected color
+      */
+     String colorString;
+     ColorMatchResult match = m_ColorMatcher.matchClosestColor(detectedColor);
+ 
+     if (match.color == myCargoColor) {
+       return true;
+     } else {
+       return false;
+     }
+   }
 
   @Override
   public void periodic() {

@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Auto.PathPlanner.PathPlannerWithTwo;
 import frc.robot.subsystems.SwerveDriveTrain;
 
@@ -30,6 +32,9 @@ public class AutonomousSelector {
             case PATH_PLANNER_WITH_TWO:
                 return new PathPlannerWithTwo(s_Swerve);
 
+            case FIVE_BALL:
+                getFiveBallAutoCmd(s_Swerve);
+
             default:
                 System.out.println("ERROR: unexpected auto mode: " + mode);
                 break; 
@@ -41,8 +46,14 @@ public class AutonomousSelector {
     public AutonomousSelector() {
     }
 
+    private Command  getFiveBallAutoCmd(SwerveDriveTrain s_Swerve){
+        SequentialCommandGroup command = new SequentialCommandGroup();
+        return command;
+    }
+
     private enum AutonomousMode {
         PATH_PLANNER_WITH_TWO,
+        FIVE_BALL,
         BOUNCE_AUTO,
         EXAMPLE_AUTO,
         COUNT321_AUTO,
