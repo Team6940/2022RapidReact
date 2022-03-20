@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
       Shooter.getInstance().writePeriodicOutputs();
     }
 
-    //Shooter.getInstance().outputTelemetry();
+    Shooter.getInstance().outputTelemetry();
 
   }
 
