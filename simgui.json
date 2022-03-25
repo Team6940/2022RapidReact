@@ -159,14 +159,20 @@
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/Shuffleboard/Auto settings/autoMode": "String Chooser",
       "/SmartDashboard/Auto": "String Chooser"
+    },
+    "windows": {
+      "/Shuffleboard/Auto settings/autoMode": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
     "LiveWindow": {
       "Intaker": {
         "open": true
-      },
-      "open": true
+      }
     },
     "Shuffleboard": {
       "Auto settings": {
@@ -174,8 +180,7 @@
           "open": true
         },
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "Auto": {

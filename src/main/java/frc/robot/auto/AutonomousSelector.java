@@ -1,4 +1,4 @@
-package frc.robot.commands.Auto;
+package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -6,7 +6,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.Auto.PathPlanner.PathPlannerWithTwo;
+import frc.robot.auto.modes.FiveBallBottomMode;
+import frc.robot.auto.modes.PathPlannerWithTwo;
 import frc.robot.subsystems.SwerveDriveTrain;
 
 public class AutonomousSelector {
@@ -18,7 +19,8 @@ public class AutonomousSelector {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
 
         autonomousModeChooser = new SendableChooser<>();
-        autonomousModeChooser.setDefaultOption("1PathPlannerWithTwo", AutonomousMode.PATH_PLANNER_WITH_TWO);
+        autonomousModeChooser.setDefaultOption("5BallBottom", AutonomousMode.FIVE_BALL_BOTTOM);
+        autonomousModeChooser.addOption("1PathPlannerWithTwo", AutonomousMode.PATH_PLANNER_WITH_TWO);
 
         autoTab.add("autoMode", autonomousModeChooser);
     }
@@ -29,6 +31,9 @@ public class AutonomousSelector {
         switch (mode) {
             case PATH_PLANNER_WITH_TWO:
                 return new PathPlannerWithTwo(s_Swerve);
+
+            case FIVE_BALL_BOTTOM:
+                return new FiveBallBottomMode(s_Swerve);
 
             default:
                 System.out.println("ERROR: unexpected auto mode: " + mode);
@@ -52,6 +57,7 @@ public class AutonomousSelector {
         CURVE_LINE_WAYPOINT,
         PATH_PLANNER_BOUNCE,
         STRAIGHT_LINE_MODE,
+        FIVE_BALL_BOTTOM
     }
 
     public static Pose2d getStartingPose(){

@@ -96,6 +96,14 @@ public class Feeder extends SubsystemBase {
     currentState = FeederControlState.BallLocker_Off;
   }
 
+  public void setIntakeandBallLoaderOn(){
+    currentState = FeederControlState.IntakeAndBallLoader_On;
+  }
+
+  public void setIntakeandBallLoaderOff(){
+    currentState = FeederControlState.IntakeAndBallLoader_Off;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
