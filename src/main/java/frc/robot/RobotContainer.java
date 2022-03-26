@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
+import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LedSubsystem;
@@ -41,6 +42,7 @@ public class RobotContainer {
   public static Shooter m_shooter;
   public static Feeder m_feeder;
   public static Climber m_climber;
+  public static Blocker m_blocker;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -73,6 +75,7 @@ public class RobotContainer {
     m_shooter = Shooter.getInstance();
     m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
+    m_blocker = Blocker.getInstance();
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
@@ -117,8 +120,8 @@ public class RobotContainer {
     BallLoadButton.whenReleased(new InstantCommand(() -> m_feeder.turnoffballLoader()));
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() -> m_feeder.turnonballLocker()));
-    BlockerButton.whenReleased(new InstantCommand(() -> m_feeder.turnoffballLocker()));
+    BlockerButton.whenHeld(new InstantCommand(() -> m_blocker.turnonballLocker()));
+    BlockerButton.whenReleased(new InstantCommand(() -> m_blocker.turnoffballLocker()));
 
     // Climber button
     ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));

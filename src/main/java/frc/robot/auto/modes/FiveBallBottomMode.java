@@ -26,9 +26,12 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
   public FiveBallBottomMode(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory mTrajectoryOne = PathPlanner.loadPath("FiveBallBottom-1", 2, 2);
-    PathPlannerTrajectory mTrajectoryTwo = PathPlanner.loadPath("FiveBallBottom-2", 2, 2);
-    PathPlannerTrajectory mTrajectoryThree = PathPlanner.loadPath("FiveBallBottom-3", 2, 2);
+    PathPlannerTrajectory mFiveBallTrajectoryOne = PathPlanner.loadPath("FiveBallBottom-1", 2, 2);
+    PathPlannerTrajectory mFiveBallTrajectoryTwo = PathPlanner.loadPath("FiveBallBottom-2", 2, 2);
+    PathPlannerTrajectory mFiveBallTrajectoryThree = PathPlanner.loadPath("FiveBallBottom-3", 2, 2);
+    PathPlannerTrajectory mFiveBallTrajectoryFour = PathPlanner.loadPath("FiveBallBottom-4", 2, 2);
+    PathPlannerTrajectory mFiveBallTrajectoryFive = PathPlanner.loadPath("FiveBallBottom-5", 2, 2);
+    PathPlannerTrajectory mFiveBallTrajectorySix = PathPlanner.loadPath("FiveBallBottom-6", 2, 2);
 
     LimelightSubsystem.getInstance().setLightMode(3);//TODO
 
@@ -36,21 +39,30 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
       new InstantCommand(() ->     
       sSwerve.ResetOdometry(
         new Pose2d(
-          mTrajectoryOne.getInitialState().poseMeters.getTranslation(),
-          mTrajectoryOne.getInitialState().holonomicRotation
+          mFiveBallTrajectoryOne.getInitialState().poseMeters.getTranslation(),
+          mFiveBallTrajectoryOne.getInitialState().holonomicRotation
           )
         )
       ),
 
-      new SwervePathAction(mTrajectoryOne).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
-      new ShootAction().withTimeout(1),
+      new SwervePathAction(mFiveBallTrajectoryOne).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
       new WaitCommand(0.5),
 
-      new SwervePathAction(mTrajectoryTwo).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1),
+      //new WaitCommand(0.5),
+
+      new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
       new WaitCommand(0.5),
 
-      new SwervePathAction(mTrajectoryThree).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new ShootAction().withTimeout(1),
+      //new WaitCommand(0.5),
+
+      new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new WaitCommand(2),
+
+      new SwervePathAction(mFiveBallTrajectorySix).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1)
     );
   }
