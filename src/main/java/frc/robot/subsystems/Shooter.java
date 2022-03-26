@@ -163,6 +163,10 @@ public class Shooter extends SubsystemBase {
         mShooter.set(ControlMode.Velocity,driveOutput);
     }
 
+    public boolean shootIsReady(){
+        return (currentState == ShooterControlState.SHOOT);
+    }
+
     public double getFlywheelVelocity() {
         // meters per second
         double speed = 0;

@@ -6,29 +6,36 @@ package frc.robot.auto.actions;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Shooter;
 
 public class ShootAction extends CommandBase {
   /** Creates a new ShootAction. */
-  Feeder mFeeder = Feeder.getInstance();
+  Feeder  vFeeder = Feeder.getInstance();
+  Shooter vShooter = Shooter.getInstance();
+
   public ShootAction() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(mFeeder);
+    addRequirements(vFeeder);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mFeeder.turnonballLocker();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(vShooter.shootIsReady()){
+      vFeeder.turnonballLocker();
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mFeeder.turnoffballLocker();
+    vFeeder.turnoffballLocker();
   }
 
   // Returns true when the command should end.
