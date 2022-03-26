@@ -8,7 +8,9 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.auto.actions.IntakeAction;
 import frc.robot.auto.actions.ShootAction;
 import frc.robot.auto.actions.SwervePathAction;
@@ -24,38 +26,32 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
   public FiveBallBottomMode(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    SequentialCommandGroup command = new SequentialCommandGroup();
-
     PathPlannerTrajectory mTrajectoryOne = PathPlanner.loadPath("5Ball-1", 2, 2);
     PathPlannerTrajectory mTrajectoryTwo = PathPlanner.loadPath("5Ball-2", 2, 2);
     PathPlannerTrajectory mTrajectoryThree = PathPlanner.loadPath("5Ball-3", 2, 2);
 
     LimelightSubsystem.getInstance().setLightMode(3);//TODO
 
-    sSwerve.ResetOdometry(
+    addCommands(
+      new InstantCommand(() ->     
+      sSwerve.ResetOdometry(
         new Pose2d(
           mTrajectoryOne.getInitialState().poseMeters.getTranslation(),
           mTrajectoryOne.getInitialState().holonomicRotation
           )
-    );
+        )
+      ),
 
-    command.addCommands(
       new SwervePathAction(mTrajectoryOne).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
-      new ShootAction().withTimeout(1)
-    );
+      new ShootAction().withTimeout(1),
+      new WaitCommand(0.5),
 
-    command.addCommands(
       new SwervePathAction(mTrajectoryTwo).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
-      new ShootAction().withTimeout(1)
-    );
+      new ShootAction().withTimeout(1),
+      new WaitCommand(0.5),
 
-    command.addCommands(
       new SwervePathAction(mTrajectoryThree).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1)
-    );
-
-    addCommands(
-      command
     );
   }
 }
