@@ -26,9 +26,9 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
   public FiveBallBottomMode(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory mTrajectoryOne = PathPlanner.loadPath("5Ball-1", 2, 2);
-    PathPlannerTrajectory mTrajectoryTwo = PathPlanner.loadPath("5Ball-2", 2, 2);
-    PathPlannerTrajectory mTrajectoryThree = PathPlanner.loadPath("5Ball-3", 2, 2);
+    PathPlannerTrajectory mTrajectoryOne = PathPlanner.loadPath("FiveBallBottom-1", 2, 2);
+    PathPlannerTrajectory mTrajectoryTwo = PathPlanner.loadPath("FiveBallBottom-2", 2, 2);
+    PathPlannerTrajectory mTrajectoryThree = PathPlanner.loadPath("FiveBallBottom-3", 2, 2);
 
     LimelightSubsystem.getInstance().setLightMode(3);//TODO
 
