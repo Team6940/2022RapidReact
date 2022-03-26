@@ -21,7 +21,7 @@ public class TurretAndShooterAction extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mTurret.startVisionFind();
+    mTurret.startVisionFinding();
     mShooter.setPrepareShoot();
   }
 

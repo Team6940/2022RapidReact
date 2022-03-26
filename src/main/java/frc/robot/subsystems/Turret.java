@@ -97,8 +97,26 @@ public class Turret extends SubsystemBase {
         return (currentState == TurretControlState.VISION_LOCKED);
     }
 
+    public boolean valueIsRange(double value, double minRange,double maxRange){
+        return Math.max(minRange,value) == Math.min(value,maxRange);
+    }
+
+    public boolean isVisionGoodRange(double angle){    
+        return ( valueIsRange(angle,minSoftLimit,maxSoftLimit)
+                && LimelightSubsystem.getInstance().isTargetVisible()
+                );
+    }
+
     public boolean isStop(){
         return (currentState == TurretControlState.STOP);
+    }
+
+    public void startVisionFinding(){
+        currentState = TurretControlState.VISION_FINDING;
+    }
+
+    public void Stop(){
+        currentState = TurretControlState.STOP;
     }
 
     public double getAngle() {
@@ -130,8 +148,10 @@ public class Turret extends SubsystemBase {
         periodicIO.current = mTurretMotor.getStatorCurrent();
     }
 
-    public boolean isTurretReady() {
-        return LimelightSubsystem.getInstance().isTargetVisible() && (LimelightSubsystem.getInstance().Get_tx() < 1.0);
+    public boolean isTargetReady(){
+        return (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < 1.0 
+                && LimelightSubsystem.getInstance().isTargetVisible()
+                );
     }
 
     public void writePeriodicOutputs() {
@@ -143,27 +163,6 @@ public class Turret extends SubsystemBase {
             desiredAngle = getAngle();
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-        }else if(currentState == TurretControlState.VISION_LOCKED) {                
-            desiredAngle = getAngle();
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
-            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-        }else if (currentState == TurretControlState.VISION_MOVING) {
-            desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
-            desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
-            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            if (!LimelightSubsystem.getInstance().isTargetVisible()) {
-                currentState = TurretControlState.VISION_FINDING;
-                if(desiredAngle < 0){
-                    direction = 0;
-                }
-                else{
-                    direction = 1;
-                }
-            }
-            if (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < 1.0 && LimelightSubsystem.getInstance().isTargetVisible()) {
-                lockOnTarget();
-            }
         }else if (currentState == TurretControlState.VISION_FINDING) {
             desiredAngle = getAngle();
             if(direction == 0 ){
@@ -181,9 +180,38 @@ public class Turret extends SubsystemBase {
             }
             periodicIO.demand = turretAngleToEncUnits(desiredAngle);
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            if (LimelightSubsystem.getInstance().isTargetVisible()) {
+            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx()  + getAngle())) {
                 startVisionMoving();
             }         
+        }else if (currentState == TurretControlState.VISION_MOVING) {
+            desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
+            desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+            if (isTargetReady()) {
+                lockOnTarget();
+            }else if (!isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx()  + getAngle())) {
+                startVisionFinding();
+                if(desiredAngle < 0){
+                    direction = 0;
+                }
+                else{
+                    direction = 1;
+                }
+            }
+        }else if(currentState == TurretControlState.VISION_LOCKED) {                
+            desiredAngle = getAngle();
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+            if (!isTargetReady()) {
+                startVisionFinding();
+                if(desiredAngle < 0){
+                    direction = 0;
+                }
+                else{
+                    direction = 1;
+                }
+            }
         }
     }
 
@@ -208,18 +236,6 @@ public class Turret extends SubsystemBase {
             if (mTurretMotor.getControlMode() == ControlMode.MotionMagic)
                 SmartDashboard.putNumber("Turret Setpoint", mTurretMotor.getClosedLoopTarget(0));
         }
-    }
-
-    public void startVisionFind(){
-        currentState = TurretControlState.VISION_FINDING;
-    }
-
-    public void VisionLock(){
-        currentState = TurretControlState.VISION_LOCKED;
-    }
-
-    public void Stop(){
-        currentState = TurretControlState.STOP;
     }
 
     public enum TurretControlState {

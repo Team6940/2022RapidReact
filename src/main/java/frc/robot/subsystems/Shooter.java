@@ -125,12 +125,12 @@ public class Shooter extends SubsystemBase {
             mShooter.set(ControlMode.PercentOutput, 0);
             if(Turret.getInstance().isVisionFinding() || Turret.getInstance().isVisionMoving()){
                 currentState = ShooterControlState.PREPARE_SHOOT;
-            }else if(Turret.getInstance().isTurretReady()){
+            }else if(Turret.getInstance().isTargetReady()){
                 currentState = ShooterControlState.SHOOT;
             }
         }else if(currentState == ShooterControlState.PREPARE_SHOOT){
             setVelocity(Constants.kFlywheelIdleVelocity);
-            if(Turret.getInstance().isTurretReady()){
+            if(Turret.getInstance().isTargetReady()){
                 currentState = ShooterControlState.SHOOT;
             }else if(Turret.getInstance().isStop()){
                 currentState = ShooterControlState.STOP;

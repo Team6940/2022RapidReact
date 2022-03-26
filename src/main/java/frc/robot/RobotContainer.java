@@ -132,7 +132,7 @@ public class RobotContainer {
     TurretButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(3)),
-        new InstantCommand(() -> m_turret.startVisionFind()))
+        new InstantCommand(() -> m_turret.startVisionFinding()))
       );
     TurretButton.whenReleased(
       new SequentialCommandGroup(
