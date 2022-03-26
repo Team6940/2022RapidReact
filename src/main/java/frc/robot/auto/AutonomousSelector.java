@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.auto.modes.FiveBallBottomMode;
 import frc.robot.auto.modes.PathPlannerWithTwo;
+import frc.robot.auto.modes.SixBallMode;
 import frc.robot.subsystems.SwerveDriveTrain;
 
 public class AutonomousSelector {
@@ -19,7 +20,8 @@ public class AutonomousSelector {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
 
         autonomousModeChooser = new SendableChooser<>();
-        autonomousModeChooser.setDefaultOption("5BallBottom", AutonomousMode.FIVE_BALL_BOTTOM);
+        autonomousModeChooser.setDefaultOption("FiveBallBottom", AutonomousMode.FIVE_BALL_BOTTOM);
+        autonomousModeChooser.addOption("SixBall", AutonomousMode.SIX_BALL);
         autonomousModeChooser.addOption("1PathPlannerWithTwo", AutonomousMode.PATH_PLANNER_WITH_TWO);
 
         autoTab.add("autoMode", autonomousModeChooser);
@@ -35,6 +37,9 @@ public class AutonomousSelector {
             case FIVE_BALL_BOTTOM:
                 return new FiveBallBottomMode(s_Swerve);
 
+            case SIX_BALL:
+                return new SixBallMode(s_Swerve);
+
             default:
                 System.out.println("ERROR: unexpected auto mode: " + mode);
                 break; 
@@ -48,16 +53,8 @@ public class AutonomousSelector {
 
     private enum AutonomousMode {
         PATH_PLANNER_WITH_TWO,
-        BOUNCE_AUTO,
-        EXAMPLE_AUTO,
-        COUNT321_AUTO,
-        SWERVE1126,
-        CURVE_PATH,
-        PATH_PLANNER_STRAIGHT,
-        CURVE_LINE_WAYPOINT,
-        PATH_PLANNER_BOUNCE,
-        STRAIGHT_LINE_MODE,
-        FIVE_BALL_BOTTOM
+        FIVE_BALL_BOTTOM,
+        SIX_BALL
     }
 
     public static Pose2d getStartingPose(){

@@ -1,84 +1,44 @@
 package frc.robot.lib.team1323.lib.util;
 
+import java.util.ArrayList;
+/**
+ * Helper class for storing and calculating a moving average
+ */
 public class MovingAverage {
-    private int _in;
-	private int _ou;
-	private int _cnt;
-	private int _cap;
+    ArrayList<Double> numbers = new ArrayList<Double>();
+    private int maxSize;
 
-	private float _sum;
-	private float _min;
+    public MovingAverage(int maxSize) {
+        this.maxSize = maxSize;
+    }
 
-	private float[] _d;
+    public void add(double newNumber) {
+        numbers.add(newNumber);
+        if (numbers.size() > maxSize) {
+            numbers.remove(0);
+        }
+    }
 
-	public MovingAverage(int capacity) {
-		_cap = capacity;
-		_d = new float[_cap];
-		clear();
-	}
+    public double getAverage() {
+        double total = 0;
 
-	public float process(float input) {
-		push(input);
-		return _sum / (float) _cnt;
-	}
+        for (double number : numbers) {
+            total += number;
+        }
 
-	public void clear() {
-		_in = 0;
-		_ou = 0;
-		_cnt = 0;
+        return total / numbers.size();
+    }
 
-		_sum = 0;
-	}
+    public int getSize() {
+        return numbers.size();
+    }
 
-	public void push(float d) {
-		_sum += d;
+    public boolean isUnderMaxSize() {
+        return getSize() < maxSize;
+    }
 
-		if (_cnt >= _cap)
-			pop();
+    public void clear() {
+        numbers.clear();
+    }
 
-		_d[_in] = d;
-		if (++_in >= _cap)
-			_in = 0;
-		++_cnt;
-
-		calcMin();
-	}
-
-	public void pop() {
-		float d = _d[_ou];
-
-		_sum -= d;
-
-		if (++_ou >= _cap)
-			_ou = 0;
-		--_cnt;
-	}
-
-	private void calcMin() {
-		_min = Float.MAX_VALUE;
-
-		int ou = _ou;
-		int cnt = _cnt;
-		while (cnt > 0) {
-			float d = _d[ou];
-
-			if (_min > d)
-				_min = d;
-
-			if (++ou >= _cnt)
-				ou = 0;
-			--cnt;
-		}
-	}
-	public float getSum() {
-		return _sum;
-	}
-
-	public int getCount() {
-		return _cnt;
-	}
-
-	public float getMinimum() {
-		return _min;
-	}
 }

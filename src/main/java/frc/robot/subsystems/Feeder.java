@@ -17,7 +17,6 @@ public class Feeder extends SubsystemBase {
   /** Creates a new Intaker. */
   WPI_TalonFX m_intakermotor;
   WPI_TalonFX m_ballloadermotor;
-  WPI_TalonFX m_blockermotor;
   Solenoid m_intakesolenoid;
   PeriodicIO periodicIO = new PeriodicIO();
   private FeederControlState currentState = FeederControlState.INATKEANDBALLLOADER_OFF;
@@ -29,8 +28,6 @@ public class Feeder extends SubsystemBase {
     m_intakesolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort);
 
     m_ballloadermotor = new WPI_TalonFX(Constants.BallLoaderPort);
-
-    m_blockermotor = new WPI_TalonFX(Constants.BlockerMotorPort);
   }
 
   public static Feeder getInstance() {
@@ -53,17 +50,12 @@ public class Feeder extends SubsystemBase {
       m_ballloadermotor.set(ControlMode.PercentOutput, Constants.BallLoadSpeed);
     }else if(currentState == FeederControlState.ONLYBALLLOADER_OFF){
       m_ballloadermotor.set(ControlMode.PercentOutput, 0);
-    }else if(currentState == FeederControlState.BALLLOCKER_ON){
-      m_blockermotor.set(ControlMode.PercentOutput, Constants.BlockerMotorSpeed);
-    }else if(currentState == FeederControlState.BALLLOCKER_OFF){
-      m_blockermotor.set(ControlMode.PercentOutput, 0);
     }
   }
 
   public void outputTelemetry(){
     SmartDashboard.putNumber("Intake output", m_intakermotor.getMotorOutputPercent());
     SmartDashboard.putNumber("Ball Loader output", m_ballloadermotor.getMotorOutputPercent());
-    SmartDashboard.putNumber("Blocker Speed", m_blockermotor.getMotorOutputPercent());
   }
 
   public void autoturnintaker(){
@@ -88,14 +80,6 @@ public class Feeder extends SubsystemBase {
     currentState = FeederControlState.ONLYBALLLOADER_OFF;
   }
 
-  public void turnonballLocker(){
-    currentState = FeederControlState.BALLLOCKER_ON;
-  }
-
-  public void turnoffballLocker(){
-    currentState = FeederControlState.BALLLOCKER_OFF;
-  }
-
   public void setIntakeandBallLoaderOn(){
     currentState = FeederControlState.INTAKEANDBALLLOADER_ON;
   }
@@ -114,8 +98,6 @@ public class Feeder extends SubsystemBase {
     INATKEANDBALLLOADER_OFF,
     ONLYBALLLOADER_ON,
     ONLYBALLLOADER_OFF,
-    BALLLOCKER_ON,
-    BALLLOCKER_OFF
   }
 
   public static class PeriodicIO {

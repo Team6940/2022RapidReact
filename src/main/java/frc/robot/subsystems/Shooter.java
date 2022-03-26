@@ -72,21 +72,20 @@ public class Shooter extends SubsystemBase {
 
     public void outputTelemetry() {
         if (Constants.kOutputTelemetry) {
+            SmartDashboard.putString("Shooter State", currentState.name());   
             SmartDashboard.putNumber("Shooter Mode", shootMode);
             SmartDashboard.putNumber("Flywheel Velocity", periodicIO.flywheel_velocity);
-            SmartDashboard.putNumber("Flywheel Current", periodicIO.flywheel_current);
-            SmartDashboard.putNumber("Flywheel Goal", periodicIO.flywheel_demand);
-            SmartDashboard.putNumber("Flywheel Temperature", periodicIO.flywheel_temperature);
-            SmartDashboard.putNumber("Shooter Master Voltage", periodicIO.flywheel_voltage);
-            SmartDashboard.putNumber("Shooter Slave Voltage", periodicIO.slave_voltage);
-            SmartDashboard.putNumber("RPM1000", RpmToMeterSpeed(1000));
-            SmartDashboard.putNumber("RPM2400", RpmToMeterSpeed(2400));
-            SmartDashboard.putNumber("RPM2800", RpmToMeterSpeed(2800));
-            SmartDashboard.putNumber("RPM3500", RpmToMeterSpeed(3500));
-            SmartDashboard.putNumber("RPM3700", RpmToMeterSpeed(3700));
-            SmartDashboard.putNumber("RPM3800", RpmToMeterSpeed(3800));
-            SmartDashboard.putNumber("RPM3900", RpmToMeterSpeed(3900));
-            SmartDashboard.putNumber("RPM4000", RpmToMeterSpeed(4000));
+            //SmartDashboard.putNumber("Flywheel Current", periodicIO.flywheel_current);
+            SmartDashboard.putBoolean("Flywheel Goal",shootIsReady());
+            //SmartDashboard.putNumber("Flywheel Temperature", periodicIO.flywheel_temperature);
+            //SmartDashboard.putNumber("RPM1000", RpmToMeterSpeed(1000));
+            //SmartDashboard.putNumber("RPM2400", RpmToMeterSpeed(2400));
+            //SmartDashboard.putNumber("RPM2800", RpmToMeterSpeed(2800));
+            //SmartDashboard.putNumber("RPM3500", RpmToMeterSpeed(3500));
+            //SmartDashboard.putNumber("RPM3700", RpmToMeterSpeed(3700));
+            //SmartDashboard.putNumber("RPM3800", RpmToMeterSpeed(3800));
+            //SmartDashboard.putNumber("RPM3900", RpmToMeterSpeed(3900));
+            //SmartDashboard.putNumber("RPM4000", RpmToMeterSpeed(4000));
 
         }
     }
@@ -104,10 +103,6 @@ public class Shooter extends SubsystemBase {
 
     public double getShooterSpeedForDistance(double distance) {
         return kDistanceToShooterSpeed.getInterpolated(new InterpolatingDouble(Math.max(Math.min(distance, 7.62), 0.0))).value;
-    }
-
-    public boolean isShooterReady() {
-        return this.velocityStabilized;
     }
 
     public void readPeriodicInputs() {

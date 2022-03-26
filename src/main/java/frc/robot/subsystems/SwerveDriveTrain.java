@@ -29,7 +29,7 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public PigeonIMU gyro;
   public AHRS ahrs;
-  public PixyCamSPI PixyCamSPI;
+  public PixyCamSPI mPixy;
   byte PixySignature;
 
   public boolean auto = false;
@@ -76,7 +76,7 @@ public class SwerveDriveTrain extends SubsystemBase {
     
     ahrs = new AHRS(SPI.Port.kMXP);
 
-    PixyCamSPI = new PixyCamSPI(0);
+    mPixy = PixyCamSPI.getInstance();
     /* select cargo color for sig */
     PixySignature = SmartDashboard.getBoolean("Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
 

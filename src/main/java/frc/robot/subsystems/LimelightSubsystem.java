@@ -50,6 +50,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public double Get_tv(){
     tv = m_limTable.getEntry("tv").getDouble(0);
+    tv = 1.0; // TODO
     return tv;
   }
 

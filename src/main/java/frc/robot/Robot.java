@@ -7,10 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.PixyCamSPI;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
 /**
@@ -55,8 +57,15 @@ public class Robot extends TimedRobot {
     Feeder.getInstance().writePeriodicOutputs();
     Feeder.getInstance().outputTelemetry();
 
+    Blocker.getInstance().writePeriodicOutputs();
+    Blocker.getInstance().outputTelemetry();
+
     Climber.getInstance().writePeriodicOutputs();
     Climber.getInstance().outputTelemetry();
+
+    PixyCamSPI.getInstance().readPeriodicInputs();
+    PixyCamSPI.getInstance().outputTelemetry();
+    PixyCamSPI.getInstance().writePeriodicOutputs();
 
     if(LimelightSubsystem.getInstance().getLightMode() == 3){
       Turret.getInstance().readPeriodicInputs();
