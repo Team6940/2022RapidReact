@@ -20,7 +20,7 @@ public class Feeder extends SubsystemBase {
   WPI_TalonFX m_blockermotor;
   Solenoid m_intakesolenoid;
   PeriodicIO periodicIO = new PeriodicIO();
-  private FeederControlState currentState = FeederControlState.IntakeAndBallLoader_Off;
+  private FeederControlState currentState = FeederControlState.INATKEANDBALLLOADER_OFF;
   private static Feeder instance = null;
   private int num = 1;
 
@@ -41,21 +41,21 @@ public class Feeder extends SubsystemBase {
   }
 
   public void writePeriodicOutputs(){
-    if(currentState == FeederControlState.IntakeAndBallLoader_On){
+    if(currentState == FeederControlState.INTAKEANDBALLLOADER_ON){
       m_intakermotor.set(ControlMode.PercentOutput, 1);
       m_ballloadermotor.set(ControlMode.PercentOutput, Constants.BallLoadSpeed);
       setSolenoidState(true);
-    }else if(currentState == FeederControlState.IntakeAndBallLoader_Off){
+    }else if(currentState == FeederControlState.INATKEANDBALLLOADER_OFF){
       m_intakermotor.set(ControlMode.PercentOutput, 0);
       m_ballloadermotor.set(ControlMode.PercentOutput, 0);
       setSolenoidState(false);
-    }else if(currentState == FeederControlState.OnlyBallLoader_On){
+    }else if(currentState == FeederControlState.ONLYBALLLOADER_ON){
       m_ballloadermotor.set(ControlMode.PercentOutput, Constants.BallLoadSpeed);
-    }else if(currentState == FeederControlState.OnlyBallLoader_Off){
+    }else if(currentState == FeederControlState.ONLYBALLLOADER_OFF){
       m_ballloadermotor.set(ControlMode.PercentOutput, 0);
-    }else if(currentState == FeederControlState.BallLocker_On){
+    }else if(currentState == FeederControlState.BALLLOCKER_ON){
       m_blockermotor.set(ControlMode.PercentOutput, Constants.BlockerMotorSpeed);
-    }else if(currentState == FeederControlState.BallLocker_Off){
+    }else if(currentState == FeederControlState.BALLLOCKER_OFF){
       m_blockermotor.set(ControlMode.PercentOutput, 0);
     }
   }
@@ -68,10 +68,10 @@ public class Feeder extends SubsystemBase {
 
   public void autoturnintaker(){
     if(num % 2 == 1){
-      currentState = FeederControlState.IntakeAndBallLoader_On;
+      currentState = FeederControlState.INTAKEANDBALLLOADER_ON;
     }
     else{
-      currentState = FeederControlState.IntakeAndBallLoader_Off;
+      currentState = FeederControlState.INATKEANDBALLLOADER_OFF;
     }
     num += 1;
   }
@@ -81,19 +81,27 @@ public class Feeder extends SubsystemBase {
   }
 
   public void turnonballLoader(){
-    currentState = FeederControlState.OnlyBallLoader_On;
+    currentState = FeederControlState.ONLYBALLLOADER_ON;
   }
 
   public void turnoffballLoader(){
-    currentState = FeederControlState.OnlyBallLoader_Off;
+    currentState = FeederControlState.ONLYBALLLOADER_OFF;
   }
 
   public void turnonballLocker(){
-    currentState = FeederControlState.BallLocker_On;
+    currentState = FeederControlState.BALLLOCKER_ON;
   }
 
   public void turnoffballLocker(){
-    currentState = FeederControlState.BallLocker_Off;
+    currentState = FeederControlState.BALLLOCKER_OFF;
+  }
+
+  public void setIntakeandBallLoaderOn(){
+    currentState = FeederControlState.INTAKEANDBALLLOADER_ON;
+  }
+
+  public void setIntakeandBallLoaderOff(){
+    currentState = FeederControlState.INATKEANDBALLLOADER_OFF;
   }
 
   @Override
@@ -102,7 +110,12 @@ public class Feeder extends SubsystemBase {
   }
 
   public enum FeederControlState {
-    IntakeAndBallLoader_On,IntakeAndBallLoader_Off,OnlyBallLoader_On,OnlyBallLoader_Off,BallLocker_On,BallLocker_Off
+    INTAKEANDBALLLOADER_ON,
+    INATKEANDBALLLOADER_OFF,
+    ONLYBALLLOADER_ON,
+    ONLYBALLLOADER_OFF,
+    BALLLOCKER_ON,
+    BALLLOCKER_OFF
   }
 
   public static class PeriodicIO {

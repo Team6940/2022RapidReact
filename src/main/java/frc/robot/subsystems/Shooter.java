@@ -252,6 +252,10 @@ public class Shooter extends SubsystemBase {
           num += 1;
     }
 
+    public void setPrepareShoot(){
+        currentState = ShooterControlState.PREPARE_SHOOT;
+    }
+
     public enum ShooterControlState {
         STOP, PREPARE_SHOOT, SHOOT
     }
