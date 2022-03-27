@@ -39,7 +39,7 @@ The code is divided into several packages, each responsible for a different aspe
 
 - Shooter algorithm. We have two modes for shooting. One depends on the [Ball Trajectory equation](https://github.com/Team6940/2022RapidReact/blob/576d1aa9f94298a923b5d2e5ea9a7f4d51ff4854/src/main/java/frc/robot/subsystems/Shooter.java#L224), the other depends on the [interpolation table](https://github.com/Team6940/2022RapidReact/blob/576d1aa9f94298a923b5d2e5ea9a7f4d51ff4854/src/main/java/frc/robot/subsystems/Shooter.java#L24).
 
-- State machine control. We use state machine control in our subsystems.
+- State machine control. We use state machine control in our subsystems, which brings tremendous convenience.
 
 ## Package Functions
 
