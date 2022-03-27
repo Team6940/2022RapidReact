@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -20,6 +21,8 @@ public class LimelightSubsystem extends SubsystemBase {
   public double ta ;
   public double tx ;
   public double ty ;
+  public double simTx = 30 ;
+  public double simTv = 10.0 ;
   
   public LimelightSubsystem() {
     m_limTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -33,6 +36,13 @@ public class LimelightSubsystem extends SubsystemBase {
   }
   public double Get_tx(){
     tx = m_limTable.getEntry("tx").getDouble(0);
+    if (RobotBase.isSimulation()){
+      simTx = simTx-0.5;
+      if( simTx <= 0.0){
+        simTx = 0.0;
+      }
+      tx = simTx; 
+    }
     SmartDashboard.putNumber("tx", tx);
     return tx;
   }
@@ -50,7 +60,14 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public double Get_tv(){
     tv = m_limTable.getEntry("tv").getDouble(0);
-    tv = 1.0; // TODO
+    if (RobotBase.isSimulation()){
+      simTv = simTv-0.5;
+      if( simTv <= 1.0){
+        simTv = 1.0;
+      }
+      tv = simTv; 
+    }
+    SmartDashboard.putNumber("tv", tv);
     return tv;
   }
 
@@ -127,7 +144,10 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public enum LedMode {
     PIPELINE, OFF, BLINK, ON
-}
-
+  }
+  public void reloadLimeLightSimu() {
+    simTx = 30 ;
+    simTv = 10.0 ;
+  }
 
 }

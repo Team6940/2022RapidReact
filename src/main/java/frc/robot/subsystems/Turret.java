@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.RobotBase;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,12 +22,16 @@ public class Turret extends SubsystemBase {
     private static int direction = 0;
     private static Turret instance = null;
     WPI_TalonSRX mTurretMotor;
+    TalonSRXSimCollection mTurretSensorSim ;
     PeriodicIO periodicIO = new PeriodicIO();
     private int offset = 1080; //TODO
     private TurretControlState currentState = TurretControlState.ZERO_TURRET;
   
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
+        if (RobotBase.isSimulation()){
+            mTurretSensorSim = mTurretMotor.getSimCollection();
+        }
         //mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
         mTurretMotor.setSensorPhase(false);
@@ -142,9 +148,13 @@ public class Turret extends SubsystemBase {
     }
 
     public void readPeriodicInputs() {
-        //periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);  
-        periodicIO.position = (int)periodicIO.demand; //TODO
-        periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
+        if (RobotBase.isSimulation())
+        {
+            periodicIO.position = (int)periodicIO.demand;
+        }else{
+            periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);  
+            periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
+        }
         periodicIO.voltage = mTurretMotor.getMotorOutputVoltage();
         periodicIO.current = mTurretMotor.getStatorCurrent();
     }

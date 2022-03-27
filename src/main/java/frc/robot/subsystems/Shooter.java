@@ -74,9 +74,9 @@ public class Shooter extends SubsystemBase {
         if (Constants.kOutputTelemetry) {
             SmartDashboard.putString("Shooter State", currentState.name());   
             SmartDashboard.putNumber("Shooter Mode", shootMode);
-            SmartDashboard.putNumber("Flywheel Velocity", periodicIO.flywheel_velocity);
+            SmartDashboard.putNumber("Shooter Velocity", periodicIO.flywheel_velocity);
             //SmartDashboard.putNumber("Flywheel Current", periodicIO.flywheel_current);
-            SmartDashboard.putBoolean("Flywheel Goal",shootIsReady());
+            SmartDashboard.putBoolean("Shooter ready",shootIsReady());
             //SmartDashboard.putNumber("Flywheel Temperature", periodicIO.flywheel_temperature);
             //SmartDashboard.putNumber("RPM1000", RpmToMeterSpeed(1000));
             //SmartDashboard.putNumber("RPM2400", RpmToMeterSpeed(2400));
@@ -117,6 +117,9 @@ public class Shooter extends SubsystemBase {
 
     public void writePeriodicOutputs() {
         if(currentState == ShooterControlState.STOP) {
+            mShooter.set(ControlMode.PercentOutput, 0);
+        }
+        else if(currentState == ShooterControlState.INIT) {
             mShooter.set(ControlMode.PercentOutput, 0);
             if(Turret.getInstance().isVisionFinding() || Turret.getInstance().isVisionMoving()){
                 currentState = ShooterControlState.PREPARE_SHOOT;
@@ -255,8 +258,15 @@ public class Shooter extends SubsystemBase {
         currentState = ShooterControlState.PREPARE_SHOOT;
     }
 
+    public void setStopShoot(){
+        currentState = ShooterControlState.STOP;
+    }
+
+    public void setInitShoot(){
+        currentState = ShooterControlState.INIT;
+    }
     public enum ShooterControlState {
-        STOP, PREPARE_SHOOT, SHOOT
+        STOP, INIT,PREPARE_SHOOT, SHOOT
     }
 
     public class PeriodicIO {
