@@ -124,7 +124,7 @@ public class Shooter extends SubsystemBase {
             }
         }else if(currentState == ShooterControlState.SHOOT){
             if(shootMode == 1){
-                double targetVelocity = getShooterSpeedForDistance(LimelightSubsystem.getInstance().getRobotToTargetDistance());
+                double targetVelocity = getShooterSpeedForDistance(getRobotToTargetDistance());
                 periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
                 velocityStabilized = meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm() < 50; //TODO
                 mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand); 
