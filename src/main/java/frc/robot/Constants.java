@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
@@ -40,6 +39,7 @@ public final class Constants {
     // Intaker port
     public static final int IntakerPort = 23; //TODO
     public static final int IntakerSolenoidPort = 1; //TODO
+    public static final boolean vSwitchIntake = false;
 
     // Pigeon Port
     public static final int PigeonIMUPort = 16;
