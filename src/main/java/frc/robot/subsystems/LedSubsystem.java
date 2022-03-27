@@ -125,6 +125,7 @@ public class LedSubsystem  extends SubsystemBase {
             MovingAverage averageG = new MovingAverage(5);
             MovingAverage averageB = new MovingAverage(5);
 
+            
             if (saturation > 1) {
                 saturation = 1;
             }
@@ -140,9 +141,12 @@ public class LedSubsystem  extends SubsystemBase {
             
             rgb = HSVtoRGB.convert(stateHue, saturation, value);
 
-            rgb[0] = averageR.process(rgb[0]) * 255;
-            rgb[1] = averageG.process(rgb[1]) * 255;
-            rgb[2] = averageB.process(rgb[2]) * 255;
+            averageR.add(rgb[0]);
+            averageG.add(rgb[1]);
+            averageB.add(rgb[2]);
+            rgb[0] = (float)averageR.getAverage() * 255;
+            rgb[1] = (float)averageG.getAverage() * 255;
+            rgb[2] = (float)averageB.getAverage() * 255;
 
             setLeds((int)rgb[0], (int)rgb[1], (int)rgb[2]);
 
@@ -168,9 +172,12 @@ public class LedSubsystem  extends SubsystemBase {
             
             rgb = HSVtoRGB.convert(State.BREATHING_PINK.startingHue, 0.922f, valueBasedOnTime * 0.6);
 
-            rgb[0] = averageR.process(rgb[0]);
-            rgb[1] = averageG.process(rgb[1]);
-            rgb[2] = averageB.process(rgb[2]);
+            averageR.add(rgb[0]);
+            averageG.add(rgb[1]);
+            averageB.add(rgb[2]);
+            rgb[0] = (float)averageR.getAverage() * 255;
+            rgb[1] = (float)averageG.getAverage() * 255;
+            rgb[2] = (float)averageB.getAverage() * 255;
 
             setLeds((int)rgb[0], (int)rgb[1], (int)rgb[2]);
 

@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.RobotBase;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,12 +22,16 @@ public class Turret extends SubsystemBase {
     private static int direction = 0;
     private static Turret instance = null;
     WPI_TalonSRX mTurretMotor;
+    TalonSRXSimCollection mTurretSensorSim ;
     PeriodicIO periodicIO = new PeriodicIO();
     private int offset = 1080; //TODO
     private TurretControlState currentState = TurretControlState.ZERO_TURRET;
   
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
+        if (RobotBase.isSimulation()){
+            mTurretSensorSim = mTurretMotor.getSimCollection();
+        }
         //mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
         mTurretMotor.setSensorPhase(false);
@@ -142,8 +148,13 @@ public class Turret extends SubsystemBase {
     }
 
     public void readPeriodicInputs() {
-        periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);
-        periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
+        if (RobotBase.isSimulation())
+        {
+            periodicIO.position = (int)periodicIO.demand;
+        }else{
+            periodicIO.position = (int) mTurretMotor.getSelectedSensorPosition(0);  
+            periodicIO.velocity = (int) mTurretMotor.getSelectedSensorVelocity(0);
+        }
         periodicIO.voltage = mTurretMotor.getMotorOutputVoltage();
         periodicIO.current = mTurretMotor.getStatorCurrent();
     }
@@ -157,11 +168,11 @@ public class Turret extends SubsystemBase {
     public void writePeriodicOutputs() {
         double desiredAngle = 0;
         if (currentState == TurretControlState.ZERO_TURRET) {
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
         }else if(currentState == TurretControlState.STOP){
             desiredAngle = getAngle();
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
         }else if (currentState == TurretControlState.VISION_FINDING) {
             desiredAngle = getAngle();
@@ -178,7 +189,7 @@ public class Turret extends SubsystemBase {
                     direction = 0;
                 }
             }
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx()  + getAngle())) {
                 startVisionMoving();
@@ -186,7 +197,7 @@ public class Turret extends SubsystemBase {
         }else if (currentState == TurretControlState.VISION_MOVING) {
             desiredAngle =  LimelightSubsystem.getInstance().Get_tx()  + getAngle();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             if (isTargetReady()) {
                 lockOnTarget();
@@ -201,7 +212,7 @@ public class Turret extends SubsystemBase {
             }
         }else if(currentState == TurretControlState.VISION_LOCKED) {                
             desiredAngle = getAngle();
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle);
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             if (!isTargetReady()) {
                 startVisionFinding();
@@ -224,14 +235,8 @@ public class Turret extends SubsystemBase {
         SmartDashboard.putNumber("Turret Angle", getAngle());
 
         if (Constants.kOutputTelemetry) {
-            //SmartDashboard.putNumber("Turret Current", periodicIO.current);
-            SmartDashboard.putNumber("Turret Voltage", periodicIO.voltage);
             SmartDashboard.putNumber("Turret Encoder", periodicIO.position);
             SmartDashboard.putNumber("Turret Demand", periodicIO.demand);
-            //SmartDashboard.putNumber("Turret Arb Demand", -512 * OI.getDriverRightXValue());
-            SmartDashboard.putNumber("Turret Pulse Width Position",
-                    mTurretMotor.getSensorCollection().getPulseWidthPosition());
-            SmartDashboard.putNumber("Turret Velocity", periodicIO.velocity);
             SmartDashboard.putNumber("Turret Error", encUnitsToDegrees(mTurretMotor.getClosedLoopError(0)));
             if (mTurretMotor.getControlMode() == ControlMode.MotionMagic)
                 SmartDashboard.putNumber("Turret Setpoint", mTurretMotor.getClosedLoopTarget(0));

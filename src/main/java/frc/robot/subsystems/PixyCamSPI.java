@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.ArrayList;
 import io.github.pseudoresonance.pixy2api.*;
 import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
+import frc.robot.lib.team1323.lib.util.MovingAverage;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The code for retrieving information from the PixyCam using the SPI port
@@ -12,8 +14,9 @@ import io.github.pseudoresonance.pixy2api.Pixy2CCC.Block;
  */
 public class PixyCamSPI extends SubsystemBase {
 
+  private static PixyCamSPI mInstance;
   //PixyCam
-  private Pixy2 pixycam;
+  private static Pixy2 pixycam;
   private int state;
   private int chip;
   private int numberOfTargets;
@@ -28,6 +31,18 @@ public class PixyCamSPI extends SubsystemBase {
 
   //Debug mode
   private final boolean DEBUG = true;
+
+  private final PeriodicIO mPeriodicIO;
+
+  public static class PeriodicIO {
+      // INPUTS
+      public double timestamp;
+      public boolean ballSeen;
+      public double ballAngleX;
+
+      // OUTPUTS
+  }
+  private MovingAverage mAverage = new MovingAverage(5);
 
   /**
    * Subsystem for the PixyCam
@@ -45,15 +60,32 @@ public class PixyCamSPI extends SubsystemBase {
     cacheNumber = 0;
     lastLargestBlockRetrieval = -1;
     numberOfTargets = 0;
+    mPeriodicIO = new PeriodicIO();
+
+  }
+
+  public static PixyCamSPI getInstance() {
+    if (mInstance == null) {
+      mInstance = new PixyCamSPI(0);
+    } 
+    return mInstance;
   }
 
   // This method will be called once per scheduler run
-  @Override
-  public void periodic(){
+  public void readPeriodicInputs() {
 
+    mPeriodicIO.timestamp = Timer.getFPGATimestamp();
     //DO NOT REMOVE THIS LINE OF CODE EVER
     updateTargets();
-
+    
+    mPeriodicIO.ballSeen = seesTarget;
+    if(mPeriodicIO.ballSeen) {
+      Double ballAngleX = getLargestTargetAngle();
+      mAverage.add(ballAngleX);
+      mPeriodicIO.ballAngleX = mAverage.getAverage();
+    } else {
+      mPeriodicIO.ballAngleX = 0;
+    }
     //Check to see if the camera initialized correctly.
     if(!connected && !retrievedState){
       //If we got here, the camera gave us an error.
@@ -88,6 +120,10 @@ public class PixyCamSPI extends SubsystemBase {
       //Push to dashboard how many targets are detected
       SmartDashboard.putNumber("Number of Targets", getNumberOfTargets());
     }
+  }
+
+  public synchronized void writePeriodicOutputs() {
+
   }
 
   /**
@@ -230,4 +266,21 @@ public class PixyCamSPI extends SubsystemBase {
     //Return the requested value
     return largestTarget.getHeight();
   }
+
+  public boolean isBallSeen() {
+    return mPeriodicIO.ballSeen;
+  }
+
+  public double getBallAngleX() {
+    return mPeriodicIO.ballAngleX;
+  }
+
+  public void outputTelemetry() {
+    SmartDashboard.putBoolean("Pixy Ball Seen", mPeriodicIO.ballSeen);
+    SmartDashboard.putNumber("Pixy Ball X", mPeriodicIO.ballAngleX);
+}
+
+  public synchronized double getTimestamp() {
+    return mPeriodicIO.timestamp;
+  } 
 }
