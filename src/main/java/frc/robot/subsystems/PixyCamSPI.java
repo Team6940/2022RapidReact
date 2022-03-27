@@ -275,6 +275,11 @@ public class PixyCamSPI extends SubsystemBase {
     return mPeriodicIO.ballAngleX;
   }
 
+  public double pixyFrontCorrection (){
+    double pixyXkP = 0.004;
+    return getBallAngleX() * pixyXkP;
+    }
+
   public void outputTelemetry() {
     SmartDashboard.putBoolean("Pixy Ball Seen", mPeriodicIO.ballSeen);
     SmartDashboard.putNumber("Pixy Ball X", mPeriodicIO.ballAngleX);

@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.auto.actions.IntakeAction;
 import frc.robot.auto.actions.ShootAction;
 import frc.robot.auto.actions.SwervePathAction;
@@ -33,9 +34,9 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
     PathPlannerTrajectory mFiveBallTrajectoryFive = PathPlanner.loadPath("FiveBallBottom-5", 2, 2);
     PathPlannerTrajectory mFiveBallTrajectorySix = PathPlanner.loadPath("FiveBallBottom-6", 2, 2);
 
-    LimelightSubsystem.getInstance().setLightMode(3);//TODO
-
     addCommands(
+      new InstantCommand(() -> LimelightSubsystem.getInstance().setLightMode(3)),
+
       new InstantCommand(() ->     
       sSwerve.ResetOdometry(
         new Pose2d(
@@ -45,24 +46,24 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
         )
       ),
 
-      new SwervePathAction(mFiveBallTrajectoryOne).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryOne).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new WaitCommand(0.5),
 
-      new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1),
       //new WaitCommand(0.5),
 
-      new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new WaitCommand(0.5),
 
-      new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1),
       //new WaitCommand(0.5),
 
-      new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new WaitCommand(2),
 
-      new SwervePathAction(mFiveBallTrajectorySix).deadlineWith(new IntakeAction(),new TurretAndShooterAction()),
+      new SwervePathAction(mFiveBallTrajectorySix).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1)
     );
   }
