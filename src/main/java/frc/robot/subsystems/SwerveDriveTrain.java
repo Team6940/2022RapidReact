@@ -46,6 +46,8 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public boolean whetherstoreyaw = false;
 
+  public boolean autoPixy = false;
+
   private double[] fieldCentricSpeeds = { 0, 0 };
 
   public final static SwerveDriveKinematics kDriveKinematics =
@@ -134,6 +136,14 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public void WhetherStoreYaw(){
     whetherstoreyaw = false;
+  }
+
+  public void turnOnPixy(){
+    autoPixy = true;
+  }
+
+  public void turnOffPixy(){
+    autoPixy = false;
   }
 
   public Pose2d GetPose(){

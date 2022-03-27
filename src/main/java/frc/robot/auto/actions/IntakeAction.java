@@ -12,8 +12,11 @@ public class IntakeAction extends CommandBase {
   /** Creates a new IntakeBall. */
   Feeder mFeeder = Feeder.getInstance();
 
-  public IntakeAction() {
+  public boolean SwitchIntake = true;
+
+  public IntakeAction(boolean vSwitchintake) {
     // Use addRequirements() here to declare subsystem dependencies.
+    SwitchIntake = vSwitchintake;
     addRequirements(mFeeder);
   }
 
@@ -31,7 +34,9 @@ public class IntakeAction extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mFeeder.setIntakeandBallLoaderOff();
+    if(SwitchIntake){
+      mFeeder.setIntakeandBallLoaderOff();
+    }
   }
 
   // Returns true when the command should end.

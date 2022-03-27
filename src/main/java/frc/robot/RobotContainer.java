@@ -53,6 +53,7 @@ public class RobotContainer {
   public static JoystickButton controlclosedlooptypeButton;
   public static JoystickButton IntakeButton;
   public static JoystickButton resetOdometryButton;
+  public static JoystickButton PixyButton;
 
   // Operator's buttons
   public static JoystickButton BallLoadButton;
@@ -84,6 +85,7 @@ public class RobotContainer {
     IntakeButton = new JoystickButton(m_driverController, 7);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
+    PixyButton = new JoystickButton(m_driverController, 8);
 
     // The operator's buttons
     BallLoadButton = new JoystickButton(m_operatorController, 1);
@@ -148,6 +150,9 @@ public class RobotContainer {
     // Reset Yaw button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
     resetyawButton.whenReleased(new InstantCommand(() -> m_swerve.WhetherStoreYaw()));
+
+    PixyButton.whenHeld(new InstantCommand(() -> m_swerve.turnOnPixy()));
+    PixyButton.whenReleased(new InstantCommand(() -> m_swerve.turnOffPixy()));
 
     resetOdometryButton.whenPressed(new InstantCommand(() -> m_swerve.resetOdometry()));
 
