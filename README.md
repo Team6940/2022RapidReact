@@ -34,5 +34,5 @@ The code is divided into several packages, each responsible for a different aspe
 
 ![FRC code structure](https://user-images.githubusercontent.com/62934294/160263652-df9f4034-478b-48ed-a99c-72ce4bbe1fda.png)
 
-## Code Highlights
+### Code Highlights
 
