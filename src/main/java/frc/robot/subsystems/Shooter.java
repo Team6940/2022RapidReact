@@ -75,18 +75,7 @@ public class Shooter extends SubsystemBase {
             SmartDashboard.putString("Shooter State", currentState.name());   
             SmartDashboard.putNumber("Shooter Mode", shootMode);
             SmartDashboard.putNumber("Shooter Velocity", periodicIO.flywheel_velocity);
-            //SmartDashboard.putNumber("Flywheel Current", periodicIO.flywheel_current);
             SmartDashboard.putBoolean("Shooter ready",shootIsReady());
-            //SmartDashboard.putNumber("Flywheel Temperature", periodicIO.flywheel_temperature);
-            //SmartDashboard.putNumber("RPM1000", RpmToMeterSpeed(1000));
-            //SmartDashboard.putNumber("RPM2400", RpmToMeterSpeed(2400));
-            //SmartDashboard.putNumber("RPM2800", RpmToMeterSpeed(2800));
-            //SmartDashboard.putNumber("RPM3500", RpmToMeterSpeed(3500));
-            //SmartDashboard.putNumber("RPM3700", RpmToMeterSpeed(3700));
-            //SmartDashboard.putNumber("RPM3800", RpmToMeterSpeed(3800));
-            //SmartDashboard.putNumber("RPM3900", RpmToMeterSpeed(3900));
-            //SmartDashboard.putNumber("RPM4000", RpmToMeterSpeed(4000));
-
         }
     }
 
