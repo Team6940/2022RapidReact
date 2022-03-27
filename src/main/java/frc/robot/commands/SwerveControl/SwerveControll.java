@@ -7,6 +7,7 @@ package frc.robot.commands.SwerveControl;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.PixyCamSPI;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -75,11 +76,16 @@ public class SwerveControll extends CommandBase {
       ).times(Constants.kMaxSpeed);
     rotation = rAxis * Constants.kMaxOmega;
 
-    if(RobotContainer.m_swerve.whetherstoreyaw || limitllastz != 0){
-      storedYaw = yaw;
+    if(RobotContainer.m_swerve.autoPixy && PixyCamSPI.getInstance().isBallSeen()){
+        yawCorrection = PixyCamSPI.getInstance().pixyFrontCorrection();
+        limitllastz = 0;
     }else{
-      if(Math.abs(translation.getX()) > 0|| Math.abs(translation.getY()) > 0){
-        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw);
+      if(RobotContainer.m_swerve.whetherstoreyaw || limitllastz != 0){
+        storedYaw = yaw;
+      }else{
+        if(Math.abs(translation.getX()) > 0|| Math.abs(translation.getY()) > 0){
+          yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw);
+        }
       }
     }
 
