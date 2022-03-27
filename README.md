@@ -41,5 +41,5 @@ The code is divided into several packages, each responsible for a different aspe
 
 - State machine control. We use state machine control in our subsystems, which brings tremendous convenience.
 
-- [Pixy camera](https://pixycam.com/). We use this Pixy2 to help us detect balls automatically both in tele-operated period and in autonomous period.
+- [Pixy camera](https://pixycam.com/). We use Pixy2 to help us detect balls automatically both in tele-operated period and in autonomous period.
 
