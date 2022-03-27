@@ -6,6 +6,7 @@ package frc.robot.auto.actions;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.LimelightSubsystem;
 
 public class IntakeAction extends CommandBase {
   /** Creates a new IntakeBall. */
@@ -20,6 +21,7 @@ public class IntakeAction extends CommandBase {
   @Override
   public void initialize() {
     mFeeder.setIntakeandBallLoaderOn();
+    LimelightSubsystem.getInstance().reloadLimeLightSimu();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

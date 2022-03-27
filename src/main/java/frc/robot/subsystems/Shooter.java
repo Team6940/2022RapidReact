@@ -72,21 +72,20 @@ public class Shooter extends SubsystemBase {
 
     public void outputTelemetry() {
         if (Constants.kOutputTelemetry) {
+            SmartDashboard.putString("Shooter State", currentState.name());   
             SmartDashboard.putNumber("Shooter Mode", shootMode);
-            SmartDashboard.putNumber("Flywheel Velocity", periodicIO.flywheel_velocity);
-            SmartDashboard.putNumber("Flywheel Current", periodicIO.flywheel_current);
-            SmartDashboard.putNumber("Flywheel Goal", periodicIO.flywheel_demand);
-            SmartDashboard.putNumber("Flywheel Temperature", periodicIO.flywheel_temperature);
-            SmartDashboard.putNumber("Shooter Master Voltage", periodicIO.flywheel_voltage);
-            SmartDashboard.putNumber("Shooter Slave Voltage", periodicIO.slave_voltage);
-            SmartDashboard.putNumber("RPM1000", RpmToMeterSpeed(1000));
-            SmartDashboard.putNumber("RPM2400", RpmToMeterSpeed(2400));
-            SmartDashboard.putNumber("RPM2800", RpmToMeterSpeed(2800));
-            SmartDashboard.putNumber("RPM3500", RpmToMeterSpeed(3500));
-            SmartDashboard.putNumber("RPM3700", RpmToMeterSpeed(3700));
-            SmartDashboard.putNumber("RPM3800", RpmToMeterSpeed(3800));
-            SmartDashboard.putNumber("RPM3900", RpmToMeterSpeed(3900));
-            SmartDashboard.putNumber("RPM4000", RpmToMeterSpeed(4000));
+            SmartDashboard.putNumber("Shooter Velocity", periodicIO.flywheel_velocity);
+            //SmartDashboard.putNumber("Flywheel Current", periodicIO.flywheel_current);
+            SmartDashboard.putBoolean("Shooter ready",shootIsReady());
+            //SmartDashboard.putNumber("Flywheel Temperature", periodicIO.flywheel_temperature);
+            //SmartDashboard.putNumber("RPM1000", RpmToMeterSpeed(1000));
+            //SmartDashboard.putNumber("RPM2400", RpmToMeterSpeed(2400));
+            //SmartDashboard.putNumber("RPM2800", RpmToMeterSpeed(2800));
+            //SmartDashboard.putNumber("RPM3500", RpmToMeterSpeed(3500));
+            //SmartDashboard.putNumber("RPM3700", RpmToMeterSpeed(3700));
+            //SmartDashboard.putNumber("RPM3800", RpmToMeterSpeed(3800));
+            //SmartDashboard.putNumber("RPM3900", RpmToMeterSpeed(3900));
+            //SmartDashboard.putNumber("RPM4000", RpmToMeterSpeed(4000));
 
         }
     }
@@ -106,10 +105,6 @@ public class Shooter extends SubsystemBase {
         return kDistanceToShooterSpeed.getInterpolated(new InterpolatingDouble(Math.max(Math.min(distance, 7.62), 0.0))).value;
     }
 
-    public boolean isShooterReady() {
-        return this.velocityStabilized;
-    }
-
     public void readPeriodicInputs() {
         periodicIO.timestamp = Timer.getFPGATimestamp();
             
@@ -122,6 +117,9 @@ public class Shooter extends SubsystemBase {
 
     public void writePeriodicOutputs() {
         if(currentState == ShooterControlState.STOP) {
+            mShooter.set(ControlMode.PercentOutput, 0);
+        }
+        else if(currentState == ShooterControlState.INIT) {
             mShooter.set(ControlMode.PercentOutput, 0);
             if(Turret.getInstance().isVisionFinding() || Turret.getInstance().isVisionMoving()){
                 currentState = ShooterControlState.PREPARE_SHOOT;
@@ -161,6 +159,10 @@ public class Shooter extends SubsystemBase {
         / Constants.kFlyWheelEncoderReductionRatio
         * 2048.0 * 0.1;
         mShooter.set(ControlMode.Velocity,driveOutput);
+    }
+
+    public boolean shootIsReady(){
+        return (currentState == ShooterControlState.SHOOT);
     }
 
     public double getFlywheelVelocity() {
@@ -256,8 +258,15 @@ public class Shooter extends SubsystemBase {
         currentState = ShooterControlState.PREPARE_SHOOT;
     }
 
+    public void setStopShoot(){
+        currentState = ShooterControlState.STOP;
+    }
+
+    public void setInitShoot(){
+        currentState = ShooterControlState.INIT;
+    }
     public enum ShooterControlState {
-        STOP, PREPARE_SHOOT, SHOOT
+        STOP, INIT,PREPARE_SHOOT, SHOOT
     }
 
     public class PeriodicIO {
