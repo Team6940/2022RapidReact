@@ -34,5 +34,10 @@ The code is divided into several packages, each responsible for a different aspe
 
 ![FRC code structure](https://user-images.githubusercontent.com/62934294/160263652-df9f4034-478b-48ed-a99c-72ce4bbe1fda.png)
 
-### Code Highlights
+## Code Highlights
+- Path following with [PathPlanner](https://github.com/mjansen4857/pathplanner)(Credit [@mjansen4857](https://github.com/mjansen4857))
+
+- Shooter algorithm. We have two modes for shooting. One depends on the [Ball Trajectory equation](), the other depends on the [interpolation table]().
+
+## Package Functions
 
