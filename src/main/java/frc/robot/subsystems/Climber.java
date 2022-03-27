@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -20,7 +21,7 @@ public class Climber extends SubsystemBase {
   Solenoid m_climbersolenoid;
   private static Climber instance = null;
   PeriodicIO periodicIO = new PeriodicIO();
-  private ClimberControlState currentState = ClimberControlState.Climber_Nothing;
+  private ClimberControlState currentState = ClimberControlState.CLIBER_NOTHING;
   private int num_ElasticClimber = 1;
   private int num_StraightClimber = 1;
 
@@ -29,7 +30,25 @@ public class Climber extends SubsystemBase {
     m_rghtclimberFollowermotor = new WPI_TalonFX(Constants.rghtClimberMotorPort);
 
     m_rghtclimberFollowermotor.setInverted(true);//TODO
-    m_rghtclimberFollowermotor.follow(m_leftclimberMastermotor);//TODO
+    //m_rghtclimberFollowermotor.follow(m_leftclimberMastermotor);//TODO
+
+    m_leftclimberMastermotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    m_rghtclimberFollowermotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+    m_leftclimberMastermotor.config_kP(0, Constants.kLeftClimberMotorkP);
+    m_leftclimberMastermotor.config_kI(0, Constants.kLeftClimberMotorkI);
+    m_leftclimberMastermotor.config_kD(0, Constants.kLeftClimberMotorkD);
+    m_leftclimberMastermotor.config_IntegralZone(0, Constants.kLeftClimberMotorkIZone);
+    m_leftclimberMastermotor.configMotionCruiseVelocity(Constants.LeftClimbermotionCruiseVelocity);
+    m_leftclimberMastermotor.configMotionAcceleration(Constants.LeftClimbermotionAcceleration);
+
+    m_rghtclimberFollowermotor.config_kP(0, Constants.kRghtClimberMotorkP);
+    m_rghtclimberFollowermotor.config_kI(0, Constants.kRghtClimberMotorkI);
+    m_rghtclimberFollowermotor.config_kD(0, Constants.kRghtClimberMotorkD);
+    m_rghtclimberFollowermotor.config_IntegralZone(0, Constants.kRghtClimberMotorkIZone);
+    m_rghtclimberFollowermotor.configMotionCruiseVelocity(Constants.RghtClimbermotionCruiseVelocity);
+    m_rghtclimberFollowermotor.configMotionAcceleration(Constants.RghtClimbermotionAcceleration);
+
 
     m_climbersolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ClimberSolenoidPort);
   }
@@ -42,15 +61,26 @@ public class Climber extends SubsystemBase {
   }
 
   public void writePeriodicOutputs(){
-    if(currentState == ClimberControlState.Climber_Nothing){
+    if(currentState == ClimberControlState.CLIBER_NOTHING){
       m_leftclimberMastermotor.set(ControlMode.PercentOutput, 0);
-    }else if(currentState == ClimberControlState.ElasticClimber_Forward){
-      m_leftclimberMastermotor.set(ControlMode.PercentOutput, Constants.ClimberForwardSpeed);
-    }else if(currentState == ClimberControlState.ElasticClimber_Reverse){
-      m_leftclimberMastermotor.set(ControlMode.PercentOutput, Constants.ClimberBackwardSpeed);
-    }else if(currentState == ClimberControlState.StraightClimber_On){
+      m_rghtclimberFollowermotor.set(ControlMode.PercentOutput, 0);
+    }else if(currentState == ClimberControlState.AUTO_CLIMB_FORWARD){
+      double LeftcurrentPosition = m_leftclimberMastermotor.getSelectedSensorPosition();
+      double RghtcurrentPosition = m_rghtclimberFollowermotor.getSelectedSensorPosition();
+      double LeftdesiredPostion = LeftcurrentPosition + 2048 *3; //TODO
+      double RghtdesiredPostion = RghtcurrentPosition + 2048 *3; //TODO
+      m_leftclimberMastermotor.set(ControlMode.MotionMagic, LeftdesiredPostion);
+      m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, RghtdesiredPostion);
+    }else if(currentState == ClimberControlState.AUTO_CLIMB_REVERSE){
+      double LeftcurrentPosition = m_leftclimberMastermotor.getSelectedSensorPosition();
+      double RghtcurrentPosition = m_rghtclimberFollowermotor.getSelectedSensorPosition();
+      double LeftdesiredPostion = LeftcurrentPosition - 2048 *3; //TODO
+      double RghtdesiredPostion = RghtcurrentPosition - 2048 *3; //TODO
+      m_leftclimberMastermotor.set(ControlMode.MotionMagic, LeftdesiredPostion);
+      m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, RghtdesiredPostion);
+    }else if(currentState == ClimberControlState.STRAIGHTCLIMBER_ON){
       m_climbersolenoid.set(true);
-    }else if(currentState == ClimberControlState.StraightClimber_Off){
+    }else if(currentState == ClimberControlState.STRAIGHTCLIMBER_OFF){
       m_climbersolenoid.set(false);
     }
   }
@@ -61,22 +91,22 @@ public class Climber extends SubsystemBase {
 
   public void autosetElasticClimber(){
     if(num_ElasticClimber % 2 == 1){
-      currentState = ClimberControlState.ElasticClimber_Forward;
+      currentState = ClimberControlState.AUTO_CLIMB_FORWARD;
     }else{
-      currentState = ClimberControlState.ElasticClimber_Reverse;
+      currentState = ClimberControlState.AUTO_CLIMB_REVERSE;
     }
     num_ElasticClimber += 1;
   }
 
   public void stopElasticClimber(){
-    currentState = ClimberControlState.Climber_Nothing;
+    currentState = ClimberControlState.CLIBER_NOTHING;
   }
 
   public void autosetStraighClimber(){
     if(num_StraightClimber % 2 == 1){
-      currentState = ClimberControlState.StraightClimber_On;
+      currentState = ClimberControlState.STRAIGHTCLIMBER_ON;
     }else{
-      currentState = ClimberControlState.StraightClimber_Off;
+      currentState = ClimberControlState.STRAIGHTCLIMBER_OFF;
     }
     num_StraightClimber += 1;
   }
@@ -87,7 +117,13 @@ public class Climber extends SubsystemBase {
   }
 
   public enum ClimberControlState {
-    Climber_Nothing,ElasticClimber_Forward,ElasticClimber_Reverse,StraightClimber_On,StraightClimber_Off
+    CLIBER_NOTHING,
+    ELASTICCLIMBER_FORWARD,
+    ELASTICCLIMBER_REVERSE,
+    STRAIGHTCLIMBER_ON,
+    STRAIGHTCLIMBER_OFF,
+    AUTO_CLIMB_FORWARD,
+    AUTO_CLIMB_REVERSE
   }
 
   public static class PeriodicIO {

@@ -29,8 +29,24 @@ public final class Constants {
     public static int leftClimberMotorPort = 25; // TODO
     public static int rghtClimberMotorPort = 26; //TODO
     public static int ClimberSolenoidPort = 0; //TODO
-    public static double ClimberForwardSpeed = 0.3; //TODO
-    public static double ClimberBackwardSpeed = -0.3;// TODO
+
+    public static double kClimberEncoderReductionRatio =  1.0 / 12.0 ;  //TODO
+
+    public static double kLeftClimberMotorkP = 3;//TODO
+    public static double kLeftClimberMotorkI = 0;
+    public static double kLeftClimberMotorkD = 100;//100
+    public static double kLeftClimberMotorF = 0;
+    public static double kLeftClimberMotorkIZone = 0;
+    public static double LeftClimbermotionCruiseVelocity = 1200;
+    public static double LeftClimbermotionAcceleration = 3500;
+
+    public static double kRghtClimberMotorkP = 3;//TODO
+    public static double kRghtClimberMotorkI = 0;
+    public static double kRghtClimberMotorkD = 100;//100
+    public static double kRghtClimberMotorF = 0;
+    public static double kRghtClimberMotorkIZone = 0;
+    public static double RghtClimbermotionCruiseVelocity = 1200;
+    public static double RghtClimbermotionAcceleration = 3500;
 
     // Ball Loader port
     public static int BallLoaderPort = 24; //TODO
@@ -114,13 +130,8 @@ public final class Constants {
     public static double kPivotMotorkD = 100;//100
     public static double kPivotMotorF = 0;
     public static double kPivotMotorkIZone = 0;
-    public static int continuousCurrentLimit = 10;
     public static double motionCruiseVelocity = 1200;
-    public static double motionAcceleration = 3500;
-
-    public static double velocityMeasurementWindow = 64;
-    public static double voltageCompSaturation = 12;
-    
+    public static double motionAcceleration = 3500;    
 
     public static double kLoopSeconds = 0.0;
 

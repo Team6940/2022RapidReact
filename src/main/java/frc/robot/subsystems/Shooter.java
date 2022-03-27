@@ -191,6 +191,7 @@ public class Shooter extends SubsystemBase {
                             / 60 ;
         return meterSpeed;
     }
+    
     public double MeterSpeedToFalcon(double meterSpeed){
         // meters per second
         double FalconUnits = meterSpeed 
@@ -199,6 +200,7 @@ public class Shooter extends SubsystemBase {
         * 2048.0 * 0.1;;
         return FalconUnits;
     }
+
     public double FalconToMeterSpeed(double falconUnits){
         // meters per second
         double speed = 0;
@@ -207,6 +209,7 @@ public class Shooter extends SubsystemBase {
         * Constants.kFlyWheelWheelDiameter * Math.PI;
         return speed;
     }
+
     public double getRobotToTargetDistance() {
 		return (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
              / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + LimelightSubsystem.getInstance().Get_ty()));
