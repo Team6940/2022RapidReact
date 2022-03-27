@@ -6,9 +6,9 @@ The code is divided into several packages, each responsible for a different aspe
 ## Setup Instructions
 
 1. Clone this repo
-1. Run ./gradlew to download Gradle and needed FRC/Vendor libraries (make sure you're using Java 11 or greater)
-1. Run ./gradlew downloadAll to download FRC tools (ShuffleBoard, etc.)
-1. Run ./gradlew tasks to see available options
+1. Run `./gradlew` to download Gradle and needed FRC/Vendor libraries (make sure you're using Java 11 or greater)
+1. Run `./gradlew` downloadAll to download FRC tools (ShuffleBoard, etc.)
+1. Run `./gradlew` tasks to see available options
 1. Enjoy!
 
 ## Code Structure
