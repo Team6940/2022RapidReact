@@ -32,7 +32,7 @@ The code is divided into several packages, each responsible for a different aspe
 
 ### Code Structure
 
-![FRC code structure](https://user-images.githubusercontent.com/62934294/160263652-df9f4034-478b-48ed-a99c-72ce4bbe1fda.png)
+![6940 code structure](https://user-images.githubusercontent.com/62934294/162413133-ba30a168-fea4-4ffd-8f54-23cb4a92e7a7.png)
 
 ## Code Highlights
 - Path following with [PathPlanner](https://github.com/mjansen4857/pathplanner)(Credit [@mjansen4857](https://github.com/mjansen4857))
