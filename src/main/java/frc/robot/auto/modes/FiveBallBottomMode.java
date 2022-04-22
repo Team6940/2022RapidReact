@@ -32,8 +32,6 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
     PathPlannerTrajectory mFiveBallTrajectoryThree = PathPlanner.loadPath("FiveBallBottom-3", 2, 2);
     PathPlannerTrajectory mFiveBallTrajectoryFour = PathPlanner.loadPath("FiveBallBottom-4", 2, 2);
     PathPlannerTrajectory mFiveBallTrajectoryFive = PathPlanner.loadPath("FiveBallBottom-5", 2, 2);
-    PathPlannerTrajectory mFiveBallTrajectorySix = PathPlanner.loadPath("FiveBallBottom-6", 2, 2);
-
     addCommands(
       new InstantCommand(() -> LimelightSubsystem.getInstance().setLightMode(3)),
 
@@ -55,15 +53,13 @@ public class FiveBallBottomMode extends SequentialCommandGroup {
 
       new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new WaitCommand(0.5),
+      new ShootAction().withTimeout(1),
 
       new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new ShootAction().withTimeout(1),
+      new WaitCommand(2),
       //new WaitCommand(0.5),
 
       new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new WaitCommand(2),
-
-      new SwervePathAction(mFiveBallTrajectorySix).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1)
     );
   }

@@ -33,8 +33,6 @@ public class SixBallMode extends SequentialCommandGroup {
     PathPlannerTrajectory mSixBallTrajectoryFour = PathPlanner.loadPath("SixBallBottom-4", 2, 2);
     PathPlannerTrajectory mSixBallTrajectoryFive = PathPlanner.loadPath("SixBallBottom-5", 2, 2);
     PathPlannerTrajectory mSixBallTrajectorySix = PathPlanner.loadPath("SixBallBottom-6", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectorySeven = PathPlanner.loadPath("SixBallBottom-7", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectoryEight = PathPlanner.loadPath("SixBallBottom-8", 2, 2);
 
     addCommands(
       new InstantCommand(() -> LimelightSubsystem.getInstance().setLightMode(3)),
@@ -53,26 +51,21 @@ public class SixBallMode extends SequentialCommandGroup {
 
       new SwervePathAction(mSixBallTrajectoryTwo).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1),
-      new WaitCommand(0.5),
+      //new WaitCommand(0.5),
 
       new SwervePathAction(mSixBallTrajectoryThree).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new WaitCommand(0.5),
+      new ShootAction().withTimeout(1),
 
       new SwervePathAction(mSixBallTrajectoryFour).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new ShootAction().withTimeout(1),
-      new WaitCommand(0.5),
+      new WaitCommand(2),
+      //new WaitCommand(0.5),
 
       new SwervePathAction(mSixBallTrajectoryFive).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new WaitCommand(2),
+      new ShootAction().withTimeout(1),
 
       new SwervePathAction(mSixBallTrajectorySix).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new ShootAction().withTimeout(1),
       new WaitCommand(0.5),
-
-      new SwervePathAction(mSixBallTrajectorySeven).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new WaitCommand(0.5),
-
-      new SwervePathAction(mSixBallTrajectoryEight).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
       new ShootAction().withTimeout(1)
     );
   }
