@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -21,6 +22,21 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
+    // colorsendor constants
+    public interface ColorConstant {
+
+        boolean DEBUG_MODE = true;
+        int BALL_IR_SENSOR = 4; //TODO
+        boolean ENABLED  = true;
+        boolean AUTO = false;
+        double  TARGET_BIAS  =  1.5;//TODO
+        // How long it takes to accept / reject balls
+        double DEBOUNCE_TIME = 1.0 / 6.0; //TODO
+        public interface BallRGB {
+            Color RED = new Color(0.42, 0.39, 0.19);
+            Color BLUE = new Color(0.22, 0.43, 0.35);
+        }
+    }
     // Blocker port
     public static int BlockerMotorPort = 27; //TODO
     public static double BlockerMotorSpeed = 0.4;
