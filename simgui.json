@@ -37,6 +37,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/BallLoader": "Subsystem",
+      "/LiveWindow/Blocker": "Subsystem",
       "/LiveWindow/Climber": "Subsystem",
       "/LiveWindow/Feeder": "Subsystem",
       "/LiveWindow/Intaker": "Subsystem",
