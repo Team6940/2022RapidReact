@@ -3,6 +3,14 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2022.4.1"
 }
 
+allprojects {
+	repositories {
+		maven { url 'https://jitpack.io' }
+	}
+}
+
+final String STUYLIB_VERSION = 'v2022.4.1'
+
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
@@ -69,6 +77,8 @@ dependencies {
     nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
+
+    implementation "com.github.StuyPulse:StuyLib:${STUYLIB_VERSION}";
 
     testImplementation 'junit:junit:4.13.1'
 }
