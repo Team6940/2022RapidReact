@@ -1,5 +1,5 @@
 # FRC 2022
-Team 6940's 2022 FRC robot code. Code is written in Java and is based off WPILib's Java control system.
+Team 6940's 2022 FRC robot code. The whole Code is written in Java and is based off WPILib's Java control system.
 
 The code is divided into several packages, each responsible for a different aspect of the robot function. This README explains setup instructions, the function of each package, and some of the variable naming conventions used. Additional information about each specific class can be found in that class' Java file.
 
@@ -32,7 +32,7 @@ The code is divided into several packages, each responsible for a different aspe
 
 ### Code Structure
 
-![FRC code structure](https://user-images.githubusercontent.com/62934294/160263652-df9f4034-478b-48ed-a99c-72ce4bbe1fda.png)
+![6940 code structure](https://user-images.githubusercontent.com/62934294/162413133-ba30a168-fea4-4ffd-8f54-23cb4a92e7a7.png)
 
 ## Code Highlights
 - Path following with [PathPlanner](https://github.com/mjansen4857/pathplanner)(Credit [@mjansen4857](https://github.com/mjansen4857))
@@ -41,5 +41,5 @@ The code is divided into several packages, each responsible for a different aspe
 
 - State machine control. We use state machine control in our subsystems, which brings tremendous convenience.
 
-## Package Functions
+- [Pixy camera](https://pixycam.com/). We use Pixy2 to help us detect balls automatically both in tele-operated period and in autonomous period.
 
