@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -194,6 +195,11 @@ public class SwerveModule extends SubsystemBase {
       if (drive_motor_output_enabled) {
         drive_motor_.set(ControlMode.Velocity,
             drive_motor_inverted * driveOutput);
+        /* Try combing PID Control with FeedForward */
+        
+        //drive_motor_.set(ControlMode.Velocity, //TODO: Test combining FeedForward and velocity closed loop
+        //    drive_motor_inverted * driveOutput, DemandType.ArbitraryFeedForward,
+        //    drive_motor_inverted * percentOutput);
       }
     }
     if (pivot_motor_output_enabled) {

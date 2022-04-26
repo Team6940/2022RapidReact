@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,8 +22,17 @@ public class Shooter extends SubsystemBase {
     private static Shooter instance = null;
     private int num = 1;
     private int shootMode = 1;//1 means table shoot ,0 means algorithm shoot
+    private static WPI_TalonFX mShooter;
+    private final PeriodicIO periodicIO = new PeriodicIO();
+    ShooterControlState currentState = ShooterControlState.STOP;
+    //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
+    private boolean velocityStabilized = true;
+    /**
+     * We use FeedForward and a little P gains for Shooter
+     */
+    SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);
 
-    static { //TODO first is meters fou distance,second is RPM
+    static { //TODO first is meters for distance,second is MPS
         kDistanceToShooterSpeed.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2.597050));//TODO
         kDistanceToShooterSpeed.put(new InterpolatingDouble(1.9304), new InterpolatingDouble(6.232920));
         kDistanceToShooterSpeed.put(new InterpolatingDouble(2.540), new InterpolatingDouble(7.271740));
@@ -31,12 +42,6 @@ public class Shooter extends SubsystemBase {
         kDistanceToShooterSpeed.put(new InterpolatingDouble(6.096), new InterpolatingDouble(10.128495));
         kDistanceToShooterSpeed.put(new InterpolatingDouble(7.620), new InterpolatingDouble(10.388200));
     }
-    private static WPI_TalonFX mShooter;
-    private final PeriodicIO periodicIO = new PeriodicIO();
-    ShooterControlState currentState = ShooterControlState.STOP;
-    //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
-    private boolean velocityStabilized = true;
-
     public Shooter() {
         configTalons();
     }
@@ -52,16 +57,16 @@ public class Shooter extends SubsystemBase {
 
         lMasterConfig.slot0.kP = 1.5;//TODO
         lMasterConfig.slot0.kI = 0;
-        lMasterConfig.slot0.kD = 5;
-        lMasterConfig.slot0.kF = 0.048;
+        lMasterConfig.slot0.kD = 0;
+        lMasterConfig.slot0.kF = 0;
         lMasterConfig.peakOutputForward = 1.0;
         lMasterConfig.peakOutputReverse = 0.0;
         mShooter = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
         mShooter.configAllSettings(lMasterConfig);
         mShooter.setNeutralMode(NeutralMode.Coast);
         mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        mShooter.configVoltageCompSaturation(12);//TODO
-        mShooter.enableVoltageCompensation(true);
+        //mShooter.configVoltageCompSaturation(12);//TODO
+        //mShooter.enableVoltageCompensation(true);
     }
 
     public ShooterControlState getState() {
@@ -118,7 +123,9 @@ public class Shooter extends SubsystemBase {
                 currentState = ShooterControlState.SHOOT;
             }
         }else if(currentState == ShooterControlState.PREPARE_SHOOT){
-            setVelocity(Constants.kFlywheelIdleVelocity);
+            //setVelocity(Constants.kFlywheelIdleVelocity);
+            double cal_shooterFeedForward = shooterFeedForward.calculate(FalconToMeterSpeed(Constants.kFlywheelIdleVelocity));
+            mShooter.set(ControlMode.Velocity, Constants.kFlywheelIdleVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
             if(Turret.getInstance().isTargetReady()){
                 currentState = ShooterControlState.SHOOT;
             }else if(Turret.getInstance().isStop()){
@@ -127,13 +134,15 @@ public class Shooter extends SubsystemBase {
         }else if(currentState == ShooterControlState.SHOOT){
             if(shootMode == 1){
                 double targetVelocity = getShooterSpeedForDistance(getRobotToTargetDistance());
+                double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
                 periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
                 velocityStabilized = meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm() < 50; //TODO
-                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand); 
+                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward); 
             }else{
                 double targetVelocity = getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
+                double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
                 periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
-                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand);
+                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
             }
             if(Turret.getInstance().isStop()){
                 currentState = ShooterControlState.STOP;

@@ -103,6 +103,9 @@ public final class Constants {
     public static final double SHOOTER_MOUNT_HEIGHT = 0.83;  //SHOOTER高度  //TODO
     public static final int SHOOT_L_MASTER_ID = 20;  //TODO
     public static final int SHOOT_R_MASTER_ID = 21;  //TODO
+    public static final double SHOOTER_KS = 0 / 12;
+    public static final double SHOOTER_KV = 0 / 12;
+    public static final double SHOOTER_KA = 0 / 12;
 
     public static final double kFlywheelIdleVelocity = 1.0; //meters/s //TODO
     public static double kFlyWheelEncoderReductionRatio =  8.0 / 15.0 ;  //TODO
