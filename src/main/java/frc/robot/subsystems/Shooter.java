@@ -8,7 +8,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team503.util.InterpolatingDouble;
@@ -31,6 +34,10 @@ public class Shooter extends SubsystemBase {
      * We use FeedForward and a little P gains for Shooter
      */
     SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);
+    private ShuffleboardTab tab = Shuffleboard.getTab("Shooter Speed");
+    private NetworkTableEntry shooterSpeed =
+        tab.add("Shooter Speed", 1)
+           .getEntry();
 
     static { //TODO first is meters for distance,second is MPS
         kDistanceToShooterSpeed.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2.597050));//TODO
@@ -268,6 +275,12 @@ public class Shooter extends SubsystemBase {
     public void setInitShoot(){
         currentState = ShooterControlState.INIT;
     }
+
+    public double readFromShuffleBoard(){
+        SmartDashboard.putNumber("Shooter Speed", shooterSpeed.getDouble(1.0));
+        return shooterSpeed.getDouble(1.0);
+    }
+
     public enum ShooterControlState {
         STOP, INIT,PREPARE_SHOOT, SHOOT
     }
