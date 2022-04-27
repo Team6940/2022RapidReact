@@ -141,7 +141,7 @@ public final class Constants {
     public static double kDriveMotorkP = 0.025; // 5e-2 0.05   0.025
     public static double kDriveMotorkI = 0.0016; //5e-4 0.005  0.0016
     public static double kDriveMotorkD = 2.5; //   5e-0 5 1.5  2.5
-    public static double kDriveMotorkF = 0.06;//   0.045       0.06
+    public static double kDriveMotorkF = 0;//   0.045       0.06
     public static double kDriveMotorIZone = 240;// 90          240
 
     public static double kPivotMotorkP = 3;//3
