@@ -177,11 +177,12 @@
     },
     "Shuffleboard": {
       "Auto settings": {
-        "autoMode": {
-          "open": true
-        },
         "open": true
-      }
+      },
+      "Shooter Speed": {
+        "open": true
+      },
+      "open": true
     },
     "SmartDashboard": {
       "Auto": {
