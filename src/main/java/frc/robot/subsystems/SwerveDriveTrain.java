@@ -48,8 +48,6 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public boolean autoPixy = false;
 
-  private double[] fieldCentricSpeeds = { 0, 0 };
-
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
         new Translation2d( Constants.kLength / 2,  Constants.kWidth / 2),//front left
@@ -64,8 +62,6 @@ public class SwerveDriveTrain extends SubsystemBase {
         new Rotation2d(0),
         new Pose2d()
   );
-
-  private double lastHeading = 0; //The unit is radian
 
   public SwerveDriveTrain() {
     gyro = new PigeonIMU(Constants.PigeonIMUPort);
@@ -209,13 +205,10 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public void zeroGyro(double reset){
-      gyro.setFusedHeading(reset);
+    gyro.setFusedHeading(reset);
   }
 
   public Rotation2d getYaw() {
-      //double[] ypr = new double[3];
-      //gyro.getYawPitchRoll(ypr);
-      //return (Constants.SwerveConstants.invertGyro) ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
       return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
 
@@ -231,52 +224,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     SmartDashboard.putNumber("x meters", odometry_.getPoseMeters().getX());
     SmartDashboard.putNumber("y meters", odometry_.getPoseMeters().getY());
     SmartDashboard.putNumber("rot radians", odometry_.getPoseMeters().getRotation().getDegrees());
-    SmartDashboard.putNumber("gyroAngle",GetGyroRotation2d().getDegrees());
-    
-    //SmartDashboard.putNumber("GetSpeed0", swerve_modules_[0].GetSpeed());
-    //SmartDashboard.putNumber("GetSpeed1", swerve_modules_[1].GetSpeed());
-    //SmartDashboard.putNumber("GetSpeed2", swerve_modules_[2].GetSpeed());
-    //SmartDashboard.putNumber("GetSpeed3", swerve_modules_[3].GetSpeed());
-
-    
-    //SmartDashboard.putNumber("fr0 angle", swerve_modules_[0].GetState().angle.getDegrees());
-    //SmartDashboard.putNumber("fr1 angle", swerve_modules_[1].GetState().angle.getDegrees());
-    SmartDashboard.putNumber("fr0 relunit", swerve_modules_[0].GetAngleRelUnits());
-    SmartDashboard.putNumber("fr1 relunit", swerve_modules_[1].GetAngleRelUnits());
-    SmartDashboard.putNumber("fr0 absunit", swerve_modules_[0].GetAngleAbsUnits());
-    SmartDashboard.putNumber("fr1 absunit", swerve_modules_[1].GetAngleAbsUnits());
-
-    /*SmartDashboard.putNumber("fr2 angle", swerve_modules_[2].GetState().angle.getDegrees());
-    SmartDashboard.putNumber("fr3 angle", swerve_modules_[3].GetState().angle.getDegrees());
-    SmartDashboard.putNumber("robot angle", GetGyroRotation2d().getDegrees());*/
     SmartDashboard.putBoolean("isOpenloop", isOpenLoop);
-    boolean runNewFeature = false;
-    if(runNewFeature){
-      ChassisSpeeds  chassisSpeeds = Constants.swerveKinematics.toChassisSpeeds(moduleStates);
-      // robot calculated X, Y velocity
-      double dX = chassisSpeeds.vxMetersPerSecond;
-      double dY = chassisSpeeds.vyMetersPerSecond;   
-      double velMag = Math.sqrt((dX * dX) + (dY * dY)); // magnitude of the velocity vector
-      double velAngle = Math.atan2(dY, dX) + Math.toRadians(-GetGyroRotation2d().getDegrees() % 360); // angle of velocity
-      // vector +
-      // actual robot angle
-      //SmartDashboard.putNumber("Field Centric Robot velAngle", Math.toDegrees(getHeading()));
-      // field centric X and Y acceleration
-      double fieldCentricDX = velMag * Math.cos(velAngle);
-      double fieldCentricDY = velMag * Math.sin(velAngle);
-
-      SmartDashboard.putNumber("Field Centric Robot dX", fieldCentricDX);
-      SmartDashboard.putNumber("Field Centric Robot dY", fieldCentricDY);
-
-      setFieldCentricSpeeds(fieldCentricDX, fieldCentricDY);
-    }
-  }
-
-  public synchronized double[] getFieldCentricSpeeds() {
-    return fieldCentricSpeeds;
-  }
-  public void setFieldCentricSpeeds(double xVelocity, double yVelocity) {
-    fieldCentricSpeeds[0] = xVelocity;
-    fieldCentricSpeeds[1] = yVelocity;
   }
 }

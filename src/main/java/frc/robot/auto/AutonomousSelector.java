@@ -1,7 +1,6 @@
 package frc.robot.auto;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,7 +12,6 @@ import frc.robot.subsystems.SwerveDriveTrain;
 
 public class AutonomousSelector {
 
-    private static SendableChooser<Rotation2d> orientationChooser;
     private static SendableChooser<AutonomousMode> autonomousModeChooser;
     private static Pose2d startingPose;
     static {

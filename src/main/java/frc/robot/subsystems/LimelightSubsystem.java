@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.Constants;
 
 public class LimelightSubsystem extends SubsystemBase {
 

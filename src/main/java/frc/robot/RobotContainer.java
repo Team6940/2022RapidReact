@@ -17,7 +17,6 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Turret.TurretControlState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
