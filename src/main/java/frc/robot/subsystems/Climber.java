@@ -49,6 +49,12 @@ public class Climber extends SubsystemBase {
     m_rghtclimberFollowermotor.configMotionCruiseVelocity(Constants.RghtClimbermotionCruiseVelocity);
     m_rghtclimberFollowermotor.configMotionAcceleration(Constants.RghtClimbermotionAcceleration);
 
+    m_leftclimberMastermotor.configVoltageCompSaturation(12);
+    m_leftclimberMastermotor.enableVoltageCompensation(true);
+
+    m_rghtclimberFollowermotor.configVoltageCompSaturation(12);
+    m_rghtclimberFollowermotor.enableVoltageCompensation(true);
+
 
     m_climbersolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ClimberSolenoidPort);
   }

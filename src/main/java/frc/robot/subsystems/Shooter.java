@@ -72,8 +72,8 @@ public class Shooter extends SubsystemBase {
         mShooter.configAllSettings(lMasterConfig);
         mShooter.setNeutralMode(NeutralMode.Coast);
         mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        //mShooter.configVoltageCompSaturation(12);//TODO
-        //mShooter.enableVoltageCompensation(true);
+        mShooter.configVoltageCompSaturation(12);
+        mShooter.enableVoltageCompensation(true);
     }
 
     public ShooterControlState getState() {

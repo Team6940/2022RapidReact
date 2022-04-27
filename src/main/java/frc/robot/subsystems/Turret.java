@@ -33,7 +33,7 @@ public class Turret extends SubsystemBase {
         }
         //mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
-        mTurretMotor.setSensorPhase(false);
+        mTurretMotor.setSensorPhase(false);//TODO
         setBrakeMode(false);
 
         configurationOne();
@@ -63,6 +63,8 @@ public class Turret extends SubsystemBase {
         mTurretMotor.config_IntegralZone(0, 0, 10);
         mTurretMotor.configMotionCruiseVelocity(600, 10);
         mTurretMotor.configMotionAcceleration(1200, 10);
+        mTurretMotor.configVoltageCompSaturation(12);
+        mTurretMotor.enableVoltageCompensation(true);
         // mTurretMotor.configMotionSCurveStrength(6);
     }
 

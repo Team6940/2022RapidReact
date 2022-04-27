@@ -81,6 +81,13 @@ public class SwerveModule extends SubsystemBase {
 
     pivot_encoder_inverted = pivotEncoderInvert ? -1.0 : 1.0;
 
+    drive_motor_.configVoltageCompSaturation(12);
+    drive_motor_.enableVoltageCompensation(true);
+
+    pivot_motor_.configVoltageCompSaturation(12);
+    pivot_motor_.enableVoltageCompensation(true);
+
+
     SetDriveMotorInverted(driveMotorInvert);
     SetPivotMotorInverted(pivotMotorInvert);
     SetPivotEncoderOffset((int)pivot_encoder_inverted * pivotEncoderOffset);

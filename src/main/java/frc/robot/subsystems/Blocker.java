@@ -20,6 +20,9 @@ public class Blocker extends SubsystemBase {
 
   public Blocker() {
     m_blockermotor = new WPI_TalonFX(Constants.BlockerMotorPort);
+
+    m_blockermotor.configVoltageCompSaturation(12);
+    m_blockermotor.enableVoltageCompensation(true);
   }
 
   public static Blocker getInstance() {
