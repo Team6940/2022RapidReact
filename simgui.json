@@ -40,6 +40,7 @@
       "/LiveWindow/Blocker": "Subsystem",
       "/LiveWindow/Climber": "Subsystem",
       "/LiveWindow/Feeder": "Subsystem",
+      "/LiveWindow/Hood": "Subsystem",
       "/LiveWindow/Intaker": "Subsystem",
       "/LiveWindow/LedSubsystem": "Subsystem",
       "/LiveWindow/Limelight": "Subsystem",
@@ -153,6 +154,7 @@
       "/LiveWindow/Ungrouped/Talon FX [5]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [7]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [22]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [28]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [2]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [4]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
@@ -177,11 +179,12 @@
     },
     "Shuffleboard": {
       "Auto settings": {
-        "autoMode": {
-          "open": true
-        },
         "open": true
-      }
+      },
+      "Shooter Speed": {
+        "open": true
+      },
+      "open": true
     },
     "SmartDashboard": {
       "Auto": {
