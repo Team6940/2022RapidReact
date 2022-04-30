@@ -1,8 +1,3 @@
-/************************ PROJECT DORCAS ************************/
-/* Copyright (c) 2022 StuyPulse Robotics. All rights reserved.  */
-/* This work is licensed under the terms of the MIT license.    */
-/****************************************************************/
-
 package frc.robot.subsystems;
 
 import com.stuypulse.stuylib.streams.booleans.BStream;

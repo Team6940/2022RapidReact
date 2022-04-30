@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -79,6 +80,13 @@ public class SwerveModule extends SubsystemBase {
     pivot_motor_.configClosedloopRamp(Constants.kLoopSeconds);
 
     pivot_encoder_inverted = pivotEncoderInvert ? -1.0 : 1.0;
+
+    drive_motor_.configVoltageCompSaturation(12);
+    drive_motor_.enableVoltageCompensation(true);
+
+    pivot_motor_.configVoltageCompSaturation(12);
+    pivot_motor_.enableVoltageCompensation(true);
+
 
     SetDriveMotorInverted(driveMotorInvert);
     SetPivotMotorInverted(pivotMotorInvert);
@@ -164,12 +172,9 @@ public class SwerveModule extends SubsystemBase {
                       rawAngle - optimalAngle);
     }
 
-    double Angle = (Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.01)) ? lastAngle : optimalAngle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+    //Prevent rotating module if speed is less then 1%. Prevents Jittering.
+    double Angle = (Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.01)) ? lastAngle : optimalAngle;
     
-    SmartDashboard.putNumber("Angle", angle);
-    //System.out.println("Swerve Module Angle");
-    //System.out.println(Angle);
-
     double pivotOutput = Angle /
     Constants.kPivotEncoderReductionRatio *
     Constants.kPivotEncoderResolution *
@@ -194,6 +199,11 @@ public class SwerveModule extends SubsystemBase {
       if (drive_motor_output_enabled) {
         drive_motor_.set(ControlMode.Velocity,
             drive_motor_inverted * driveOutput);
+        /* Try combing PID Control with FeedForward */
+        
+        //drive_motor_.set(ControlMode.Velocity, //TODO: Test combining FeedForward and velocity closed loop
+        //    drive_motor_inverted * driveOutput, DemandType.ArbitraryFeedForward,
+        //    drive_motor_inverted * percentOutput);
       }
     }
     if (pivot_motor_output_enabled) {
@@ -201,23 +211,6 @@ public class SwerveModule extends SubsystemBase {
           pivot_motor_inverted * pivotOutput);
     }
     lastAngle = Angle;
-    /*state = CTREModuleState.optimize(state, getState().angle); //Custom optimize command, since default WPILib optimize assumes continuous controller which CTRE is not
-
-    if(isOpenLoop){
-      double percentOutput = state.speedMetersPerSecond / Constants.kMaxSpeed;
-      drive_motor_.set(ControlMode.PercentOutput, percentOutput);
-    }
-    else {
-      double velocity = Conversions.MPSToFalcon(state.speedMetersPerSecond, Constants.SwerveConstants.wheelCircumference, Constants.SwerveConstants.driveGearRatio);
-      //drive_motor_.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward, feedforward.calculate(state.speedMetersPerSecond));
-      drive_motor_.set(ControlMode.Velocity, velocity);
-    }
-
-    double Angle = (Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.01)) ? lastAngle : state.angle.getDegrees(); //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-    pivot_motor_.set(ControlMode.Position, Conversions.degreesToFalcon(Angle, Constants.SwerveConstants.angleGearRatio)); 
-    lastAngle = Angle;*/
-
-    SmartDashboard.putNumber("lastangle", lastAngle);
   }
 
   public double GetDriveMotorVoltage(){
@@ -298,28 +291,6 @@ public class SwerveModule extends SubsystemBase {
         pivot_encoder_inverted;
   }
 
-  public double GetAngleRelUnits(){
-    /*The unit is radian*/
-    double units;
-    units= pivot_motor_.getSelectedSensorPosition(0);
-    return units;    
-  }
-  public double GetAngleAbsUnits(){
-    /*The unit is radian*/
-    double units;
-    units= pivot_motor_.getSelectedSensorPosition(1);
-    return units;    
-  }
-  public double angleDegreeToUnits(double angleDegree){
-    double unitsFromAngle =  angleDegree / 
-                (360.0 / Constants.kPivotEncoderResolution);
-
-    unitsFromAngle = (unitsFromAngle + offset_) 
-        * Constants.kPivotEncoderReductionRatio
-        * pivot_encoder_inverted;
-    return unitsFromAngle;
-  }
-
   public double GetSpeed(){
     /*The unit is meters_per_second */
     return
@@ -329,71 +300,8 @@ public class SwerveModule extends SubsystemBase {
         Constants.kWheelDiameter / 2;
   }
 
-  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public void PivotEncoderSetToAbsPosition() {
-    //int unit;
-    //unit = (int)pivot_motor_.getSelectedSensorPosition(1) & 0xFFF;
-    //pivot_motor_.setSelectedSensorPosition(unit);
-    int position = pivot_motor_.getSensorCollection().getPulseWidthPosition()/* & 0xFFF*/;
-    SmartDashboard.putNumber("SetAbsPosition", position);
-    pivot_motor_.getSensorCollection().setQuadraturePosition(position, 100);
-  }
-
-  public double getAbsoluteRotation(){
-    double degree;
-    degree = (GetAngleAbsUnits()-offset_) * (360.0 / 4096.0) ;
-    return degree;
-  }
-
-  public double getRelativeRotation(){
-    double degree;
-    degree = (GetAngleRelUnits()-offset_) * (360.0 / 4096.0);
-    return degree;
-  }
-  public void setPivotAngle(double angleDegree) {
-    double countsBefore;
- 
-    countsBefore = pivot_motor_.getSelectedSensorPosition();
-    double countsFromAngle = Conversions.degreesToFalcon(angleDegree, 1)
-                             + offset_;
-    //double countsFromAngle = angleDegreeToUnits(angleDegree);
-    double countsDelta = Math.IEEEremainder(countsFromAngle - countsBefore,4096.0);
-    
-    double pivot_count = pivot_motor_inverted
-                         * Math.IEEEremainder(countsBefore + countsDelta,4096.0);
-    //pivot_motor_.set(ControlMode.MotionMagic, pivot_count);
-    pivot_motor_.set(ControlMode.Position, pivot_count);
-    //System.out.printf("SwerveRel pivot_count: %.1f: %.1f: %.1f \n",countsBefore,countsFromAngle,pivot_count);
-
-  }
-  
-  public void setRotationPosition(double degrees){
-    /*double currentPosAbs = getAbsoluteRotation();
-    double currentPosRel = getRelativeRotation();
-    double delta = Math.IEEEremainder(degrees - currentPosAbs, 360);
-    if(delta > 180){
-        delta -= 360;
-    }else if(delta < -180){
-        delta += 360;
-    }
-    pivot_motor_.set(ControlMode.Position, (currentPosRel + delta) / (360.0 / 4096.0));*/
-    double countsBefore;
-    countsBefore = pivot_motor_.getSelectedSensorPosition(0);
-
-    double countsFromAngle = Conversions.degreesToFalcon(degrees, 1) + offset_;
-    //double countsFromAngle = angleDegreeToUnits(angleDegree);
-    double countsDelta = Math.IEEEremainder(countsFromAngle - countsBefore,4096.0);
-    
-    double pivot_count = pivot_motor_inverted
-                         *  Math.IEEEremainder(countsBefore + countsDelta,4096.0);
-    //pivot_motor_.set(ControlMode.MotionMagic, pivot_count);
-    pivot_motor_.set(ControlMode.Position, pivot_count);
-    //System.out.printf("SwerveAbs pivot_count: %.1f: %.1f: %.1f \n",countsBefore,countsFromAngle,pivot_count);
-    
   }
 }

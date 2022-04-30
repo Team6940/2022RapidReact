@@ -9,10 +9,10 @@ import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.RobotBase;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.lib.team503.util.Util;
+import frc.robot.lib.team1678.math.Conversions;
 
 
 public class Turret extends SubsystemBase {
@@ -34,7 +34,7 @@ public class Turret extends SubsystemBase {
         }
         //mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
-        mTurretMotor.setSensorPhase(false);
+        mTurretMotor.setSensorPhase(false);//TODO
         setBrakeMode(false);
 
         configurationOne();
@@ -64,6 +64,8 @@ public class Turret extends SubsystemBase {
         mTurretMotor.config_IntegralZone(0, 0, 10);
         mTurretMotor.configMotionCruiseVelocity(600, 10);
         mTurretMotor.configMotionAcceleration(1200, 10);
+        mTurretMotor.configVoltageCompSaturation(12);
+        mTurretMotor.enableVoltageCompensation(true);
         // mTurretMotor.configMotionSCurveStrength(6);
     }
 
@@ -131,20 +133,12 @@ public class Turret extends SubsystemBase {
         return Angle;
     }
 
-    public double encUnitsToDegrees(double encUnits) {
-        return encUnits / 4096.0 * 360.0;
-    }
-
-    public int degreesToEncUnits(double degrees) {
-        return (int) (degrees / 360.0 * 4096.0);
-    }
-
     public double encUnitsToTurretAngle(int encUnits) {
-        return Constants.kTurretStartingAngle + encUnitsToDegrees(encUnits);//TODO
+        return Constants.kTurretStartingAngle + Conversions.talonToDegrees((double)encUnits,Constants.TURRET_GEAR_RATIO);//TODO
     }
 
     public int turretAngleToEncUnits(double mTurretMotorAngle) {
-        return degreesToEncUnits(mTurretMotorAngle - Constants.kTurretStartingAngle);//Todo
+        return (int)Conversions.degreesToTalon((mTurretMotorAngle - Constants.kTurretStartingAngle),Constants.TURRET_GEAR_RATIO);//Todo
     }
 
     public void readPeriodicInputs() {
@@ -237,7 +231,7 @@ public class Turret extends SubsystemBase {
         if (Constants.kOutputTelemetry) {
             SmartDashboard.putNumber("Turret Encoder", periodicIO.position);
             SmartDashboard.putNumber("Turret Demand", periodicIO.demand);
-            SmartDashboard.putNumber("Turret Error", encUnitsToDegrees(mTurretMotor.getClosedLoopError(0)));
+            SmartDashboard.putNumber("Turret Error", Conversions.talonToDegrees(mTurretMotor.getClosedLoopError(0), Constants.TURRET_GEAR_RATIO));
             if (mTurretMotor.getControlMode() == ControlMode.MotionMagic)
                 SmartDashboard.putNumber("Turret Setpoint", mTurretMotor.getClosedLoopTarget(0));
         }

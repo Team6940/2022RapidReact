@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PixyCamSPI;
@@ -74,6 +75,8 @@ public class Robot extends TimedRobot {
       Shooter.getInstance().readPeriodicInputs();
       Shooter.getInstance().writePeriodicOutputs();
     }
+
+    Hood.getInstance().outputTelemetry();
 
     Shooter.getInstance().outputTelemetry();
 

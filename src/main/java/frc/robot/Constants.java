@@ -22,6 +22,10 @@ import edu.wpi.first.wpilibj.util.Color;
  */
 public final class Constants {
 
+    // Hood constants
+    public static int HoodMotorPort = 28;
+    public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;
+
     // colorsendor constants
     public interface ColorConstant {
 
@@ -88,6 +92,7 @@ public final class Constants {
     public static final int kTurretAngleTolerance = 0; //TODO
     public static final int kTurretStep = 10;
     public static final boolean kOutputTelemetry = true;
+    public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
@@ -103,10 +108,13 @@ public final class Constants {
     public static final double SHOOTER_MOUNT_HEIGHT = 0.83;  //SHOOTER高度  //TODO
     public static final int SHOOT_L_MASTER_ID = 20;  //TODO
     public static final int SHOOT_R_MASTER_ID = 21;  //TODO
+    public static final double SHOOTER_KS = 0 / 12;
+    public static final double SHOOTER_KV = 0 / 12;
+    public static final double SHOOTER_KA = 0 / 12;
 
     public static final double kFlywheelIdleVelocity = 1.0; //meters/s //TODO
-    public static double kFlyWheelEncoderReductionRatio =  8.0 / 15.0 ;  //TODO
-    public static double kFlyWheelWheelDiameter = 0.093;//The unit is meter //TODO
+    public static double kFlyWheelEncoderReductionRatio =  60.0 / 32.0 ;  //TODO
+    public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
     public static double kShooterTolerance = 0.01;  //meters/s //TODO
     
@@ -138,7 +146,7 @@ public final class Constants {
     public static double kDriveMotorkP = 0.025; // 5e-2 0.05   0.025
     public static double kDriveMotorkI = 0.0016; //5e-4 0.005  0.0016
     public static double kDriveMotorkD = 2.5; //   5e-0 5 1.5  2.5
-    public static double kDriveMotorkF = 0.06;//   0.045       0.06
+    public static double kDriveMotorkF = 0;//   0.045       0.06
     public static double kDriveMotorIZone = 240;// 90          240
 
     public static double kPivotMotorkP = 3;//3
@@ -155,6 +163,9 @@ public final class Constants {
     public static double kPivotMotorReductionRatio = 1.0 / (56/6*60/10); //56/6*60/10
     public static double kDriveEncoderReductionRatio =  1.0 / (29/15*60/15);
     public static double kPivotEncoderReductionRatio = -1.0 / 1.0;
+
+    public static final double FALCON_TICS_PER_ROTATION = 2048.0;
+    public static final double TALON_TICS_PER_ROTATION = 4096.0;
 
     public static double kDriveEncoderResolution = 2048.0 / (Math.PI * 2);//the unit of "2"is rad 2_rad
     public static double kPivotEncoderResolution = 4096.0 / (Math.PI * 2);//the unit of "2"is rad 2_rad
@@ -225,6 +236,4 @@ public final class Constants {
             new TrapezoidProfile.Constraints(
 				3*Math.PI, 3*Math.PI);
       }
-
-
 }

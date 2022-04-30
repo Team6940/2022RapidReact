@@ -28,6 +28,12 @@ public class Feeder extends SubsystemBase {
     m_intakesolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort);
 
     m_ballloadermotor = new WPI_TalonFX(Constants.BallLoaderPort);
+
+    m_intakermotor.configVoltageCompSaturation(12);
+    m_intakermotor.enableVoltageCompensation(true);
+
+    m_ballloadermotor.configVoltageCompSaturation(12);
+    m_ballloadermotor.enableVoltageCompensation(true);
   }
 
   public static Feeder getInstance() {
