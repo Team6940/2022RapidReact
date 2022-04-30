@@ -3,6 +3,16 @@ package frc.robot.lib.team1678.math;
 public class Conversions {
 
     /**
+     * @param degrees Degrees of rotation of Mechanism
+     * @param gearRatio Gear Ratio between Falcon and Mechanism
+     * @return Falcon Counts
+     */
+    public static double degreesToFalcon(double degrees, double gearRatio) {
+        double ticks =  degrees / (360.0 / (gearRatio * 2048.0));
+        return ticks;
+    }
+
+    /**
      * @param counts Falcon Counts
      * @param gearRatio Gear Ratio between Falcon and Mechanism
      * @return Degrees of Rotation of Mechanism
@@ -16,12 +26,21 @@ public class Conversions {
      * @param gearRatio Gear Ratio between Falcon and Mechanism
      * @return Falcon Counts
      */
-    public static double degreesToFalcon(double degrees, double gearRatio) {
+    public static double degreesToTalon(double degrees, double gearRatio) {
         double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
         return ticks;
     }
 
-        /**
+    /**
+     * @param counts Falcon Counts
+     * @param gearRatio Gear Ratio between Falcon and Mechanism
+     * @return Degrees of Rotation of Mechanism
+     */
+    public static double talonToDegrees(double counts, double gearRatio) {
+        return counts * (360.0 / (gearRatio * 4096.0));
+    }
+
+    /**
      * @param Radians Radians of rotation of Mechanism
      * @param gearRatio Gear Ratio between Falcon and Mechanism
      * @return Falcon Counts
@@ -29,6 +48,34 @@ public class Conversions {
     public static double RadiansToTalon(double Radians, double gearRatio) {
         double ticks =  Radians / ((Math.PI * 2) / (gearRatio * 4096.0));
         return ticks;
+    }
+
+    /**
+     * @param Radians Radians of rotation of Mechanism
+     * @param gearRatio Gear Ratio between Falcon and Mechanism
+     * @return Falcon Counts
+     */
+    public static double TalonToRadians(double counts, double gearRatio) {
+        return counts * (2 * Math.PI / (gearRatio * 4096.0));
+    }
+
+    /**
+     * @param Radians Radians of rotation of Mechanism
+     * @param gearRatio Gear Ratio between Falcon and Mechanism
+     * @return Falcon Counts
+     */
+    public static double RadiansToFalcon(double Radians, double gearRatio) {
+        double ticks =  Radians / ((Math.PI * 2) / (gearRatio * 2048.0));
+        return ticks;
+    }
+
+    /**
+     * @param Radians Radians of rotation of Mechanism
+     * @param gearRatio Gear Ratio between Falcon and Mechanism
+     * @return Falcon Counts
+     */
+    public static double FalconToRadians(double counts, double gearRatio) {
+        return counts * (2 * Math.PI / (gearRatio * 2048.0));
     }
 
     /**

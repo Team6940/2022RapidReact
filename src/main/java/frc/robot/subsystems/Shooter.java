@@ -14,14 +14,15 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.lib.team503.util.InterpolatingDouble;
-import frc.robot.lib.team503.util.InterpolatingTreeMap;
+import frc.robot.lib.team2910.math.Vector2;
+import frc.robot.lib.team2910.util.InterpolatingDouble;
+import frc.robot.lib.team2910.util.InterpolatingTreeMap;
 
 
 
 public class Shooter extends SubsystemBase {
   
-    static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kDistanceToShooterSpeed = new InterpolatingTreeMap<>();
+    static InterpolatingTreeMap<InterpolatingDouble, Vector2> SHOOTER_TUNING = new InterpolatingTreeMap<>();
     private static Shooter instance = null;
     private int num = 1;
     private int shootMode = 1;//1 means table shoot ,0 means algorithm shoot
@@ -40,14 +41,14 @@ public class Shooter extends SubsystemBase {
            .getEntry();
 
     static { //TODO first is meters for distance,second is MPS
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(0.0), new InterpolatingDouble(2.597050));//TODO
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(1.9304), new InterpolatingDouble(6.232920));
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(2.540), new InterpolatingDouble(7.271740));
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(3.302), new InterpolatingDouble(9.089675));
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(4.064), new InterpolatingDouble(9.609085));
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(4.826), new InterpolatingDouble(9.868790));
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(6.096), new InterpolatingDouble(10.128495));
-        kDistanceToShooterSpeed.put(new InterpolatingDouble(7.620), new InterpolatingDouble(10.388200));
+        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(30,2.5));//TODO
+        SHOOTER_TUNING.put(new InterpolatingDouble(1.9304), new Vector2(35,3.0));
+        SHOOTER_TUNING.put(new InterpolatingDouble(2.5400), new Vector2(40,3.5));
+        SHOOTER_TUNING.put(new InterpolatingDouble(3.3020), new Vector2(45,4.0));
+        SHOOTER_TUNING.put(new InterpolatingDouble(4.0640), new Vector2(50,4.5));
+        SHOOTER_TUNING.put(new InterpolatingDouble(4.8260), new Vector2(55,5.0));
+        SHOOTER_TUNING.put(new InterpolatingDouble(6.0960), new Vector2(60,5.5));
+        SHOOTER_TUNING.put(new InterpolatingDouble(7.6200), new Vector2(65,6.0));
     }
     public Shooter() {
         configTalons();
@@ -104,10 +105,6 @@ public class Shooter extends SubsystemBase {
       2048.0 * 0.1;
     }
 
-    public double getShooterSpeedForDistance(double distance) {
-        return kDistanceToShooterSpeed.getInterpolated(new InterpolatingDouble(Math.max(Math.min(distance, 7.62), 0.0))).value;
-    }
-
     public void readPeriodicInputs() {
         periodicIO.timestamp = Timer.getFPGATimestamp();
             
@@ -121,8 +118,8 @@ public class Shooter extends SubsystemBase {
     public void writePeriodicOutputs() {
         if(currentState == ShooterControlState.STOP) {
             mShooter.set(ControlMode.PercentOutput, 0);
-        }
-        else if(currentState == ShooterControlState.INIT) {
+            Hood.getInstance().setHoodStop();
+        }else if(currentState == ShooterControlState.INIT) {
             mShooter.set(ControlMode.PercentOutput, 0);
             if(Turret.getInstance().isVisionFinding() || Turret.getInstance().isVisionMoving()){
                 currentState = ShooterControlState.PREPARE_SHOOT;
@@ -139,12 +136,16 @@ public class Shooter extends SubsystemBase {
                 currentState = ShooterControlState.STOP;
             }
         }else if(currentState == ShooterControlState.SHOOT){
+            Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
             if(shootMode == 1){
-                double targetVelocity = getShooterSpeedForDistance(getRobotToTargetDistance());
+                //double targetVelocity = getShooterSpeedForDistance(LimelightSubsystem.getInstance().getRobotToTargetDistance());
+                double targetVelocity = angleAndSpeed.y;
+                double targetAngle = angleAndSpeed.x;
                 double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
                 periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
                 velocityStabilized = meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm() < 50; //TODO
-                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward); 
+                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+                Hood.getInstance().setHoodAngle(targetAngle);
             }else{
                 double targetVelocity = getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
                 double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
@@ -228,11 +229,6 @@ public class Shooter extends SubsystemBase {
         return speed;
     }
 
-    public double getRobotToTargetDistance() {
-		return (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
-             / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + LimelightSubsystem.getInstance().Get_ty()));
-	}
-
     public double getShooterLaunchVelocity(double shooterAngle) {
         double speed = 0;
         double d = Constants.CARGO_DIAMETER;
@@ -240,7 +236,7 @@ public class Shooter extends SubsystemBase {
         double g = 9.81;
         double H = Constants.LL_UPPER_HUB_HEIGHT;
         double h = Constants.SHOOTER_MOUNT_HEIGHT;
-        double L = getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
+        double L = LimelightSubsystem.getInstance().getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
         double alpha = Math.toRadians(shooterAngle); // Set to proper value
         /* v is mini speed  */
         double vMin = Math.sqrt(g * (H-h+Math.sqrt(Math.pow(L,2)+Math.pow(H-h,2))));

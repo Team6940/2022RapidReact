@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
+import java.util.OptionalDouble;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -22,6 +25,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public double ty ;
   public double simTx = 30 ;
   public double simTv = 10.0 ;
+  public OptionalDouble distancetoTarget = OptionalDouble.empty();
   
   public LimelightSubsystem() {
     m_limTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -109,6 +113,19 @@ public class LimelightSubsystem extends SubsystemBase {
       correction = 0;
     }
     return correction;
+  }
+
+  
+  public double getRobotToTargetDistance() {
+		return (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
+             / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + Get_ty()));
+	}
+
+  public OptionalDouble getRobotToTargetDistance_Opt(){
+    distancetoTarget = OptionalDouble.of(
+      (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
+      / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + Get_ty())));
+    return distancetoTarget;
   }
 
   @Override
