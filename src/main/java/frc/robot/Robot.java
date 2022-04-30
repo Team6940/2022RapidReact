@@ -81,6 +81,9 @@ public class Robot extends TimedRobot {
 
     Shooter.getInstance().outputTelemetry();
 
+    //Shooter.getInstance().readHoodAngleFromShuffleBoard();
+    //Shooter.getInstance().readShooterSpeedFromShuffleBoard();
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

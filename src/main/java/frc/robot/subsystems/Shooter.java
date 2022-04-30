@@ -35,13 +35,16 @@ public class Shooter extends SubsystemBase {
      * We use FeedForward and a little P gains for Shooter
      */
     SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);
-    private ShuffleboardTab tab = Shuffleboard.getTab("Shooter Speed");
+    private ShuffleboardTab shooterSpeedTab = Shuffleboard.getTab("Shooter Speed");
     private NetworkTableEntry shooterSpeed =
-        tab.add("Shooter Speed", 1)
-           .getEntry();
+        shooterSpeedTab.add("Shooter Speed", 1).getEntry();
+
+    private ShuffleboardTab HoodAngleTab = Shuffleboard.getTab("Hood Angle");
+    private NetworkTableEntry hoodAngle =
+        HoodAngleTab.add("Hood Angle", 1).getEntry();
 
     static { //TODO first is meters for distance,second is MPS
-        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(30,2.5));//TODO
+        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(20,2.5));//TODO
         SHOOTER_TUNING.put(new InterpolatingDouble(1.9304), new Vector2(35,3.0));
         SHOOTER_TUNING.put(new InterpolatingDouble(2.5400), new Vector2(40,3.5));
         SHOOTER_TUNING.put(new InterpolatingDouble(3.3020), new Vector2(45,4.0));
@@ -50,6 +53,7 @@ public class Shooter extends SubsystemBase {
         SHOOTER_TUNING.put(new InterpolatingDouble(6.0960), new Vector2(60,5.5));
         SHOOTER_TUNING.put(new InterpolatingDouble(7.6200), new Vector2(65,6.0));
     }
+
     public Shooter() {
         configTalons();
     }
@@ -272,9 +276,14 @@ public class Shooter extends SubsystemBase {
         currentState = ShooterControlState.INIT;
     }
 
-    public double readFromShuffleBoard(){
+    public double readShooterSpeedFromShuffleBoard(){
         SmartDashboard.putNumber("Shooter Speed", shooterSpeed.getDouble(1.0));
         return shooterSpeed.getDouble(1.0);
+    }
+
+    public double readHoodAngleFromShuffleBoard(){
+        SmartDashboard.putNumber("Hood Angle", hoodAngle.getDouble(20.0));
+        return hoodAngle.getDouble(20.0);
     }
 
     public enum ShooterControlState {
