@@ -160,7 +160,6 @@ public class Shooter extends SubsystemBase {
                     Turret.getInstance().setTurretAngle(targetTurretAngle);
                     mShooter.set(ControlMode.Velocity, targetVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
                 }else{
-                    //double targetVelocity = getShooterSpeedForDistance(LimelightSubsystem.getInstance().getRobotToTargetDistance());
                     double targetVelocity = angleAndSpeed.y;
                     double targetAngle = angleAndSpeed.x;
                     double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
