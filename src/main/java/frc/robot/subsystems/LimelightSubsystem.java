@@ -24,6 +24,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public double tx ;
   public double ty ;
   public double simTx = 30 ;
+  public double simTy = 30 ;
   public double simTv = 10.0 ;
   public OptionalDouble distancetoTarget = OptionalDouble.empty();
   
@@ -52,6 +53,13 @@ public class LimelightSubsystem extends SubsystemBase {
 
   public double Get_ty(){
     ty = m_limTable.getEntry("ty").getDouble(0);
+    if (RobotBase.isSimulation()){
+      simTy = simTy-0.5;
+      if( simTy <= 0.0){
+        simTy = 0.0;
+      }
+      ty = simTy; 
+    }
     SmartDashboard.putNumber("ty", ty);
     return ty;
   }
@@ -138,6 +146,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
   public void reloadLimeLightSimu() {
     simTx = 30 ;
+    simTy = 30 ;
     simTv = 10.0 ;
   }
 
