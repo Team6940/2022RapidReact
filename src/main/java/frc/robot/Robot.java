@@ -122,6 +122,9 @@ public class Robot extends TimedRobot {
 
     RobotContainer.m_swerve.ZeroHeading();
     RobotContainer.m_swerve.whetherstoreyaw = false;
+
+    Turret.getInstance().ZeroTurret();
+    Hood.getInstance().ZeroHood();
   }
 
   /** This function is called periodically during operator control. */

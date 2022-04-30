@@ -97,7 +97,11 @@ public class Hood extends SubsystemBase {
     }else{
         periodicIO.position = (int) mHoodmotor.getSelectedSensorPosition(0);  
     }
-}
+  }
+
+  public void ZeroHood(){
+    mHoodmotor.set(ControlMode.MotionMagic, offset);
+  }
 
   @Override
   public void periodic() {

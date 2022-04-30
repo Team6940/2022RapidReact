@@ -42,6 +42,9 @@ public class SwerveDriveTrain extends SubsystemBase {
   double HEAD_D = 0;
   PIDController headController = new PIDController(HEAD_P, HEAD_I, HEAD_D);
 
+  double vxMetersPerSecond;
+  double vyMetersPerSecond;
+
   public boolean isOpenLoop = true;
 
   public boolean whetherstoreyaw = false;
@@ -79,6 +82,7 @@ public class SwerveDriveTrain extends SubsystemBase {
     PixySignature = SmartDashboard.getBoolean("Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
 
   }
+  
   public static SwerveDriveTrain getInstance() {
     if (instance == null){
       instance = new SwerveDriveTrain();
@@ -87,19 +91,33 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public void Drive(Translation2d translation,double omega,boolean fieldRelative,boolean isOpenloop){
-      var states = Constants.swerveKinematics.toSwerveModuleStates(
-        fieldRelative ? 
-        ChassisSpeeds.fromFieldRelativeSpeeds(
-          translation.getX(), translation.getY(), omega, GetGyroRotation2d())
-        : new ChassisSpeeds(translation.getX() , translation.getY(), omega)
-      );
+    var states = Constants.swerveKinematics.toSwerveModuleStates(
+      fieldRelative ? 
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        translation.getX(), translation.getY(), omega, GetGyroRotation2d())
+      : new ChassisSpeeds(translation.getX() , translation.getY(), omega)
+    );
 
-      SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.kMaxSpeed);
+    vxMetersPerSecond =       
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        translation.getX(),
+        translation.getY(), 
+        omega, 
+        GetGyroRotation2d()).vxMetersPerSecond;
+
+    vyMetersPerSecond =       
+      ChassisSpeeds.fromFieldRelativeSpeeds(
+        translation.getX(),
+        translation.getY(), 
+        omega, 
+        GetGyroRotation2d()).vyMetersPerSecond;
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.kMaxSpeed);
       
-      for (int i = 0;i < swerve_modules_.length;i++ ){
-          swerve_modules_[i].SetDesiredState(states[i],isOpenloop);
-        }
-      }
+    for(int i = 0;i < swerve_modules_.length;i++ ){
+      swerve_modules_[i].SetDesiredState(states[i],isOpenloop);
+    }
+  }
 
   public void SetModuleStates(SwerveModuleState[] desiredStates){
       SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kMaxSpeed);
@@ -109,14 +127,14 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   /**
-     * Calculate and set the requred SwerveModuleStates for a given ChassisSpeeds
-     * 
-     * @param speeds
-     */
-    public void setChassisSpeeds (ChassisSpeeds speeds) {
-      SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(speeds); //Generate the swerve module states
-      SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.kMaxSpeed);
-      SetModuleStates(moduleStates);
+    * Calculate and set the requred SwerveModuleStates for a given ChassisSpeeds
+    * 
+    * @param speeds
+    */
+  public void setChassisSpeeds (ChassisSpeeds speeds) {
+    SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(speeds); //Generate the swerve module states
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.kMaxSpeed);
+    SetModuleStates(moduleStates);
   }
 
   public double GetHeading(){
@@ -212,9 +230,16 @@ public class SwerveDriveTrain extends SubsystemBase {
       return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
 
+  public double GetVxSpeed(){
+    return vxMetersPerSecond;
+  }
+
+  public double GetVySpeed(){
+    return vyMetersPerSecond;
+  }
+
   @Override
   public void periodic() {
-
     SwerveModuleState[] moduleStates = getStates();
     // This method will be called once per scheduler run
       odometry_.update(
