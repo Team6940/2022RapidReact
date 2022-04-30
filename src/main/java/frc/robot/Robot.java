@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    LedSubsystem.getInstance().writePeriodicOutputs();
+    //LedSubsystem.getInstance().writePeriodicOutputs();
 
     Feeder.getInstance().writePeriodicOutputs();
     Feeder.getInstance().outputTelemetry();
@@ -64,9 +64,9 @@ public class Robot extends TimedRobot {
     Climber.getInstance().writePeriodicOutputs();
     Climber.getInstance().outputTelemetry();
 
-    PixyCamSPI.getInstance().readPeriodicInputs();
-    PixyCamSPI.getInstance().outputTelemetry();
-    PixyCamSPI.getInstance().writePeriodicOutputs();
+    //PixyCamSPI.getInstance().readPeriodicInputs();
+    //PixyCamSPI.getInstance().outputTelemetry();
+    //PixyCamSPI.getInstance().writePeriodicOutputs();
 
     if(LimelightSubsystem.getInstance().getLightMode() == 3){
       Turret.getInstance().readPeriodicInputs();
@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
     }
 
     Hood.getInstance().outputTelemetry();
+    Hood.getInstance().readPeriodicInputs();
 
     Shooter.getInstance().outputTelemetry();
 

@@ -15,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.lib.team1678.math.Conversions;
 import frc.robot.lib.team503.util.InterpolatingDouble;
 import frc.robot.lib.team503.util.InterpolatingTreeMap;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class Hood extends SubsystemBase {
   /** Creates a new Hood. */
@@ -25,6 +26,7 @@ public class Hood extends SubsystemBase {
   private static final double kAngleMax = 70.0;
   private static Hood instance = null;
   private int offset = 0;
+  PeriodicIO periodicIO = new PeriodicIO();
 
   public Hood() {
     mHoodmotor = new WPI_TalonSRX(Constants.HoodMotorPort);
@@ -69,15 +71,17 @@ public class Hood extends SubsystemBase {
 
   public void setHoodAngle(double targetAngle){
     double targetPos = Conversions.degreesToTalon(targetAngle, Constants.HOOD_GEAR_RATIO) + offset;
+    periodicIO.demand = (int)targetPos;
     mHoodmotor.set(ControlMode.MotionMagic, targetPos);
   }
 
   public void setHoodStop(){
+    periodicIO.demand = periodicIO.position;
     mHoodmotor.set(ControlMode.PercentOutput, 0);
   }
 
   public double getHoodAngle(){
-    return Conversions.talonToDegrees(mHoodmotor.getSelectedSensorPosition() - offset, Constants.HOOD_GEAR_RATIO);
+    return Conversions.talonToDegrees(periodicIO.position - offset, Constants.HOOD_GEAR_RATIO);
   }
 
   public void writePeriodicOutputs(){}
@@ -86,8 +90,26 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Hood Angle", getHoodAngle());
   }
 
+  public void readPeriodicInputs() {
+    if (RobotBase.isSimulation())
+    {
+        periodicIO.position = (int)periodicIO.demand;
+    }else{
+        periodicIO.position = (int) mHoodmotor.getSelectedSensorPosition(0);  
+    }
+}
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public static class PeriodicIO {
+
+    // Inputs
+    public int position;
+    // Outputs
+    public double demand;
+  }
+  
 }
