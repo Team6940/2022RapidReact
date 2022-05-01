@@ -148,7 +148,8 @@ public class Shooter extends SubsystemBase {
             if(shootMode == 1){
                 if(ShotWhileMove){
                     if(FalconToMeterSpeed(mShooter.getSelectedSensorVelocity()) == periodicIO.flywheel_demand){
-                        readyToShoot = true;
+                        //readyToShoot = true;
+                        Blocker.getInstance().turnonballLocker();
                     }
                     double[] mShotParams = new double [3];
                     mShotParams = GetMovingShotParams(
