@@ -137,9 +137,14 @@ public class SwerveDriveTrain extends SubsystemBase {
     SetModuleStates(moduleStates);
   }
 
-  public double GetHeading(){
+  public double GetHeading_Rad(){
     /*The unit is radian */
     return GetGyroRotation2d().getRadians();
+  }
+
+  public double GetHeading_Deg(){
+    /*The unit is radian */
+    return GetGyroRotation2d().getDegrees();
   }
 
   public void ZeroHeading(){

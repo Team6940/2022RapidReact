@@ -149,15 +149,15 @@ public class Shooter extends SubsystemBase {
                     mShotParams = GetMovingShotParams(
                         angleAndSpeed.y,                             // Shot Speed
                         angleAndSpeed.x,                             // Hood Angle
-                        Turret.getInstance().getAngle(),             // Turret Angle
+                        Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
                         SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
                         SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
                     double targetVelocity = mShotParams[2];
                     double targetHoodAngle = mShotParams[1];
-                    double targetTurretAngle = mShotParams[0];
+                    double targetTurretAngle = mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg();
                     double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
                     Hood.getInstance().setHoodAngle(targetHoodAngle);
-                    Turret.getInstance().setTurretAngle(targetTurretAngle);
+                    Turret.getInstance().setTurretAngle(targetTurretAngle);//TODO
                     mShooter.set(ControlMode.Velocity, targetVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
                 }else{
                     double targetVelocity = angleAndSpeed.y;
