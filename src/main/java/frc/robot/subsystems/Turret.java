@@ -133,6 +133,11 @@ public class Turret extends SubsystemBase {
         return Angle;
     }
 
+    public void setTurretAngle(double angle){
+        double targetPos = turretAngleToEncUnits(angle);
+        mTurretMotor.set(ControlMode.MotionMagic, targetPos);
+    }
+
     public double encUnitsToTurretAngle(int encUnits) {
         return Constants.kTurretStartingAngle + Conversions.talonToDegrees((double)encUnits,Constants.TURRET_GEAR_RATIO);//TODO
     }
@@ -218,10 +223,6 @@ public class Turret extends SubsystemBase {
                 }
             }
         }
-    }
-
-    public void stop() {
-        ZeroTurret();
     }
 
     public void outputTelemetry() {

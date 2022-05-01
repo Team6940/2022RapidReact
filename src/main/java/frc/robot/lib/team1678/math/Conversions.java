@@ -23,8 +23,8 @@ public class Conversions {
 
     /**
      * @param degrees Degrees of rotation of Mechanism
-     * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @return Falcon Counts
+     * @param gearRatio Gear Ratio between Talon and Mechanism
+     * @return Talon Counts
      */
     public static double degreesToTalon(double degrees, double gearRatio) {
         double ticks =  degrees / (360.0 / (gearRatio * 4096.0));
@@ -32,8 +32,8 @@ public class Conversions {
     }
 
     /**
-     * @param counts Falcon Counts
-     * @param gearRatio Gear Ratio between Falcon and Mechanism
+     * @param counts Talon Counts
+     * @param gearRatio Gear Ratio between Talon and Mechanism
      * @return Degrees of Rotation of Mechanism
      */
     public static double talonToDegrees(double counts, double gearRatio) {
@@ -42,8 +42,8 @@ public class Conversions {
 
     /**
      * @param Radians Radians of rotation of Mechanism
-     * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @return Falcon Counts
+     * @param gearRatio Gear Ratio between Talon and Mechanism
+     * @return Talon Counts
      */
     public static double RadiansToTalon(double Radians, double gearRatio) {
         double ticks =  Radians / ((Math.PI * 2) / (gearRatio * 4096.0));
@@ -52,8 +52,8 @@ public class Conversions {
 
     /**
      * @param Radians Radians of rotation of Mechanism
-     * @param gearRatio Gear Ratio between Falcon and Mechanism
-     * @return Falcon Counts
+     * @param gearRatio Gear Ratio between Talon and Mechanism
+     * @return Talon Counts
      */
     public static double TalonToRadians(double counts, double gearRatio) {
         return counts * (2 * Math.PI / (gearRatio * 4096.0));
@@ -84,7 +84,7 @@ public class Conversions {
      * @return RPM of Mechanism
      */
     public static double falconToRPM(double velocityCounts, double gearRatio) {
-        double motorRPM = velocityCounts * (600.0 / 2048.0);        
+        double motorRPM = velocityCounts * (600.0 / 2048.0); 
         double mechRPM = motorRPM / gearRatio;
         return mechRPM;
     }

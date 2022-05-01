@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team2910.math.Vector2;
 import frc.robot.lib.team2910.util.InterpolatingDouble;
 import frc.robot.lib.team2910.util.InterpolatingTreeMap;
+import frc.robot.lib.team6940.math.MathUtils;
 
 
 
@@ -26,6 +27,7 @@ public class Shooter extends SubsystemBase {
     private static Shooter instance = null;
     private int num = 1;
     private int shootMode = 1;//1 means table shoot ,0 means algorithm shoot
+    private boolean ShotWhileMove = true;
     private static WPI_TalonFX mShooter;
     private final PeriodicIO periodicIO = new PeriodicIO();
     ShooterControlState currentState = ShooterControlState.STOP;
@@ -35,13 +37,16 @@ public class Shooter extends SubsystemBase {
      * We use FeedForward and a little P gains for Shooter
      */
     SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);
-    private ShuffleboardTab tab = Shuffleboard.getTab("Shooter Speed");
+    private ShuffleboardTab shooterSpeedTab = Shuffleboard.getTab("Shooter Speed");
     private NetworkTableEntry shooterSpeed =
-        tab.add("Shooter Speed", 1)
-           .getEntry();
+        shooterSpeedTab.add("Shooter Speed", 1).getEntry();
+
+    private ShuffleboardTab HoodAngleTab = Shuffleboard.getTab("Hood Angle");
+    private NetworkTableEntry hoodAngle =
+        HoodAngleTab.add("Hood Angle", 1).getEntry();
 
     static { //TODO first is meters for distance,second is MPS
-        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(30,2.5));//TODO
+        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(20,2.5));//TODO
         SHOOTER_TUNING.put(new InterpolatingDouble(1.9304), new Vector2(35,3.0));
         SHOOTER_TUNING.put(new InterpolatingDouble(2.5400), new Vector2(40,3.5));
         SHOOTER_TUNING.put(new InterpolatingDouble(3.3020), new Vector2(45,4.0));
@@ -50,6 +55,7 @@ public class Shooter extends SubsystemBase {
         SHOOTER_TUNING.put(new InterpolatingDouble(6.0960), new Vector2(60,5.5));
         SHOOTER_TUNING.put(new InterpolatingDouble(7.6200), new Vector2(65,6.0));
     }
+
     public Shooter() {
         configTalons();
     }
@@ -138,14 +144,30 @@ public class Shooter extends SubsystemBase {
         }else if(currentState == ShooterControlState.SHOOT){
             Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
             if(shootMode == 1){
-                //double targetVelocity = getShooterSpeedForDistance(LimelightSubsystem.getInstance().getRobotToTargetDistance());
-                double targetVelocity = angleAndSpeed.y;
-                double targetAngle = angleAndSpeed.x;
-                double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
-                periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
-                velocityStabilized = meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm() < 50; //TODO
-                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-                Hood.getInstance().setHoodAngle(targetAngle);
+                if(ShotWhileMove){
+                    double[] mShotParams = new double [3];
+                    mShotParams = GetMovingShotParams(
+                        angleAndSpeed.y,                             // Shot Speed
+                        angleAndSpeed.x,                             // Hood Angle
+                        Turret.getInstance().getAngle(),             // Turret Angle
+                        SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
+                        SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
+                    double targetVelocity = mShotParams[2];
+                    double targetHoodAngle = mShotParams[1];
+                    double targetTurretAngle = mShotParams[0];
+                    double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
+                    Hood.getInstance().setHoodAngle(targetHoodAngle);
+                    Turret.getInstance().setTurretAngle(targetTurretAngle);
+                    mShooter.set(ControlMode.Velocity, targetVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+                }else{
+                    double targetVelocity = angleAndSpeed.y;
+                    double targetAngle = angleAndSpeed.x;
+                    double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
+                    periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
+                    velocityStabilized = meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm() < 50; //TODO
+                    Hood.getInstance().setHoodAngle(targetAngle);
+                    mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+                }
             }else{
                 double targetVelocity = getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
                 double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
@@ -272,9 +294,29 @@ public class Shooter extends SubsystemBase {
         currentState = ShooterControlState.INIT;
     }
 
-    public double readFromShuffleBoard(){
+    public double readShooterSpeedFromShuffleBoard(){
         SmartDashboard.putNumber("Shooter Speed", shooterSpeed.getDouble(1.0));
         return shooterSpeed.getDouble(1.0);
+    }
+
+    public double readHoodAngleFromShuffleBoard(){
+        SmartDashboard.putNumber("Hood Angle", hoodAngle.getDouble(20.0));
+        return hoodAngle.getDouble(20.0);
+    }
+
+    public double[] GetMovingShotParams(double V, double phi_v, double phi_h, double vx, double vy){
+        double theta_h = Math.atan((V*Math.cos(phi_v)*Math.sin(phi_h) + vy) /
+                        (V*Math.cos(phi_v)*Math.cos(phi_h) + vx));
+        double theta_v = MathUtils.acot((V*Math.cos(phi_v)*Math.cos(phi_h) +
+                          vx) / (V*Math.sin(phi_v)*Math.cos(theta_h)));
+        double vs = V*Math.sin(phi_v)/Math.sin(theta_v);
+
+        double[] myShootParams = new double [3];
+        myShootParams[0] = theta_h;
+        myShootParams[1] = theta_v;
+        myShootParams[2] = vs;
+
+        return myShootParams;
     }
 
     public enum ShooterControlState {

@@ -74,6 +74,14 @@ public class Feeder extends SubsystemBase {
     num += 1;
   }
 
+  public void turnOnIntakeAndBallLoader(){
+    currentState = FeederControlState.INTAKEANDBALLLOADER_ON;
+  }
+
+  public void turnOffIntakeAndBallLoader(){
+    currentState = FeederControlState.INATKEANDBALLLOADER_OFF;
+  }
+
   public void setSolenoidState(boolean status){
     m_intakesolenoid.set(status);
   }

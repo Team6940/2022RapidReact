@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.team1678.math.Conversions;
-import frc.robot.lib.team503.util.InterpolatingDouble;
-import frc.robot.lib.team503.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class Hood extends SubsystemBase {
@@ -97,7 +95,11 @@ public class Hood extends SubsystemBase {
     }else{
         periodicIO.position = (int) mHoodmotor.getSelectedSensorPosition(0);  
     }
-}
+  }
+
+  public void ZeroHood(){
+    mHoodmotor.set(ControlMode.MotionMagic, offset);
+  }
 
   @Override
   public void periodic() {
