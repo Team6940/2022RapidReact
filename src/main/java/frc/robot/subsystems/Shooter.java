@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team2910.math.Vector2;
 import frc.robot.lib.team2910.util.InterpolatingDouble;
 import frc.robot.lib.team2910.util.InterpolatingTreeMap;
+import frc.robot.lib.team503.util.Util;
 import frc.robot.lib.team6940.math.MathUtils;
 
 
@@ -31,6 +32,8 @@ public class Shooter extends SubsystemBase {
     private static WPI_TalonFX mShooter;
     private final PeriodicIO periodicIO = new PeriodicIO();
     ShooterControlState currentState = ShooterControlState.STOP;
+    private double MoveOffset = 0;
+    private boolean readyToShoot = false;
     //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
     private boolean velocityStabilized = true;
     /**
@@ -40,20 +43,19 @@ public class Shooter extends SubsystemBase {
     private ShuffleboardTab shooterSpeedTab = Shuffleboard.getTab("Shooter Speed");
     private NetworkTableEntry shooterSpeed =
         shooterSpeedTab.add("Shooter Speed", 1).getEntry();
-
     private ShuffleboardTab HoodAngleTab = Shuffleboard.getTab("Hood Angle");
     private NetworkTableEntry hoodAngle =
         HoodAngleTab.add("Hood Angle", 1).getEntry();
 
     static { //TODO first is meters for distance,second is MPS
-        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(20,2.5));//TODO
-        SHOOTER_TUNING.put(new InterpolatingDouble(1.9304), new Vector2(35,3.0));
-        SHOOTER_TUNING.put(new InterpolatingDouble(2.5400), new Vector2(40,3.5));
+        SHOOTER_TUNING.put(new InterpolatingDouble(0.0000), new Vector2(70,2.5));//TODO
+        SHOOTER_TUNING.put(new InterpolatingDouble(1.9304), new Vector2(55,3.0));
+        SHOOTER_TUNING.put(new InterpolatingDouble(2.5400), new Vector2(50,3.5));
         SHOOTER_TUNING.put(new InterpolatingDouble(3.3020), new Vector2(45,4.0));
-        SHOOTER_TUNING.put(new InterpolatingDouble(4.0640), new Vector2(50,4.5));
-        SHOOTER_TUNING.put(new InterpolatingDouble(4.8260), new Vector2(55,5.0));
-        SHOOTER_TUNING.put(new InterpolatingDouble(6.0960), new Vector2(60,5.5));
-        SHOOTER_TUNING.put(new InterpolatingDouble(7.6200), new Vector2(65,6.0));
+        SHOOTER_TUNING.put(new InterpolatingDouble(4.0640), new Vector2(40,4.5));
+        SHOOTER_TUNING.put(new InterpolatingDouble(4.8260), new Vector2(35,5.0));
+        SHOOTER_TUNING.put(new InterpolatingDouble(6.0960), new Vector2(30,5.5));
+        SHOOTER_TUNING.put(new InterpolatingDouble(7.6200), new Vector2(25,6.0));
     }
 
     public Shooter() {
@@ -145,20 +147,25 @@ public class Shooter extends SubsystemBase {
             Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
             if(shootMode == 1){
                 if(ShotWhileMove){
+                    if(FalconToMeterSpeed(mShooter.getSelectedSensorVelocity()) == periodicIO.flywheel_demand){
+                        readyToShoot = true;
+                    }
                     double[] mShotParams = new double [3];
                     mShotParams = GetMovingShotParams(
                         angleAndSpeed.y,                             // Shot Speed
                         angleAndSpeed.x,                             // Hood Angle
-                        Turret.getInstance().getAngle(),             // Turret Angle
+                        Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
                         SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
                         SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
                     double targetVelocity = mShotParams[2];
                     double targetHoodAngle = mShotParams[1];
-                    double targetTurretAngle = mShotParams[0];
+                    double targetTurretAngle = Util.boundAngleNeg180to180Degrees(
+                        mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
+                    MoveOffset = targetTurretAngle - Turret.getInstance().getAngle();
                     double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
+                    periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
                     Hood.getInstance().setHoodAngle(targetHoodAngle);
-                    Turret.getInstance().setTurretAngle(targetTurretAngle);
-                    mShooter.set(ControlMode.Velocity, targetVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+                    mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
                 }else{
                     double targetVelocity = angleAndSpeed.y;
                     double targetAngle = angleAndSpeed.x;
@@ -305,11 +312,17 @@ public class Shooter extends SubsystemBase {
     }
 
     public double[] GetMovingShotParams(double V, double phi_v, double phi_h, double vx, double vy){
-        double theta_h = Math.atan((V*Math.cos(phi_v)*Math.sin(phi_h) + vy) /
-                        (V*Math.cos(phi_v)*Math.cos(phi_h) + vx));
-        double theta_v = MathUtils.acot((V*Math.cos(phi_v)*Math.cos(phi_h) +
-                          vx) / (V*Math.sin(phi_v)*Math.cos(theta_h)));
-        double vs = V*Math.sin(phi_v)/Math.sin(theta_v);
+        double phi_v_rad = Math.toRadians(phi_v);
+        double phi_h_rad = Math.toRadians(phi_h);
+
+        double theta_h_rad = Math.atan2((V*Math.cos(phi_v_rad)*Math.sin(phi_h_rad) - vy) ,
+                                    (V*Math.cos(phi_v_rad)*Math.cos(phi_h_rad) - vx));
+        double theta_v_rad = Math.atan(1/((V*Math.cos(phi_v_rad)*Math.cos(phi_h_rad) -
+                                        vx) / (V*Math.sin(phi_v_rad)*Math.cos(theta_h_rad))));
+        double vs = V*Math.sin(phi_v_rad)/Math.sin(theta_v_rad);
+
+        double theta_h = Math.toDegrees(theta_h_rad);
+        double theta_v = Math.toDegrees(theta_v_rad);
 
         double[] myShootParams = new double [3];
         myShootParams[0] = theta_h;
@@ -317,6 +330,14 @@ public class Shooter extends SubsystemBase {
         myShootParams[2] = vs;
 
         return myShootParams;
+    }
+
+    public double getMoveOffset(){
+        return MoveOffset;
+    }
+
+    public boolean whetherReadyToShoot(){
+        return readyToShoot;
     }
 
     public enum ShooterControlState {

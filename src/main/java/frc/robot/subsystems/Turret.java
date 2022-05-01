@@ -211,7 +211,7 @@ public class Turret extends SubsystemBase {
             }
         }else if(currentState == TurretControlState.VISION_LOCKED) {                
             desiredAngle = getAngle();
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
+            periodicIO.demand = turretAngleToEncUnits(desiredAngle + Shooter.getInstance().getMoveOffset()) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             if (!isTargetReady()) {
                 startVisionFinding();

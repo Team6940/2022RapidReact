@@ -124,6 +124,21 @@ public class SwerveDriveTrain extends SubsystemBase {
       for(int i = 0;i < swerve_modules_.length;i++){
         swerve_modules_[i].SetDesiredState(desiredStates[i], true);
       }
+      // 
+      var frontLeftState = desiredStates[0];
+      var frontRightState = desiredStates[1];
+      var backLeftState = desiredStates[2];
+      var backRightState = desiredStates[3];
+
+      // Convert to chassis speeds
+      ChassisSpeeds chassisSpeeds = Constants.swerveKinematics.toChassisSpeeds(
+        frontLeftState, frontRightState, backLeftState, backRightState);
+
+      //Get field-relative x and y speed
+      //TODO:The gyro may needs to change
+      vxMetersPerSecond = chassisSpeeds.vxMetersPerSecond * GetGyroRotation2d().getCos() + chassisSpeeds.vyMetersPerSecond * GetGyroRotation2d().getSin();
+      vyMetersPerSecond = - chassisSpeeds.vxMetersPerSecond * GetGyroRotation2d().getSin() + chassisSpeeds.vyMetersPerSecond * GetGyroRotation2d().getCos();
+      
   }
 
   /**
@@ -137,9 +152,14 @@ public class SwerveDriveTrain extends SubsystemBase {
     SetModuleStates(moduleStates);
   }
 
-  public double GetHeading(){
+  public double GetHeading_Rad(){
     /*The unit is radian */
     return GetGyroRotation2d().getRadians();
+  }
+
+  public double GetHeading_Deg(){
+    /*The unit is radian */
+    return GetGyroRotation2d().getDegrees();
   }
 
   public void ZeroHeading(){

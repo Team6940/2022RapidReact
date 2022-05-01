@@ -47,6 +47,7 @@ public class Blocker extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    autoTurnOnBlocker();
   }
 
   public void turnonballLocker(){
@@ -55,6 +56,14 @@ public class Blocker extends SubsystemBase {
 
   public void turnoffballLocker(){
     currentState = BlockerControlState.BALLLOCKER_OFF;
+  }
+
+  public void autoTurnOnBlocker(){
+    if(Shooter.getInstance().whetherReadyToShoot()){
+      currentState = BlockerControlState.BALLLOCKER_ON;
+    }else{
+      currentState = BlockerControlState.BALLLOCKER_OFF;
+    }
   }
 
   public enum BlockerControlState {
