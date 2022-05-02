@@ -126,13 +126,20 @@ public class Turret extends SubsystemBase {
     }
 
     public double getAngle() {
-        double rawTurretAngle = encUnitsToTurretAngle(periodicIO.position - offset);
+        double rawTurretAngle = 0;
+        if (RobotBase.isSimulation()){
+            rawTurretAngle = encUnitsToTurretAngle(periodicIO.position - offset);
+        }else{
+            rawTurretAngle = encUnitsToTurretAngle((int)mTurretMotor.getSelectedSensorPosition(0) - offset);
+        }
+        
         double Angle = Util.boundAngleNeg180to180Degrees(rawTurretAngle);
         return Angle;
     }
 
     public void setTurretAngle(double angle) {
         double targetPos = turretAngleToEncUnits(angle);
+        periodicIO.position = (int)targetPos;
         mTurretMotor.set(ControlMode.MotionMagic, targetPos);
     }
 

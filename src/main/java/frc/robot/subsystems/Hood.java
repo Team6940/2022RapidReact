@@ -79,7 +79,12 @@ public class Hood extends SubsystemBase {
   }
 
   public double getHoodAngle(){
-    return Conversions.talonToDegrees(periodicIO.position - offset, Constants.HOOD_GEAR_RATIO);
+    if (RobotBase.isSimulation()){
+      return Conversions.talonToDegrees(periodicIO.position - offset, Constants.HOOD_GEAR_RATIO);
+    }else{
+      return Conversions.talonToDegrees((int) mHoodmotor.getSelectedSensorPosition(0)- offset, Constants.HOOD_GEAR_RATIO);
+    }
+    
   }
 
   public void writePeriodicOutputs(){}

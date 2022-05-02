@@ -211,7 +211,13 @@ public class Shooter extends SubsystemBase {
     public double getFlywheelVelocity() {
         // meters per second
         double speed = 0;
-        speed = mShooter.getSelectedSensorVelocity() / 0.1 / 2048.0 
+        double rawunits = 0;
+        if (RobotBase.isSimulation()) {
+            rawunits = periodicIO.flywheel_demand;
+        }else{
+            rawunits = mShooter.getSelectedSensorVelocity();
+        }
+        speed = rawunits / 0.1 / 2048.0 
                 * Constants.kFlyWheelEncoderReductionRatio
                 * Constants.kFlyWheelWheelDiameter * Math.PI;
         return speed;
