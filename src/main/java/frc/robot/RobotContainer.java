@@ -137,13 +137,13 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(3)),
         new InstantCommand(() -> m_turret.startVisionFinding()),
-        new InstantCommand(() -> m_shooter.setInitShoot()) )
+        new InstantCommand(() -> m_shooter.setInitShooter()) )
       );
     TurretButton.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
         new InstantCommand(() -> m_turret.Stop()),
-        new InstantCommand(() -> m_shooter.setStopShoot()) )
+        new InstantCommand(() -> m_shooter.setStopShooter()) )
       );
 
     // Reset Yaw button . Remember to protect it during the game!

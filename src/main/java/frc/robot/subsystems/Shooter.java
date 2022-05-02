@@ -127,67 +127,70 @@ public class Shooter extends SubsystemBase {
         if(currentState == ShooterControlState.STOP) {
             mShooter.set(ControlMode.PercentOutput, 0);
             Hood.getInstance().setHoodStop();
-        }else if(currentState == ShooterControlState.INIT) {
+        }
+        if(currentState == ShooterControlState.INIT) {
             mShooter.set(ControlMode.PercentOutput, 0);
-            if(Turret.getInstance().isVisionFinding() || Turret.getInstance().isVisionMoving()){
-                currentState = ShooterControlState.PREPARE_SHOOT;
-            }else if(Turret.getInstance().isTargetReady()){
-                currentState = ShooterControlState.SHOOT;
-            }
-        }else if(currentState == ShooterControlState.PREPARE_SHOOT){
-            //setVelocity(Constants.kFlywheelIdleVelocity);
+        }
+        if(currentState == ShooterControlState.PREPARE_SHOOT){
             double cal_shooterFeedForward = shooterFeedForward.calculate(FalconToMeterSpeed(Constants.kFlywheelIdleVelocity));
             mShooter.set(ControlMode.Velocity, Constants.kFlywheelIdleVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-            if(Turret.getInstance().isTargetReady()){
-                currentState = ShooterControlState.SHOOT;
-            }else if(Turret.getInstance().isStop()){
-                currentState = ShooterControlState.STOP;
+        }
+        if(currentState == ShooterControlState.SHOOT){
+            if(isShooterCanShoot()){  
+                Blocker.getInstance().turnonballLocker();
             }
-        }else if(currentState == ShooterControlState.SHOOT){
-            Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
-            if(shootMode == 1){
-                if(ShotWhileMove){
-                    if(FalconToMeterSpeed(mShooter.getSelectedSensorVelocity()) == periodicIO.flywheel_demand){
-                        //readyToShoot = true;
-                        Blocker.getInstance().turnonballLocker();
-                    }
-                    double[] mShotParams = new double [3];
-                    mShotParams = GetMovingShotParams(
+        }
+    }
+
+    public int getShooterMode(){
+        return shootMode;
+    }
+
+    public void setFixedShootParams(){
+        double targetVelocity = getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
+        double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
+        periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
+        mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+    }
+    public void SetMovingShootParams(){
+        Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
+        double[] mShotParams = new double [3];
+        mShotParams = GetMovingShotParams(
                         angleAndSpeed.y,                             // Shot Speed
                         angleAndSpeed.x,                             // Hood Angle
                         Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
                         SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
                         SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
-                    double targetVelocity = mShotParams[2];
-                    double targetHoodAngle = mShotParams[1];
-                    double targetTurretAngle = Util.boundAngleNeg180to180Degrees(
+        double targetVelocity = mShotParams[2];
+        double targetHoodAngle = mShotParams[1];
+        double targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
-                    MoveOffset = targetTurretAngle - Turret.getInstance().getAngle();
-                    double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
-                    periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
-                    Hood.getInstance().setHoodAngle(targetHoodAngle);
-                    mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-                }else{
-                    double targetVelocity = angleAndSpeed.y;
-                    double targetAngle = angleAndSpeed.x;
-                    double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
-                    periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
-                    velocityStabilized = meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm() < 50; //TODO
-                    Hood.getInstance().setHoodAngle(targetAngle);
-                    mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-                }
-            }else{
-                double targetVelocity = getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE);
-                double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
-                periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
-                mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-            }
-            if(Turret.getInstance().isStop()){
-                currentState = ShooterControlState.STOP;
-            }else if(Turret.getInstance().isVisionFinding() || Turret.getInstance().isVisionMoving()){
-                currentState = ShooterControlState.PREPARE_SHOOT;
-            }
-        }
+        MoveOffset = targetTurretAngle - Turret.getInstance().getAngle();
+        double cal_shooterFeedForward = shooterFeedForward.calculate(targetVelocity);
+        periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
+        Hood.getInstance().setHoodAngle(targetHoodAngle);
+        mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+    }
+
+    public boolean isShooterCanShoot(){
+        boolean result = false;
+        Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
+        double[] mShotParams = new double [3];
+        mShotParams = GetMovingShotParams(
+                        angleAndSpeed.y,                             // Shot Speed
+                        angleAndSpeed.x,                             // Hood Angle
+                        Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
+                        SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
+                        SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
+        double targetVelocity = mShotParams[2];
+        double targetHoodAngle = mShotParams[1];
+        double targetTurretAngle = Util.boundAngleNeg180to180Degrees(
+                        mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
+        result = (Math.abs(meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm()) < 50) 
+                 &&( Math.abs(targetTurretAngle - Turret.getInstance().getAngle()) < 1.0)
+                 &&( Math.abs(Hood.getInstance().getHoodAngle() -targetHoodAngle) < 1.0)
+                ; 
+        return result;
     }
 
     public void shootFlywheel(double meterSpeed) {
@@ -282,23 +285,26 @@ public class Shooter extends SubsystemBase {
 
     public void autoSwitchShooterMode(){
         if(num % 2 == 1){
-            shootMode = 1;
+            shootMode = 1; //hood can move
           }
           else{
-            shootMode = 0;
+            shootMode = 0; //hood is fixed
           }
           num += 1;
     }
 
-    public void setPrepareShoot(){
+    public void setShootShooter(){
+        currentState = ShooterControlState.SHOOT;
+    }
+    public void setPrepareShooter(){
         currentState = ShooterControlState.PREPARE_SHOOT;
     }
 
-    public void setStopShoot(){
+    public void setStopShooter(){
         currentState = ShooterControlState.STOP;
     }
 
-    public void setInitShoot(){
+    public void setInitShooter(){
         currentState = ShooterControlState.INIT;
     }
 

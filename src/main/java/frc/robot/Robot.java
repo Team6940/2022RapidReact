@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
     Turret.getInstance().ZeroTurret();
     Hood.getInstance().ZeroHood();
     Turret.getInstance().startVisionFinding();
-    Shooter.getInstance().setInitShoot();
+    Shooter.getInstance().setInitShooter();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
   }
 

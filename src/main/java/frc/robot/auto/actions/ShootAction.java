@@ -36,7 +36,7 @@ public class ShootAction extends CommandBase {
   public void end(boolean interrupted) {
     vFeeder.turnOffIntakeAndBallLoader();
     vBlocker.turnoffballLocker();
-    vShooter.setStopShoot();
+    vShooter.setStopShooter();
   }
 
   // Returns true when the command should end.
