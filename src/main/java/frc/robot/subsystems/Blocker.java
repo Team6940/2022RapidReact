@@ -35,6 +35,7 @@ public class Blocker extends SubsystemBase {
   public void writePeriodicOutputs(){
     if(currentState == BlockerControlState.BALLLOCKER_ON){
       m_blockermotor.set(ControlMode.PercentOutput, Constants.BlockerMotorSpeed);
+      currentState = BlockerControlState.BALLLOCKER_OFF;
     }else if(currentState == BlockerControlState.BALLLOCKER_OFF){
       m_blockermotor.set(ControlMode.PercentOutput, 0);
     }

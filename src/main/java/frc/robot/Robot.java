@@ -125,11 +125,22 @@ public class Robot extends TimedRobot {
 
     Turret.getInstance().ZeroTurret();
     Hood.getInstance().ZeroHood();
+    Turret.getInstance().startVisionFinding();
+    Shooter.getInstance().setInitShooter();
+    LimelightSubsystem.getInstance().reloadLimeLightSimu();
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(LimelightSubsystem.getInstance().getLightMode() == 3){
+      if(Turret.getInstance().isStop()){
+        Turret.getInstance().startVisionFinding();
+      }
+    }else{
+      Turret.getInstance().Stop();
+    }
+  }
 
   @Override
   public void testInit() {
