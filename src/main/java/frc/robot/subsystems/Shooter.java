@@ -19,7 +19,7 @@ import frc.robot.lib.team2910.util.InterpolatingDouble;
 import frc.robot.lib.team2910.util.InterpolatingTreeMap;
 import frc.robot.lib.team503.util.Util;
 import frc.robot.lib.team6940.math.MathUtils;
-
+import edu.wpi.first.wpilibj.RobotBase;
 
 
 public class Shooter extends SubsystemBase {
@@ -133,7 +133,8 @@ public class Shooter extends SubsystemBase {
         }
         if(currentState == ShooterControlState.PREPARE_SHOOT){
             double cal_shooterFeedForward = shooterFeedForward.calculate(FalconToMeterSpeed(Constants.kFlywheelIdleVelocity));
-            mShooter.set(ControlMode.Velocity, Constants.kFlywheelIdleVelocity, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+            periodicIO.flywheel_demand = MeterSpeedToFalcon(Constants.kFlywheelIdleVelocity);
+            mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
         }
         if(currentState == ShooterControlState.SHOOT){
             if(isShooterCanShoot()){  
@@ -188,7 +189,7 @@ public class Shooter extends SubsystemBase {
                         mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
         result = (Math.abs(meterSpeedToRpm(targetVelocity) - getShooterSpeedRpm()) < 50) 
                  &&( Math.abs(targetTurretAngle - Turret.getInstance().getAngle()) < 1.0)
-                 &&( Math.abs(Hood.getInstance().getHoodAngle() -targetHoodAngle) < 1.0)
+                 &&( Math.abs(targetHoodAngle - Hood.getInstance().getHoodAngle()) < 1.0)
                 ; 
         return result;
     }
@@ -199,11 +200,12 @@ public class Shooter extends SubsystemBase {
         / (Constants.kFlyWheelWheelDiameter * Math.PI)
         / Constants.kFlyWheelEncoderReductionRatio
         * 2048.0 * 0.1;
+        periodicIO.flywheel_demand = driveOutput;
         mShooter.set(ControlMode.Velocity,driveOutput);
     }
 
     public boolean shootIsReady(){
-        return (currentState == ShooterControlState.SHOOT);
+        return isShooterCanShoot();
     }
 
     public double getFlywheelVelocity() {
@@ -225,7 +227,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public synchronized double getShooterSpeedRpm() {
-        return mShooter.getSelectedSensorVelocity() * 600.0 / 2048.0;
+        if (RobotBase.isSimulation()) {
+            return (periodicIO.flywheel_demand * 600.0) / 2048.0;
+        }else{
+            return mShooter.getSelectedSensorVelocity() * 600.0 / 2048.0;
+        }
+
     }
 
     public double meterSpeedToRpm(double meterSpeed){

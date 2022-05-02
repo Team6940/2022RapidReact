@@ -132,7 +132,15 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(LimelightSubsystem.getInstance().getLightMode() == 3){
+      if(Turret.getInstance().isStop()){
+        Turret.getInstance().startVisionFinding();
+      }
+    }else{
+      Turret.getInstance().Stop();
+    }
+  }
 
   @Override
   public void testInit() {
