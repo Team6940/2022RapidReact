@@ -35,6 +35,10 @@ public class Shooter extends SubsystemBase {
     private boolean readyToShoot = false;
     //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
     private boolean velocityStabilized = true;
+    double targetVelocity ;
+    double targetHoodAngle ;
+    double targetTurretAngle;
+
     /**
      * We use FeedForward and a little P gains for Shooter
      */
@@ -93,12 +97,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        if (Constants.kOutputTelemetry) {
-            SmartDashboard.putString("Shooter State", currentState.name());   
-            SmartDashboard.putNumber("Shooter Mode", shootMode);
-            SmartDashboard.putNumber("Shooter Velocity", periodicIO.flywheel_velocity);
-            SmartDashboard.putBoolean("Shooter ready",shootIsReady());
-        }
+        SmartDashboard.putString("Shooter State", currentState.name());   
+        SmartDashboard.putNumber("Shooter Mode", shootMode);
+        SmartDashboard.putBoolean("Shooter ready",shootIsReady());
+        SmartDashboard.putNumber("Shooter Velocity", periodicIO.flywheel_velocity);
+        SmartDashboard.putNumber("targetVelocity", targetVelocity);
+        SmartDashboard.putNumber("targetHoodAngle", targetHoodAngle);
+        SmartDashboard.putNumber("targetTurretAngle", targetTurretAngle);
     }
 
     /**
@@ -162,9 +167,9 @@ public class Shooter extends SubsystemBase {
                         Turret.getInstance().getAngle() + LimelightSubsystem.getInstance().Get_tx() +SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret target angle (The same coordinate system with swerve)
                         SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
                         SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
-        double targetVelocity = meterSpeedToRpm(mShotParams[2]);
-        double targetHoodAngle = mShotParams[1];
-        double targetTurretAngle = Util.boundAngleNeg180to180Degrees(
+        targetVelocity = meterSpeedToRpm(mShotParams[2]);
+        targetHoodAngle = mShotParams[1];
+        targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
         MoveOffset = targetTurretAngle - Turret.getInstance().getAngle();
         double cal_shooterFeedForward = shooterFeedForward.calculate(RpmToMeterSpeed(targetVelocity));
@@ -183,9 +188,9 @@ public class Shooter extends SubsystemBase {
                         Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
                         SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
                         SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
-        double targetVelocity = meterSpeedToRpm(mShotParams[2]);
-        double targetHoodAngle = mShotParams[1];
-        double targetTurretAngle = Util.boundAngleNeg180to180Degrees(
+        targetVelocity = meterSpeedToRpm(mShotParams[2]);
+        targetHoodAngle = mShotParams[1];
+        targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
         result = (Math.abs(targetVelocity - getShooterSpeedRpm()) < 50) 
                  &&( Math.abs(targetTurretAngle - Turret.getInstance().getAngle()) < 1.0)

@@ -67,19 +67,16 @@ public class Robot extends TimedRobot {
     //PixyCamSPI.getInstance().readPeriodicInputs();
     //PixyCamSPI.getInstance().outputTelemetry();
     //PixyCamSPI.getInstance().writePeriodicOutputs();
-
+    Turret.getInstance().readPeriodicInputs();
+    Shooter.getInstance().readPeriodicInputs();
+    Hood.getInstance().readPeriodicInputs();
     if(LimelightSubsystem.getInstance().getLightMode() == 3){
-      Turret.getInstance().readPeriodicInputs();
       Turret.getInstance().writePeriodicOutputs();
-      Turret.getInstance().outputTelemetry();
-      Shooter.getInstance().readPeriodicInputs();
       Shooter.getInstance().writePeriodicOutputs();
     }
-
-    Hood.getInstance().outputTelemetry();
-    Hood.getInstance().readPeriodicInputs();
-
+    Turret.getInstance().outputTelemetry();
     Shooter.getInstance().outputTelemetry();
+    Hood.getInstance().outputTelemetry();
 
     //Shooter.getInstance().readHoodAngleFromShuffleBoard();
     //Shooter.getInstance().readShooterSpeedFromShuffleBoard();
@@ -125,9 +122,9 @@ public class Robot extends TimedRobot {
 
     Turret.getInstance().ZeroTurret();
     Hood.getInstance().ZeroHood();
-    Turret.getInstance().startVisionFinding();
-    Shooter.getInstance().setInitShooter();
+    Shooter.getInstance().setStopShooter();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
+    Turret.getInstance().startVisionFinding();
   }
 
   /** This function is called periodically during operator control. */

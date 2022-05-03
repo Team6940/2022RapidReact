@@ -91,7 +91,7 @@ public final class Constants {
     public static final int kTurretStartingAngle = 0; //TODO
     public static final int kTurretAngleTolerance = 0; //TODO
     public static final int kTurretStep = 10;
-    public static final boolean kOutputTelemetry = true;
+    public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
     public static final double TargetMinError = 1.0; //TODO 目标锁定的最小误差
 
