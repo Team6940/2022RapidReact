@@ -153,13 +153,14 @@ public class Shooter extends SubsystemBase {
         periodicIO.flywheel_demand = MeterSpeedToFalcon(targetVelocity);
         mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
     }
+    
     public void SetMovingShootParams(){
         Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
                         angleAndSpeed.y,                             // Shot Speed
                         angleAndSpeed.x,                             // Hood Angle
-                        Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
+                        Turret.getInstance().getAngle() + LimelightSubsystem.getInstance().Get_tx() +SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret target angle (The same coordinate system with swerve)
                         SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
                         SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
         double targetVelocity = mShotParams[2];
