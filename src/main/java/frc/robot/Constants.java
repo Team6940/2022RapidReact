@@ -91,7 +91,7 @@ public final class Constants {
     public static final int kTurretStartingAngle = 0; //TODO
     public static final int kTurretAngleTolerance = 0; //TODO
     public static final int kTurretStep = 10;
-    public static final boolean kOutputTelemetry = true;
+    public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
     public static final double TargetMinError = 1.0; //TODO 目标锁定的最小误差
 
@@ -113,7 +113,7 @@ public final class Constants {
     public static final double SHOOTER_KV = 0 / 12;
     public static final double SHOOTER_KA = 0 / 12;
 
-    public static final double kFlywheelIdleVelocity = 1.0; //meters/s //TODO
+    public static final double kFlywheelIdleVelocity = 1000; //RPM //TODO
     public static double kFlyWheelEncoderReductionRatio =  60.0 / 32.0 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
