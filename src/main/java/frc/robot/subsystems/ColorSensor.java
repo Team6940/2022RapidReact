@@ -69,7 +69,7 @@ public class ColorSensor extends SubsystemBase {
 
     public ColorSensor() {
         sensor = new Sensor();
-        ballIR = new DigitalInput(Constants.ColorConstant.BALL_IR_SENSOR);
+        ballIR = new DigitalInput(Constants.LOW_BALL_IR_SENSOR); //TODO
         getTargetBallUpdate();
     }
 

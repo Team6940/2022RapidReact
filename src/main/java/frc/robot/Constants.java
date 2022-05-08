@@ -30,7 +30,6 @@ public final class Constants {
     public interface ColorConstant {
 
         boolean DEBUG_MODE = true;
-        int BALL_IR_SENSOR = 4; //TODO
         boolean ENABLED  = true;
         boolean AUTO = false;
         double  TARGET_BIAS  =  1.5;//TODO
@@ -41,6 +40,16 @@ public final class Constants {
             Color BLUE = new Color(0.22, 0.43, 0.35);
         }
     }
+
+    //Conveyor constants
+    public static  int TOP_BALL_IR_SENSOR = 4; //TODO
+    public static int LOW_BALL_IR_SENSOR = 5; //TODO
+
+    public static double SLOW_MUL = 5.0 / 8.0; //TODO
+    public static double TOP_BELT_SPEED = 0.8; //TODO
+    public static double ACCEPT_SPEED = 1.0; //TODO
+    public static double REJECT_SPEED = -1.0; //TODO
+
     // Blocker port
     public static int BlockerMotorPort = 27; //TODO
     public static double BlockerMotorSpeed = 0.4;
