@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.LedSubsystem;
@@ -94,6 +95,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    ColorSensor.getInstance().getTargetBallUpdate();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -119,7 +121,7 @@ public class Robot extends TimedRobot {
 
     RobotContainer.m_swerve.ZeroHeading();
     RobotContainer.m_swerve.whetherstoreyaw = false;
-
+    ColorSensor.getInstance().getTargetBallUpdate();
     Turret.getInstance().ZeroTurret();
     Hood.getInstance().ZeroHood();
     Shooter.getInstance().setStopShooter();

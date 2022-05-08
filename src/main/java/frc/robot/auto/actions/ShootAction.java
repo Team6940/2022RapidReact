@@ -8,12 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Turret;
 
 public class ShootAction extends CommandBase {
   /** Creates a new ShootAction. */
   Blocker vBlocker = Blocker.getInstance();
   Shooter vShooter = Shooter.getInstance();
   Feeder vFeeder = Feeder.getInstance();
+  Turret vTurret = Turret.getInstance();
   public ShootAction() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(vBlocker,vShooter,vFeeder);
@@ -36,7 +38,7 @@ public class ShootAction extends CommandBase {
   public void end(boolean interrupted) {
     vFeeder.turnOffIntakeAndBallLoader();
     vBlocker.turnoffballLocker();
-    vShooter.setStopShooter();
+    vTurret.Stop();
   }
 
   // Returns true when the command should end.
