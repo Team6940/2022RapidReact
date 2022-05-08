@@ -11,18 +11,18 @@ import frc.robot.subsystems.Turret;
 public class TurretAndShooterAction extends CommandBase {
   /** Creates a new TurretAction. */
   Turret mTurret = Turret.getInstance();
-  Shooter mShooter = Shooter.getInstance();
+  //Shooter mShooter = Shooter.getInstance();
 
   public TurretAndShooterAction() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(mTurret,mShooter);
+    addRequirements(mTurret/*,mShooter*/);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     mTurret.startVisionFinding();
-    mShooter.setPrepareShooter();
+    //mShooter.setPrepareShooter();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

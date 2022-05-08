@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.stuypulse.stuylib.streams.booleans.BStream;
-import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,11 +44,11 @@ public class ColorSensor extends SubsystemBase {
             color = Color.kBlack;
         }
 
-        public void update() {
+        public void update() {  //获取当前传感器得到的颜色
             this.connected = Constants.ColorConstant.ENABLED;
             
-            if (this.connected)
-                this.connected &= Constants.ColorConstant.AUTO || !DriverStation.isAutonomous();
+            if (this.connected)              // auto模式下colorsor不工作
+                this.connected &= !DriverStation.isAutonomous();
             if (this.connected) 
                 this.connected &= colorSensor.isConnected();
 
@@ -64,35 +62,26 @@ public class ColorSensor extends SubsystemBase {
         BLUE_BALL
     }
 
-    private BallColor target;
+    private BallColor allianceBallColor;
     private final Sensor sensor;
     private final DigitalInput ballIR;
-
-    private final BStream alliance;
-    private final BStream opponent;
+    private static ColorSensor instance = null;
 
     public ColorSensor() {
         sensor = new Sensor();
         ballIR = new DigitalInput(Constants.ColorConstant.BALL_IR_SENSOR);
-
-        alliance =
-                BStream.create(() -> hasBall())
-                        .and(() -> getCurrentBall() == getTargetBall())
-                        .filtered(new BDebounce.Rising( Constants.ColorConstant.DEBOUNCE_TIME))
-                        .polling(0.01);
-
-        opponent =
-                BStream.create(() -> hasBall())
-                        .and(() -> getCurrentBall() != getTargetBall())
-                        .filtered(new BDebounce.Rising( Constants.ColorConstant.DEBOUNCE_TIME))
-                        .polling(0.01);
-
         getTargetBallUpdate();
     }
 
+    public static ColorSensor getInstance() {
+        if (instance == null){
+            instance = new ColorSensor();
+        }
+        return instance;
+    }
     /*** PROXIMITY DETERMINATION ***/
-
-    public boolean hasBall() {
+    // IR is 0 has ball, 1 is noball
+    public boolean hasBallOnSensor() {
         return !ballIR.get();
     }
 
@@ -103,14 +92,14 @@ public class ColorSensor extends SubsystemBase {
             default:
             DriverStation.reportWarning("DriverStation.getAlliance() returned invalid Color!",false);
             case Red:
-                return target = BallColor.RED_BALL;
+                return allianceBallColor = BallColor.RED_BALL;
             case Blue:
-                return target = BallColor.BLUE_BALL;
+                return allianceBallColor = BallColor.BLUE_BALL;
         }
     }
 
-    public BallColor getTargetBall() {
-        return target;
+    public BallColor getAllianceBallColor() {
+        return allianceBallColor;
     }
 
     /*** COLOR DETERMINATION ***/
@@ -132,7 +121,7 @@ public class ColorSensor extends SubsystemBase {
         double blueError = getColorDistance(getRawColor(), Constants.ColorConstant.BallRGB.BLUE);
 
         // Bias the error towards the alliance color
-        switch (getTargetBall()) {
+        switch (getAllianceBallColor()) {
             case RED_BALL:
                 redError /= Constants.ColorConstant.TARGET_BIAS;
                 break;
@@ -153,10 +142,9 @@ public class ColorSensor extends SubsystemBase {
 
     public boolean hasAllianceBall() {
         if (!isConnected()) {
-            return hasBall();
+            return hasBallOnSensor();
         }
-
-        return alliance.get();
+        return (hasBallOnSensor() && (getCurrentBall() == getAllianceBallColor()));
     }
 
     public boolean hasOpponentBall() {
@@ -164,15 +152,7 @@ public class ColorSensor extends SubsystemBase {
             return false;
         }
 
-        return opponent.get();
-    }
-
-    public boolean hasBall(BallColor target) {
-        if (target == getTargetBall()) {
-            return hasAllianceBall();
-        } else {
-            return hasOpponentBall();
-        }
+        return (hasBallOnSensor() && (getCurrentBall() != getAllianceBallColor()));
     }
 
     /*** DEBUG INFORMATION ***/
@@ -188,7 +168,7 @@ public class ColorSensor extends SubsystemBase {
             SmartDashboard.putNumber("Debug/Color Sensor/Color G", getRawColor().green);
             SmartDashboard.putNumber("Debug/Color Sensor/Color B", getRawColor().blue);
 
-            SmartDashboard.putBoolean("Debug/Color Sensor/Has Any Ball", hasBall());
+            SmartDashboard.putBoolean("Debug/Color Sensor/Has Any Ball", hasBallOnSensor());
             SmartDashboard.putBoolean("Debug/Color Sensor/Has Alliance Ball", hasAllianceBall());
             SmartDashboard.putBoolean("Debug/Color Sensor/Has Opponent Ball", hasOpponentBall());
         }
