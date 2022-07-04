@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.util.Color;
  */
 public final class Constants {
 
+    public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
+
     // Hood constants
     public static int HoodMotorPort = 28;
     public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;
