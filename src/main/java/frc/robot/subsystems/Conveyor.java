@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.conveyor.modes.*;
 
 /*-
  * The Conveyor subsystem is meant to transport team alliance balls from the intake to the shooter, while rejecting balls that are
