@@ -199,6 +199,10 @@ public class Shooter extends SubsystemBase {
         return result;
     }
 
+    public void shootOnMoveOrbit(){
+        
+    }
+
     public void shootFlywheel(double meterSpeed) {
         // meters per second
         double driveOutput = meterSpeed 
