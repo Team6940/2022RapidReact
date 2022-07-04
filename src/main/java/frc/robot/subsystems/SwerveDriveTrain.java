@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -51,6 +52,8 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public boolean autoPixy = false;
 
+  private Field2d m_field = new Field2d();
+
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
         new Translation2d( Constants.kLength / 2,  Constants.kWidth / 2),//front left
@@ -80,6 +83,8 @@ public class SwerveDriveTrain extends SubsystemBase {
     mPixy = PixyCamSPI.getInstance();
     /* select cargo color for sig */
     PixySignature = SmartDashboard.getBoolean("Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
+
+    SmartDashboard.putData("Field", m_field);
 
   }
   
@@ -262,9 +267,11 @@ public class SwerveDriveTrain extends SubsystemBase {
   public void periodic() {
     SwerveModuleState[] moduleStates = getStates();
     // This method will be called once per scheduler run
-      odometry_.update(
+    odometry_.update(
       GetGyroRotation2d(), 
       moduleStates);
+
+    m_field.setRobotPose(odometry_.getPoseMeters());
 
     SmartDashboard.putNumber("x meters", odometry_.getPoseMeters().getX());
     SmartDashboard.putNumber("y meters", odometry_.getPoseMeters().getY());
