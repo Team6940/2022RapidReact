@@ -43,9 +43,6 @@ public class SwerveDriveTrain extends SubsystemBase {
   double HEAD_D = 0;
   PIDController headController = new PIDController(HEAD_P, HEAD_I, HEAD_D);
 
-  double vxMetersPerSecond;
-  double vyMetersPerSecond;
-
   public boolean isOpenLoop = true;
 
   public boolean whetherstoreyaw = false;
@@ -103,20 +100,6 @@ public class SwerveDriveTrain extends SubsystemBase {
       : new ChassisSpeeds(translation.getX() , translation.getY(), omega)
     );
 
-    vxMetersPerSecond =       
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-        translation.getX(),
-        translation.getY(), 
-        omega, 
-        GetGyroRotation2d()).vxMetersPerSecond;
-
-    vyMetersPerSecond =       
-      ChassisSpeeds.fromFieldRelativeSpeeds(
-        translation.getX(),
-        translation.getY(), 
-        omega, 
-        GetGyroRotation2d()).vyMetersPerSecond;
-
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.kMaxSpeed);
       
     for(int i = 0;i < swerve_modules_.length;i++ ){
@@ -128,22 +111,22 @@ public class SwerveDriveTrain extends SubsystemBase {
       SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kMaxSpeed);
       for(int i = 0;i < swerve_modules_.length;i++){
         swerve_modules_[i].SetDesiredState(desiredStates[i], true);
-      }
-      // 
-      var frontLeftState = desiredStates[0];
-      var frontRightState = desiredStates[1];
-      var backLeftState = desiredStates[2];
-      var backRightState = desiredStates[3];
+      }  
+  }
 
-      // Convert to chassis speeds
-      ChassisSpeeds chassisSpeeds = Constants.swerveKinematics.toChassisSpeeds(
-        frontLeftState, frontRightState, backLeftState, backRightState);
+    /**
+     * Returns the currently-estimated pose of the robot.
+     *
+     * @return The pose.
+     */
+    public Pose2d getPose() {
+      return odometry_.getPoseMeters();
+    }
 
-      //Get field-relative x and y speed
-      //TODO:The gyro may needs to change
-      vxMetersPerSecond = chassisSpeeds.vxMetersPerSecond * GetGyroRotation2d().getCos() + chassisSpeeds.vyMetersPerSecond * GetGyroRotation2d().getSin();
-      vyMetersPerSecond = - chassisSpeeds.vxMetersPerSecond * GetGyroRotation2d().getSin() + chassisSpeeds.vyMetersPerSecond * GetGyroRotation2d().getCos();
-      
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return kDriveKinematics.toChassisSpeeds(
+            getStates());
   }
 
   /**
@@ -155,6 +138,25 @@ public class SwerveDriveTrain extends SubsystemBase {
     SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(speeds); //Generate the swerve module states
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.kMaxSpeed);
     SetModuleStates(moduleStates);
+  }
+
+  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+    return new ChassisSpeeds(
+        getChassisSpeeds().vxMetersPerSecond * getPose().getRotation().getCos() - getChassisSpeeds().vyMetersPerSecond * getPose().getRotation().getSin(),
+        getChassisSpeeds().vyMetersPerSecond * getPose().getRotation().getCos() + getChassisSpeeds().vxMetersPerSecond * getPose().getRotation().getSin(),
+        getChassisSpeeds().omegaRadiansPerSecond);
+  }
+
+  public double getFieldRelativeXVelocity() {
+      return getFieldRelativeChassisSpeeds().vxMetersPerSecond;
+  }
+
+  public double getFieldRelativeYVelocity() {
+      return getFieldRelativeChassisSpeeds().vyMetersPerSecond;
+  }
+
+  public double getFieldRelativeAngularVelocity() {
+      return getFieldRelativeChassisSpeeds().omegaRadiansPerSecond;
   }
 
   public double GetHeading_Rad(){
@@ -183,10 +185,6 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public void turnOffPixy(){
     autoPixy = false;
-  }
-
-  public Pose2d GetPose(){
-    return odometry_.getPoseMeters();
   }
 
   public void ResetOdometry(Pose2d pose){
@@ -255,14 +253,6 @@ public class SwerveDriveTrain extends SubsystemBase {
       return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
 
-  public double GetVxSpeed(){
-    return vxMetersPerSecond;
-  }
-
-  public double GetVySpeed(){
-    return vyMetersPerSecond;
-  }
-
   @Override
   public void periodic() {
     SwerveModuleState[] moduleStates = getStates();
@@ -271,11 +261,11 @@ public class SwerveDriveTrain extends SubsystemBase {
       GetGyroRotation2d(), 
       moduleStates);
 
-    m_field.setRobotPose(odometry_.getPoseMeters());
+    m_field.setRobotPose(getPose());
 
-    SmartDashboard.putNumber("x meters", odometry_.getPoseMeters().getX());
-    SmartDashboard.putNumber("y meters", odometry_.getPoseMeters().getY());
-    SmartDashboard.putNumber("rot radians", odometry_.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putNumber("x meters", getPose().getX());
+    SmartDashboard.putNumber("y meters", getPose().getY());
+    SmartDashboard.putNumber("rot radians", getPose().getRotation().getDegrees());
     SmartDashboard.putBoolean("isOpenloop", isOpenLoop);
   }
 }

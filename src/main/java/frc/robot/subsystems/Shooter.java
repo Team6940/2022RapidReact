@@ -165,8 +165,8 @@ public class Shooter extends SubsystemBase {
                         RpmToMeterSpeed(angleAndSpeed.y),                             // Shot Speed
                         angleAndSpeed.x,                             // Hood Angle
                         Turret.getInstance().getAngle() + LimelightSubsystem.getInstance().Get_tx() +SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret target angle (The same coordinate system with swerve)
-                        SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
-                        SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
+                        SwerveDriveTrain.getInstance().getFieldRelativeXVelocity(), // Swerve speed in X axis (field-oriented)
+                        SwerveDriveTrain.getInstance().getFieldRelativeYVelocity());// Swerve speed in Y axis (field-oriented)
         targetVelocity = meterSpeedToRpm(mShotParams[2]);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
@@ -186,8 +186,8 @@ public class Shooter extends SubsystemBase {
                         RpmToMeterSpeed(angleAndSpeed.y),                             // Shot Speed
                         angleAndSpeed.x,                             // Hood Angle
                         Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
-                        SwerveDriveTrain.getInstance().GetVxSpeed(), // Swerve speed in X axis (field-oriented)
-                        SwerveDriveTrain.getInstance().GetVySpeed());// Swerve speed in Y axis (field-oriented)
+                        SwerveDriveTrain.getInstance().getFieldRelativeXVelocity(), // Swerve speed in X axis (field-oriented)
+                        SwerveDriveTrain.getInstance().getFieldRelativeYVelocity());// Swerve speed in Y axis (field-oriented)
         targetVelocity = meterSpeedToRpm(mShotParams[2]);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
