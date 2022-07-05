@@ -162,16 +162,16 @@ public class Shooter extends SubsystemBase {
         Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
-                        RpmToMeterSpeed(angleAndSpeed.y),                             // Shot Speed
-                        angleAndSpeed.x,                             // Hood Angle
-                        Turret.getInstance().getAngle() + LimelightSubsystem.getInstance().Get_tx() +SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret target angle (The same coordinate system with swerve)
-                        SwerveDriveTrain.getInstance().getFieldRelativeXVelocity(), // Swerve speed in X axis (field-oriented)
-                        SwerveDriveTrain.getInstance().getFieldRelativeYVelocity());// Swerve speed in Y axis (field-oriented)
+                        RpmToMeterSpeed(angleAndSpeed.y),                               // Shot Speed
+                        angleAndSpeed.x,                                                // Hood Angle
+                        SwerveDriveTrain.getInstance().getFieldRelativeTurretAngleDeg(),// Turret target angle (The same coordinate system with swerve)
+                        SwerveDriveTrain.getInstance().getFieldRelativeXVelocity(),     // Swerve speed in X axis (field-oriented)
+                        SwerveDriveTrain.getInstance().getFieldRelativeYVelocity());    // Swerve speed in Y axis (field-oriented)
         targetVelocity = meterSpeedToRpm(mShotParams[2]);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
-        MoveOffset = targetTurretAngle - Turret.getInstance().getAngle();
+        MoveOffset = targetTurretAngle - Turret.getInstance().getAngleDeg();
         double cal_shooterFeedForward = shooterFeedForward.calculate(RpmToMeterSpeed(targetVelocity));
         periodicIO.flywheel_demand = RpmToFalcon(targetVelocity);
         Hood.getInstance().setHoodAngle(targetHoodAngle);
@@ -183,17 +183,17 @@ public class Shooter extends SubsystemBase {
         Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(LimelightSubsystem.getInstance().getRobotToTargetDistance_Opt().orElse(0.0)));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
-                        RpmToMeterSpeed(angleAndSpeed.y),                             // Shot Speed
-                        angleAndSpeed.x,                             // Hood Angle
-                        Turret.getInstance().getAngle() + SwerveDriveTrain.getInstance().GetHeading_Deg(),// Turret Angle (The same coordinate system with swerve)
-                        SwerveDriveTrain.getInstance().getFieldRelativeXVelocity(), // Swerve speed in X axis (field-oriented)
-                        SwerveDriveTrain.getInstance().getFieldRelativeYVelocity());// Swerve speed in Y axis (field-oriented)
+                        RpmToMeterSpeed(angleAndSpeed.y),                                    // Shot Speed
+                        angleAndSpeed.x,                                                     // Hood Angle
+                        SwerveDriveTrain.getInstance().getFieldRelativeReadyTurretAngleDeg(),// Turret Angle (The same coordinate system with swerve)
+                        SwerveDriveTrain.getInstance().getFieldRelativeXVelocity(),          // Swerve speed in X axis (field-oriented)
+                        SwerveDriveTrain.getInstance().getFieldRelativeYVelocity());         // Swerve speed in Y axis (field-oriented)
         targetVelocity = meterSpeedToRpm(mShotParams[2]);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - SwerveDriveTrain.getInstance().GetHeading_Deg());
         result = (Math.abs(targetVelocity - getShooterSpeedRpm()) < 50) 
-                 &&( Math.abs(targetTurretAngle - Turret.getInstance().getAngle()) < 1.0)
+                 &&( Math.abs(targetTurretAngle - Turret.getInstance().getAngleDeg()) < 1.0)
                  &&( Math.abs(targetHoodAngle - Hood.getInstance().getHoodAngle()) < 1.0)
                 ; 
         return result;

@@ -159,6 +159,26 @@ public class SwerveDriveTrain extends SubsystemBase {
       return getFieldRelativeChassisSpeeds().omegaRadiansPerSecond;
   }
 
+  public double getRadialVelocity(){
+    return getFieldRelativeXVelocity() * Math.cos(getFieldRelativeTurretAngleRad()) + getFieldRelativeYVelocity() * Math.sin(getFieldRelativeTurretAngleRad());
+  }
+
+  public double getTangentialVelocity(){
+    return getFieldRelativeXVelocity() * Math.sin(getFieldRelativeTurretAngleRad()) - getFieldRelativeYVelocity() * Math.cos(getFieldRelativeTurretAngleRad());
+  }
+
+  public double getFieldRelativeTurretAngleDeg(){
+    return Turret.getInstance().getAngleDeg() + LimelightSubsystem.getInstance().Get_tx() + GetHeading_Deg();
+  }
+
+  public double getFieldRelativeTurretAngleRad(){
+    return Math.toRadians(getFieldRelativeTurretAngleDeg());
+  }
+
+  public double getFieldRelativeReadyTurretAngleDeg(){
+    return Turret.getInstance().getAngleDeg() + GetHeading_Deg();
+  }
+
   public double GetHeading_Rad(){
     /*The unit is radian */
     return GetGyroRotation2d().getRadians();
