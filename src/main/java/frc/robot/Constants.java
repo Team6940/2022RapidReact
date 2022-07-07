@@ -128,7 +128,8 @@ public final class Constants {
     public static double kFlyWheelEncoderReductionRatio =  60.0 / 32.0 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
-    public static double kShooterTolerance = 0.01;  //meters/s //TODO
+    public static double kShooterTolerance = 0.01; //meters/s //TODO
+    public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
 
     public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,
                     0.01432893, -0.13352268, 0.00632465, 0.1574279, -0.01956647, 1.49045868};

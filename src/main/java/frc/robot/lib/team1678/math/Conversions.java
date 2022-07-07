@@ -92,7 +92,7 @@ public class Conversions {
     /**
      * @param RPM RPM of mechanism
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
-     * @return RPM of Mechanism
+     * @return Falcon Velocity Counts
      */
     public static double RPMToFalcon(double RPM, double gearRatio) {
         double motorRPM = RPM * gearRatio;
@@ -104,7 +104,7 @@ public class Conversions {
      * @param velocitycounts Falcon Velocity Counts
      * @param circumference Circumference of Wheel
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
-     * @return Falcon Velocity Counts
+     * @return MPS of Mechanism
      */
     public static double falconToMPS(double velocitycounts, double circumference, double gearRatio){
         double wheelRPM = falconToRPM(velocitycounts, gearRatio);
@@ -118,10 +118,30 @@ public class Conversions {
      * @param gearRatio Gear Ratio between Falcon and Mechanism (set to 1 for Falcon RPM)
      * @return Falcon Velocity Counts
      */
-    public static double MPSToFalcon(double velocity, double circumference, double gearRatio){
+    public static double MPSToFalcon(double velocity, double circumference, double gearRatio) {
         double wheelRPM = ((velocity * 60) / circumference);
         double wheelVelocity = RPMToFalcon(wheelRPM, gearRatio);
         return wheelVelocity;
+    }
+
+    /**
+     * @param velocity Velocity MPS
+     * @param circumference Circumference of Wheel
+     * @return RPM of Mechanism
+     */
+    public static double MPSToRPM(double velocity, double circumference) {
+        double wheelRPM = ((velocity * 60) / circumference);
+        return wheelRPM;
+    }
+
+    /**
+     * @param velocity Velocity RPM
+     * @param circumference Circumference of Wheel
+     * @return MPS of Mechanism
+     */
+    public static double RPMToMPS(double velocity , double circumference) {
+        double wheelMPS = ((velocity  / 60) * circumference);
+        return wheelMPS;
     }
 
     // Convert meters to inches
