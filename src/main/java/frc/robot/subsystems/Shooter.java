@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.lib.team1690.Vector;
+import frc.robot.lib.team1690.Vector3D;
 import frc.robot.lib.team2910.math.Vector2;
 import frc.robot.lib.team2910.util.InterpolatingDouble;
 import frc.robot.lib.team2910.util.InterpolatingTreeMap;
@@ -199,8 +201,82 @@ public class Shooter extends SubsystemBase {
         return result;
     }
 
-    public void shootOnMoveOrbit(){
-        
+    public Vector3D calcBallVelocity() {
+        float vel = (float)SwerveDriveTrain.getInstance().getRadialVelocity();
+        float dist = (float)LimelightSubsystem.getInstance().getRobotToTargetDistance();
+        //float vel = (float) 0.0;
+        //float dist = (float) 5.0;
+
+        if (vel < 0) {
+            vel *= 1.09f;
+        } else {
+            vel *= 1.06f;
+        }
+
+        final float distSquared = dist * dist;
+        final float disCubed = distSquared * dist;
+
+        final float velSquared = vel * vel;
+        final float velCubed = velSquared * vel;
+
+        final float distVel = dist * vel;
+        final float distSquaredVel = distVel * dist;
+        final float velSquaredDist = distVel * vel;
+
+        float pitch = 0;
+        pitch += Constants.angleCoefficients[0] * disCubed;
+        pitch += Constants.angleCoefficients[1] * distSquaredVel;
+        pitch += Constants.angleCoefficients[2] * velSquaredDist;
+        pitch += Constants.angleCoefficients[3] * velCubed;
+        pitch += Constants.angleCoefficients[4] * distSquared;
+        pitch += Constants.angleCoefficients[5] * dist;
+        pitch += Constants.angleCoefficients[6] * velSquared;
+        pitch += Constants.angleCoefficients[7] * vel;
+        pitch += Constants.angleCoefficients[8] * distVel;
+        pitch += Constants.angleCoefficients[9];
+
+        float speed = 0;
+        speed += Constants.speedCoefficients[0] * disCubed;
+        speed += Constants.speedCoefficients[1] * distSquaredVel;
+        speed += Constants.speedCoefficients[2] * velSquaredDist;
+        speed += Constants.speedCoefficients[3] * velCubed;
+        speed += Constants.speedCoefficients[4] * distSquared;
+        speed += Constants.speedCoefficients[5] * dist;
+        speed += Constants.speedCoefficients[6] * velSquared;
+        speed += Constants.speedCoefficients[7] * vel;
+        speed += Constants.speedCoefficients[8] * distVel;
+        speed += Constants.speedCoefficients[9];
+
+        final float tangentialRobotSpeed = (float)SwerveDriveTrain.getInstance().getTangentialVelocity();
+        final Vector tangentialRobotVel = Vector.fromAngleAndRadius(
+                (float)SwerveDriveTrain.getInstance().getFieldRelativeTurretAngleRad() + (float)Math.toRadians(90),
+                tangentialRobotSpeed);
+        final Vector3D tangentialRobotVel3D = new Vector3D(tangentialRobotVel.x, tangentialRobotVel.y, 0);
+
+        final float angleToTargetWithoutRobotVel = (float)SwerveDriveTrain.getInstance().getFieldRelativeTurretAngleRad();
+
+        final Vector3D ballVelocityWithoutYawLimit = Vector3D
+                .fromSizeYawPitch(speed, angleToTargetWithoutRobotVel, pitch)
+                .scale(1 + tangentialRobotVel.norm() * 0.005f).subtract(tangentialRobotVel3D);
+
+        final Vector3D ballVelocity = Vector3D.fromSizeYawPitch(ballVelocityWithoutYawLimit.norm(),
+                ballVelocityWithoutYawLimit.getYaw(),
+                ballVelocityWithoutYawLimit.getPitch());
+
+        return ballVelocity;
+    }
+    
+    public void shootOnMoveOrbit() {
+        Vector3D ballVelocity = calcBallVelocity();
+        targetVelocity = meterSpeedToRpm(ballVelocity.norm());
+        targetHoodAngle = Math.toDegrees(ballVelocity.getPitch());
+        targetTurretAngle = Util
+                .boundAngleNeg180to180Degrees(ballVelocity.getYaw() - SwerveDriveTrain.getInstance().GetHeading_Deg());
+        MoveOffset = targetTurretAngle - Turret.getInstance().getAngleDeg();
+        double cal_shooterFeedForward = shooterFeedForward.calculate(RpmToMeterSpeed(targetVelocity));
+        periodicIO.flywheel_demand = RpmToFalcon(targetVelocity);
+        Hood.getInstance().setHoodAngle(targetHoodAngle);
+        mShooter.set(ControlMode.Velocity, periodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
     }
 
     public void shootFlywheel(double meterSpeed) {
