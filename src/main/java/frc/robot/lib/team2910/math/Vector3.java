@@ -61,6 +61,24 @@ public final class Vector3 {
         length = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
     }
 
+    public static Vector3 fromSizeYawPitch(double size, double yaw, double pitch) {
+        double X = size * Math.cos(pitch) * Math.cos(yaw);
+        double Y = size * Math.cos(pitch) * Math.sin(yaw);
+        double Z = size * Math.sin(pitch);
+
+        return new Vector3(X, Y, Z);
+    }
+
+    public double getPitch() {
+        double pitch = Math.atan2(this.z, Math.sqrt(this.x * this.x + this.y * this.y));
+        return pitch;
+    }
+
+    public double getYaw() {
+        double yaw = Math.atan2(this.y, this.x);
+        return yaw;
+    }
+
     /**
      * Adds this vector and another vector together
      * @param vector The vector to add

@@ -50,9 +50,9 @@ public final class Vector {
         return new Vector((float) Math.cos(angle), (float) Math.sin(angle));
     }
 
-    public static Vector fromAngleAndRadius(final float theta, final float radius) {
-        final float vectorX = (float) Math.cos(theta) * radius;
-        final float vectorY = (float) Math.sin(theta) * radius;
+    public static Vector fromAngleAndRadius(final float d, final float tangentialRobotSpeed) {
+        final float vectorX = (float) Math.cos(d) * tangentialRobotSpeed;
+        final float vectorY = (float) Math.sin(d) * tangentialRobotSpeed;
         return new Vector(vectorX, vectorY);
     }
 
