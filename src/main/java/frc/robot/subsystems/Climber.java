@@ -92,7 +92,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void outputTelemetry(){
-    SmartDashboard.putNumber("Climer Speed", m_leftclimberMastermotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Debug/Climer/Speed", m_leftclimberMastermotor.getMotorOutputPercent());
   }
 
   public void autosetElasticClimber(){

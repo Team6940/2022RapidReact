@@ -32,12 +32,12 @@ public class PixyCamAnalogDigital extends SubsystemBase {
   @Override
   public void periodic(){
     //Put on the SmartDashboard whether or not we see a target.
-    SmartDashboard.putBoolean("Pixy sees target", pixySeesTarget());
+    SmartDashboard.putBoolean("Debug/Pixy/sees target", pixySeesTarget());
 
     if(DEBUG){
       //Put other information if we have DEBUG mode on.
-      SmartDashboard.putNumber("Pixy target angle", getPixyTargetAngleX());
-      SmartDashboard.putNumber("Pixy target x position", getPixyTargetX());
+      SmartDashboard.putNumber("Debug/Pixy/angle", getPixyTargetAngleX());
+      SmartDashboard.putNumber("Debug/Pixy/x position", getPixyTargetX());
     }
   }
 

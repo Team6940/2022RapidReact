@@ -102,7 +102,7 @@ public class HolonomicDriveController {
 
     //thetaFF *= -1;
 
-    SmartDashboard.putNumber("thetAff", thetaFF);
+    SmartDashboard.putNumber("Debug/Drive/thetAff", thetaFF);
     
     m_poseError = poseRef.relativeTo(currentPose);
     m_rotationError = angleRef.minus(currentPose.getRotation());
@@ -117,7 +117,7 @@ public class HolonomicDriveController {
 
     //SmartDashboard.putNumber("currentpose.angle", currentPose.getRotation().getDegrees());
     //SmartDashboard.putNumber("m_rotationerror", m_rotationError.getDegrees());
-    SmartDashboard.putNumber("thetaFF", thetaFF);
+    SmartDashboard.putNumber("Debug/Drive/thetaFF", thetaFF);
     //System.out.printf("The Desired Degree: %.1f\n",angleRef.getDegrees());
     //System.out.printf("The Odometry Degree: %.1f\n",currentPose.getRotation().getDegrees());
     //System.out.printf("The theta Speed: %.1f\n",thetaFF);

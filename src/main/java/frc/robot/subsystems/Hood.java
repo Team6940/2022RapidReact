@@ -90,7 +90,7 @@ public class Hood extends SubsystemBase {
   public void writePeriodicOutputs(){}
 
   public void outputTelemetry(){
-    SmartDashboard.putNumber("Hood Angle", getHoodAngle());
+    SmartDashboard.putNumber("Debug/Hood/Angle", getHoodAngle());
   }
 
   public void readPeriodicInputs() {

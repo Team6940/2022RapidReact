@@ -100,9 +100,9 @@ public class PixyCamSPI extends SubsystemBase {
     connected = (state >= 0);
 
     //Put important information to the SmartDashboard
-    SmartDashboard.putNumber("Pixy " + chip + " State", state);
-    SmartDashboard.putBoolean("Pixy " + chip + " Connected", connected);
-    SmartDashboard.putBoolean("Pixy " + chip + " sees target", seesTarget);
+    SmartDashboard.putNumber("Debug/Pixy/" + chip + " State", state);
+    SmartDashboard.putBoolean("Debug/Pixy/" + chip + " Connected", connected);
+    SmartDashboard.putBoolean("Debug/Pixy/" + chip + " sees target", seesTarget);
 
     //Debug testing
     if(DEBUG){
@@ -110,15 +110,15 @@ public class PixyCamSPI extends SubsystemBase {
       if(seesTarget){
         //Get the largest target
         // Block lt = getLargestTarget(); //Gets the largest target (lt)
-        SmartDashboard.putString("Largest block", getLargestTarget().toString());
-        SmartDashboard.putNumber("Largest Target X-Coord", getLargestTargetX());
-        SmartDashboard.putNumber("Largest Target Y-Coord", getLargestTargetY());
-        SmartDashboard.putNumber("Largest Target Angle", getLargestTargetAngle());
-        SmartDashboard.putNumber("Largest Target Width", getLargestTargetWidth());
-        SmartDashboard.putNumber("Largest Target Height", getLargestTargetHeight());
+        SmartDashboard.putString("Debug/Pixy/Largest block", getLargestTarget().toString());
+        SmartDashboard.putNumber("Debug/Pixy/Largest Target X-Coord", getLargestTargetX());
+        SmartDashboard.putNumber("Debug/Pixy/Largest Target Y-Coord", getLargestTargetY());
+        SmartDashboard.putNumber("Debug/Pixy/Largest Target Angle", getLargestTargetAngle());
+        SmartDashboard.putNumber("Debug/Pixy/Largest Target Width", getLargestTargetWidth());
+        SmartDashboard.putNumber("Debug/Pixy/Largest Target Height", getLargestTargetHeight());
       }
       //Push to dashboard how many targets are detected
-      SmartDashboard.putNumber("Number of Targets", getNumberOfTargets());
+      SmartDashboard.putNumber("Debug/Pixy/Number of Targets", getNumberOfTargets());
     }
   }
 
@@ -165,8 +165,8 @@ public class PixyCamSPI extends SubsystemBase {
   public Block getLargestTarget(){
     //See if we already have the largest Block (to be efficient)
     if(lastLargestBlockRetrieval == cacheNumber){
-      SmartDashboard.putNumber("lastRetrieval", lastLargestBlockRetrieval);
-      SmartDashboard.putNumber("cacheNumber", cacheNumber);
+      SmartDashboard.putNumber("Debug/Pixy/lastRetrieval", lastLargestBlockRetrieval);
+      SmartDashboard.putNumber("Debug/Pixy/cacheNumber", cacheNumber);
       return lastLargestBlock;
     }
 
@@ -192,7 +192,7 @@ public class PixyCamSPI extends SubsystemBase {
     //Store this Block
     lastLargestBlock = largestBlock;
     //Return the Blocks
-    SmartDashboard.putString("Largest block", largestBlock.toString());
+    SmartDashboard.putString("Debug/Pixy/Largest block", largestBlock.toString());
     return largestBlock;
   }
 
@@ -281,8 +281,8 @@ public class PixyCamSPI extends SubsystemBase {
     }
 
   public void outputTelemetry() {
-    SmartDashboard.putBoolean("Pixy Ball Seen", mPeriodicIO.ballSeen);
-    SmartDashboard.putNumber("Pixy Ball X", mPeriodicIO.ballAngleX);
+    SmartDashboard.putBoolean("Debug/Pixy/Ball Seen", mPeriodicIO.ballSeen);
+    SmartDashboard.putNumber("Debug/Pixy/Ball X", mPeriodicIO.ballAngleX);
 }
 
   public synchronized double getTimestamp() {

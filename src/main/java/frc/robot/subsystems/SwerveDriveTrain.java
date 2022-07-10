@@ -79,9 +79,9 @@ public class SwerveDriveTrain extends SubsystemBase {
 
     mPixy = PixyCamSPI.getInstance();
     /* select cargo color for sig */
-    PixySignature = SmartDashboard.getBoolean("Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
+    PixySignature = SmartDashboard.getBoolean("Debug/Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
 
-    SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("Debug/Drive/Field", m_field);
 
   }
   
@@ -283,9 +283,9 @@ public class SwerveDriveTrain extends SubsystemBase {
 
     m_field.setRobotPose(getPose());
 
-    SmartDashboard.putNumber("x meters", getPose().getX());
-    SmartDashboard.putNumber("y meters", getPose().getY());
-    SmartDashboard.putNumber("rot radians", getPose().getRotation().getDegrees());
-    SmartDashboard.putBoolean("isOpenloop", isOpenLoop);
+    SmartDashboard.putNumber("Debug/Drive/x meters", getPose().getX());
+    SmartDashboard.putNumber("Debug/Drive/y meters", getPose().getY());
+    SmartDashboard.putNumber("Debug/Drive/rot radians", getPose().getRotation().getDegrees());
+    SmartDashboard.putBoolean("Debug/Drive/isOpenloop", isOpenLoop);
   }
 }

@@ -209,9 +209,9 @@ public class LedSubsystem  extends SubsystemBase {
             ledBuffer.setRGB(i, r, g, b);
         }
         ledStrip.setData(ledBuffer);
-        SmartDashboard.putNumber("Led R", r);
-        SmartDashboard.putNumber("Led G", g);
-        SmartDashboard.putNumber("Led B", b);
+        SmartDashboard.putNumber("Debug/Led/R", r);
+        SmartDashboard.putNumber("Debug/Led/G", g);
+        SmartDashboard.putNumber("Debug/Led/B", b);
     }
     public void rainbow() {
         // For every pixel

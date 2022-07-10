@@ -42,7 +42,7 @@ public class Blocker extends SubsystemBase {
   }
 
   public void outputTelemetry(){
-    SmartDashboard.putNumber("Blocker Speed", m_blockermotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Debug/Blocker/Speed", m_blockermotor.getMotorOutputPercent());
   }
 
   @Override
