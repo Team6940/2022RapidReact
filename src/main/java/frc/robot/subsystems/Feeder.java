@@ -60,8 +60,8 @@ public class Feeder extends SubsystemBase {
   }
 
   public void outputTelemetry(){
-    SmartDashboard.putNumber("Intake output", m_intakermotor.getMotorOutputPercent());
-    SmartDashboard.putNumber("Ball Loader output", m_ballloadermotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Debug/Feeder/Intake output", m_intakermotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Debug/Feeder/BallLoader output", m_ballloadermotor.getMotorOutputPercent());
   }
 
   public void autoturnintaker(){

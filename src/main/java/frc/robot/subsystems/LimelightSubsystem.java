@@ -47,7 +47,7 @@ public class LimelightSubsystem extends SubsystemBase {
       }
       tx = simTx; 
     }
-    SmartDashboard.putNumber("tx", tx);
+    SmartDashboard.putNumber("Debug/Limglight/tx", tx);
     return tx;
   }
 
@@ -60,7 +60,7 @@ public class LimelightSubsystem extends SubsystemBase {
       }
       ty = simTy; 
     }
-    SmartDashboard.putNumber("ty", ty);
+    SmartDashboard.putNumber("Debug/Limglight/ty", ty);
     return ty;
   }
 
@@ -78,7 +78,7 @@ public class LimelightSubsystem extends SubsystemBase {
       }
       tv = simTv; 
     }
-    SmartDashboard.putNumber("tv", tv);
+    SmartDashboard.putNumber("Debug/Limglight/tv", tv);
     return tv;
   }
 

@@ -187,7 +187,7 @@ public class SwerveModule extends SubsystemBase {
 
     double percentOutput = feedforward.calculate(optimalState.speedMetersPerSecond);
 
-    SmartDashboard.putNumber("PercentOut", percentOutput);
+    SmartDashboard.putNumber("Debug/Drive/PercentOut", percentOutput);
 
     if(isOpenLoop){
       if (drive_motor_output_enabled) {

@@ -100,13 +100,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        SmartDashboard.putString("Shooter State", currentState.name());   
-        SmartDashboard.putNumber("Shooter Mode", shootMode);
-        SmartDashboard.putBoolean("Shooter ready",shootIsReady());
-        SmartDashboard.putNumber("Shooter Velocity", periodicIO.flywheel_velocity);
-        SmartDashboard.putNumber("targetVelocity", targetVelocity);
-        SmartDashboard.putNumber("targetHoodAngle", targetHoodAngle);
-        SmartDashboard.putNumber("targetTurretAngle", targetTurretAngle);
+        SmartDashboard.putString("Debug/Shooter/State", currentState.name());   
+        SmartDashboard.putNumber("Debug/Shooter/Mode", shootMode);
+        SmartDashboard.putBoolean("Debug/Shooter/ready",shootIsReady());
+        SmartDashboard.putNumber("Debug/Shooter/Velocity", periodicIO.flywheel_velocity);
+        SmartDashboard.putNumber("Debug/Shooter/targetVelocity", targetVelocity);
+        SmartDashboard.putNumber("Debug/Shooter/targetHoodAngle", targetHoodAngle);
+        SmartDashboard.putNumber("Debug/Shooter/targetTurretAngle", targetTurretAngle);
     }
 
     /**
@@ -348,7 +348,7 @@ public class Shooter extends SubsystemBase {
         if( (v >= vMin) && (beta >= betaMinLimit )){
         speed = v;
         }
-        SmartDashboard.putNumber("calcShootSpeed", speed);
+        SmartDashboard.putNumber("Debug/Shooter/calcShootSpeed", speed);
         return speed;
 	}
 
@@ -378,12 +378,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public double readShooterSpeedFromShuffleBoard(){
-        SmartDashboard.putNumber("Shooter Speed", shooterSpeed.getDouble(1.0));
+        SmartDashboard.putNumber("Debug/Shooter/Shooter Speed", shooterSpeed.getDouble(1.0));
         return shooterSpeed.getDouble(1.0);
     }
 
     public double readHoodAngleFromShuffleBoard(){
-        SmartDashboard.putNumber("Hood Angle", hoodAngle.getDouble(20.0));
+        SmartDashboard.putNumber("Debug/Shooter/Hood Angle", hoodAngle.getDouble(20.0));
         return hoodAngle.getDouble(20.0);
     }
 

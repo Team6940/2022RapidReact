@@ -17,6 +17,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Conveyor;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -42,6 +43,7 @@ public class RobotContainer {
   public static Feeder m_feeder;
   public static Climber m_climber;
   public static Blocker m_blocker;
+  public static Conveyor m_conveyor;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -76,6 +78,7 @@ public class RobotContainer {
     m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
     m_blocker = Blocker.getInstance();
+    m_conveyor = Conveyor.getInstance();
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);

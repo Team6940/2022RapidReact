@@ -100,8 +100,8 @@ public class SwerveControll extends CommandBase {
     //SmartDashboard.putNumber("X Controller Input", translation.getX());
     //SmartDashboard.putNumber("Y Controller Input", translation.getY());
     //SmartDashboard.putNumber("Rot Controller Input", rotation);
-    SmartDashboard.putNumber("storedYaw", storedYaw);
-    SmartDashboard.putNumber("origin_yaw", yaw);
+    SmartDashboard.putNumber("Debug/Drive/storedYaw", storedYaw);
+    SmartDashboard.putNumber("Debug/Drive/origin_yaw", yaw);
 
   }
 

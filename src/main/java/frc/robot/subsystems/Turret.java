@@ -257,16 +257,16 @@ public class Turret extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        SmartDashboard.putString("Turret State", getTurretState().name());
-        SmartDashboard.putNumber("Turret Angle", getAngleDeg());
+        SmartDashboard.putString("Debug/Turret/State", getTurretState().name());
+        SmartDashboard.putNumber("Debug/Turret/Angle", getAngleDeg());
 
         if (Constants.kOutputTelemetry) {
-            SmartDashboard.putNumber("Turret Encoder", periodicIO.position);
-            SmartDashboard.putNumber("Turret Demand", periodicIO.demand);
-            SmartDashboard.putNumber("Turret Error",
+            SmartDashboard.putNumber("Debug/Turret/Encoder", periodicIO.position);
+            SmartDashboard.putNumber("Debug/Turret/Demand", periodicIO.demand);
+            SmartDashboard.putNumber("Debug/Turret/Error",
                     Conversions.talonToDegrees(mTurretMotor.getClosedLoopError(0), Constants.TURRET_GEAR_RATIO));
             if (mTurretMotor.getControlMode() == ControlMode.MotionMagic)
-                SmartDashboard.putNumber("Turret Setpoint", mTurretMotor.getClosedLoopTarget(0));
+                SmartDashboard.putNumber("Debug/Turret/Setpoint", mTurretMotor.getClosedLoopTarget(0));
         }
     }
 

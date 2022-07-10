@@ -34,7 +34,7 @@ public class Conveyor extends SubsystemBase {
     }
 
     private ConveyorMode mode;
-
+    private static Conveyor instance = null;
 
     private final WPI_TalonFX m_intakermotor;
     private final WPI_TalonFX topBeltMotor;
@@ -61,6 +61,13 @@ public class Conveyor extends SubsystemBase {
         setMode(ConveyorMode.DEFAULT);
     }
 
+    public static Conveyor getInstance() {
+        if (instance == null){
+            instance = new Conveyor(ColorSensor.getInstance());
+        }
+        return instance;
+      }
+    
     /*** MODE CONTROL ***/
 
     public void setMode(ConveyorMode mode) {
@@ -135,10 +142,14 @@ public class Conveyor extends SubsystemBase {
         return colorSensor.hasOpponentBall();
     }
 
+    public boolean hasNewBall() {
+        return hasTopBeltBall();
+    }
+
     /*** AUTOMATIC RETRACTION ***/
 
     public boolean isEmpty() {
-        return (hasTopBeltBall() || hasAnyBall());
+        return !(hasTopBeltBall() || hasAnyBall());
     }
 
     public boolean isFull() {
