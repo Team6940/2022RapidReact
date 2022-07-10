@@ -125,7 +125,7 @@ public class Turret extends SubsystemBase {
         currentState = TurretControlState.STOP;
     }
 
-    public double getAngle() {
+    public double getAngleDeg() {
         double rawTurretAngle = 0;
         if (RobotBase.isSimulation()){
             rawTurretAngle = encUnitsToTurretAngle(periodicIO.position - offset);
@@ -136,6 +136,11 @@ public class Turret extends SubsystemBase {
         double Angle = Util.boundAngleNeg180to180Degrees(rawTurretAngle);
         return Angle;
     }
+
+    public double getAngleRad(){
+        return Math.toRadians(getAngleDeg());
+    }
+
 
     public void setTurretAngle(double angle) {
         double targetPos = turretAngleToEncUnits(angle);
@@ -177,13 +182,13 @@ public class Turret extends SubsystemBase {
             Shooter.getInstance().setStopShooter();
         } 
         if (currentState == TurretControlState.STOP) {
-            desiredAngle = getAngle();
+            desiredAngle = getAngleDeg();
             periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             Shooter.getInstance().setStopShooter();
         } 
         if (currentState == TurretControlState.VISION_FINDING) {
-            desiredAngle = getAngle();
+            desiredAngle = getAngleDeg();
             if (direction == 0) {
                 desiredAngle -= Constants.kTurretStep;
                 desiredAngle = Math.max(desiredAngle, minSoftLimit);
@@ -199,20 +204,20 @@ public class Turret extends SubsystemBase {
             }
             periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngle())) {
+            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
                 currentState = TurretControlState.VISION_MOVING;
             }
             Shooter.getInstance().setPrepareShooter();
         } 
         if (currentState == TurretControlState.VISION_MOVING) {
-            desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngle();
+            desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngleDeg();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
             periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             if (isTargetLocked()) {
                 currentState = TurretControlState.VISION_LOCKED;
                 Shooter.getInstance().setShootShooter();
-            } else if (!isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngle())) {
+            } else if (!isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
                 currentState = TurretControlState.VISION_FINDING;
                 if (desiredAngle < 0) {
                     direction = 0;
@@ -228,14 +233,15 @@ public class Turret extends SubsystemBase {
         }
         if (currentState == TurretControlState.VISION_LOCKED) {
             Shooter.getInstance().setShootShooter();
-            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngle())) {
+            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
                 if(Shooter.getInstance().getShooterMode() == 1){
-                    Shooter.getInstance().SetMovingShootParams();
-                    desiredAngle = getAngle();
+                    //Shooter.getInstance().SetMovingShootParams();
+                    Shooter.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
+                    desiredAngle = getAngleDeg();
                     periodicIO.demand = turretAngleToEncUnits(desiredAngle + Shooter.getInstance().getMoveOffset()) + offset;
                 }else{
                     Shooter.getInstance().setFixedShootParams();
-                    desiredAngle = getAngle();
+                    desiredAngle = getAngleDeg();
                     periodicIO.demand = turretAngleToEncUnits(desiredAngle  + offset);
                 }
                 mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
@@ -252,7 +258,7 @@ public class Turret extends SubsystemBase {
 
     public void outputTelemetry() {
         SmartDashboard.putString("Turret State", getTurretState().name());
-        SmartDashboard.putNumber("Turret Angle", getAngle());
+        SmartDashboard.putNumber("Turret Angle", getAngleDeg());
 
         if (Constants.kOutputTelemetry) {
             SmartDashboard.putNumber("Turret Encoder", periodicIO.position);

@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.util.Color;
  */
 public final class Constants {
 
+    public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
+
     // Hood constants
     public static int HoodMotorPort = 28;
     public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;
@@ -111,7 +113,7 @@ public final class Constants {
     // Limelight Constants
     public static final double kHorizAngleCorrection = 2.5;   // + is left
     public static final double LL_MOUNT_HEIGHT = 0.933;  /* limelight 固定height */  //TODO
-    public static final double LL_MOUNT_ANGLE = Math.toDegrees(1.05); /* limelight固定角度 */   //TODO
+    public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
 
     // Shooter Constants
     public static final double SHOOTER_LAUNCH_ANGLE = 90-Math.toDegrees(0.35); //SHOOTER固定角度  //TODO
@@ -126,8 +128,15 @@ public final class Constants {
     public static double kFlyWheelEncoderReductionRatio =  60.0 / 32.0 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
-    public static double kShooterTolerance = 0.01;  //meters/s //TODO
-    
+    public static double kShooterTolerance = 0.01; //meters/s //TODO
+    public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
+
+    public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,
+                    0.01432893, -0.13352268, 0.00632465, 0.1574279, -0.01956647, 1.49045868};
+
+    public static final double [] speedCoefficients = {0.00147817, -0.006165024, 0.006012544, 0.000764929,
+                    0.000124517, 0.662020587, -0.003419489, -0.59030299, 0.032468927, 6.108893599};
+        
     // Goal Constants
     public static final double LL_UPPER_HUB_HEIGHT = 2.64;
     public static final double CARGO_DIAMETER = 0.64;

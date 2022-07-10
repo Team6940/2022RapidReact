@@ -3,11 +3,11 @@
 /* This work is licensed under the terms of the MIT license.    */
 /****************************************************************/
 
-package com.stuypulse.robot.commands.conveyor;
+package frc.robot.commands.conveyor;
 
-import com.stuypulse.robot.commands.conveyor.modes.ConveyorMode;
-import com.stuypulse.robot.commands.conveyor.modes.ConveyorSetMode;
-import com.stuypulse.robot.subsystems.Conveyor;
+import frc.robot.commands.conveyor.modes.ConveyorMode;
+import frc.robot.commands.conveyor.modes.ConveyorSetMode;
+import frc.robot.subsystems.Conveyor;
 
 /*
  * @author Ivan Wei (ivanw8288@gmail.com)

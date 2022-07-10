@@ -36,7 +36,7 @@ public class SwervePathAction extends SequentialCommandGroup {
     PPSwerveControllerCommand PathCommand = 
       new PPSwerveControllerCommand(
       mTrajectory,
-      mSwerve::GetPose, // Functional interface to feed supplier
+      mSwerve::getPose, // Functional interface to feed supplier
       SwerveDriveTrain.kDriveKinematics,
 
       // Position controllers
@@ -48,7 +48,7 @@ public class SwervePathAction extends SequentialCommandGroup {
 
     addCommands(
       /**Reset the profiled PID controller */ 
-      new InstantCommand(() -> thetaController.reset(mSwerve.GetPose().getRotation().getRadians())),
+      new InstantCommand(() -> thetaController.reset(mSwerve.getPose().getRotation().getRadians())),
       PathCommand
     );
  }
