@@ -24,6 +24,12 @@ public class Climber extends SubsystemBase {
   private ClimberControlState currentState = ClimberControlState.CLIBER_NOTHING;
   private int num_ElasticClimber = 1;
   private int num_StraightClimber = 1;
+  double leftMotorBeginningUnit = 0;
+  double rghtMotorBeginningUnit = 0;
+  double leftDeltaUnit = 0;
+  double rghtDeltaUnit = 0;
+  double beginFlag = 1;
+  double climbFlag = 1;
 
   public Climber() {
     m_leftclimberMastermotor = new WPI_TalonFX(Constants.leftClimberMotorPort);
@@ -67,32 +73,43 @@ public class Climber extends SubsystemBase {
   }
 
   public void writePeriodicOutputs(){
-    if(currentState == ClimberControlState.CLIBER_NOTHING){
+    if (currentState == ClimberControlState.CLIBER_NOTHING) {
       m_leftclimberMastermotor.set(ControlMode.PercentOutput, 0);
       m_rghtclimberFollowermotor.set(ControlMode.PercentOutput, 0);
-    }else if(currentState == ClimberControlState.AUTO_CLIMB_FORWARD){
-      double LeftcurrentPosition = m_leftclimberMastermotor.getSelectedSensorPosition();
-      double RghtcurrentPosition = m_rghtclimberFollowermotor.getSelectedSensorPosition();
-      double LeftdesiredPostion = LeftcurrentPosition + 2048 *3; //TODO
-      double RghtdesiredPostion = RghtcurrentPosition + 2048 *3; //TODO
-      m_leftclimberMastermotor.set(ControlMode.MotionMagic, LeftdesiredPostion);
-      m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, RghtdesiredPostion);
-    }else if(currentState == ClimberControlState.AUTO_CLIMB_REVERSE){
-      double LeftcurrentPosition = m_leftclimberMastermotor.getSelectedSensorPosition();
-      double RghtcurrentPosition = m_rghtclimberFollowermotor.getSelectedSensorPosition();
-      double LeftdesiredPostion = LeftcurrentPosition - 2048 *3; //TODO
-      double RghtdesiredPostion = RghtcurrentPosition - 2048 *3; //TODO
-      m_leftclimberMastermotor.set(ControlMode.MotionMagic, LeftdesiredPostion);
-      m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, RghtdesiredPostion);
-    }else if(currentState == ClimberControlState.STRAIGHTCLIMBER_ON){
-      m_climbersolenoid.set(true);
-    }else if(currentState == ClimberControlState.STRAIGHTCLIMBER_OFF){
-      m_climbersolenoid.set(false);
+    } else if (currentState == ClimberControlState.STRAIGHTCLIMBER_ON) {
+      pushSolenoid();
+    } else if (currentState == ClimberControlState.STRAIGHTCLIMBER_OFF) {
+      pullSolenoid();
+    } else if (currentState == ClimberControlState.AUTO_CLIMB_TO_TRAVERSAL_STAGE1) {
+      if (beginFlag == 1) {
+        leftMotorBeginningUnit = getLeftMotorCurrentPosition();
+        rghtMotorBeginningUnit = getRghtMotorCurrentPosition();
+      }
+      leftDeltaUnit = getLeftMotorCurrentPosition() - leftMotorBeginningUnit;
+      rghtDeltaUnit = getRghtMotorCurrentPosition() - rghtMotorBeginningUnit;
+      setClimberToTargetForwardDistanceOne();
+      pushSolenoid();
+      if (forwardLeftClimberIsReadyOne() && forwardRghtClimberIsReadyOne()) {
+        currentState = ClimberControlState.AUTO_CLIMB_TO_TRAVERSAL_STAGE2;
+        beginFlag++;
+      }
+    } else if (currentState == ClimberControlState.AUTO_CLIMB_TO_TRAVERSAL_STAGE2) {
+      if (beginFlag == 2) {
+        leftMotorBeginningUnit = getLeftMotorCurrentPosition();
+        rghtMotorBeginningUnit = getRghtMotorCurrentPosition();
+      }
+      leftDeltaUnit = getLeftMotorCurrentPosition() - leftMotorBeginningUnit;
+      rghtDeltaUnit = getRghtMotorCurrentPosition() - rghtMotorBeginningUnit;
+      setClimberToTargetBackwardDistanceOne();
+      if (backwardLeftClimberIsReadyOne() && backwardRghtClimberIsReadyOne()) {
+        pullSolenoid();
+        
+      }
     }
   }
 
   public void outputTelemetry(){
-    SmartDashboard.putNumber("Debug/Climer/Speed", m_leftclimberMastermotor.getMotorOutputPercent());
+    SmartDashboard.putNumber("Climer Speed", m_leftclimberMastermotor.getMotorOutputPercent());
   }
 
   public void autosetElasticClimber(){
@@ -108,13 +125,105 @@ public class Climber extends SubsystemBase {
     currentState = ClimberControlState.CLIBER_NOTHING;
   }
 
-  public void autosetStraighClimber(){
-    if(num_StraightClimber % 2 == 1){
+  public void autosetStraighClimber() {
+    if (num_StraightClimber % 2 == 1) {
       currentState = ClimberControlState.STRAIGHTCLIMBER_ON;
-    }else{
+    } else {
       currentState = ClimberControlState.STRAIGHTCLIMBER_OFF;
     }
     num_StraightClimber += 1;
+  }
+
+  public void pushSolenoid() {
+    m_climbersolenoid.set(true);
+  }
+
+  public void pullSolenoid() {
+    m_climbersolenoid.set(false);
+  }
+  
+  public double getLeftMotorCurrentPosition() {
+    return m_leftclimberMastermotor.getSelectedSensorPosition();
+  }
+
+  public double getRghtMotorCurrentPosition() {
+    return m_rghtclimberFollowermotor.getSelectedSensorPosition();
+  }
+
+  public void setClimberToTargetForwardDistanceOne() {
+    double leftMotorCurrentPosition = getLeftMotorCurrentPosition();
+    double rghtMotorCurrentPosition = getRghtMotorCurrentPosition();
+    double leftTargetPosition = leftMotorCurrentPosition + Constants.FixedForwardDistanceEncUnitOne;
+    double rghtTargetPosition = rghtMotorCurrentPosition + Constants.FixedForwardDistanceEncUnitOne;
+    m_leftclimberMastermotor.set(ControlMode.MotionMagic, leftTargetPosition);
+    m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, rghtTargetPosition);
+  }
+
+  public void setClimberToTargetForwardDistanceTwo() {
+    double leftMotorCurrentPosition = getLeftMotorCurrentPosition();
+    double rghtMotorCurrentPosition = getRghtMotorCurrentPosition();
+    double leftTargetPosition = leftMotorCurrentPosition + Constants.FixedForwardDistanceEncUnitTwo;
+    double rghtTargetPosition = rghtMotorCurrentPosition + Constants.FixedForwardDistanceEncUnitTwo;
+    m_leftclimberMastermotor.set(ControlMode.MotionMagic, leftTargetPosition);
+    m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, rghtTargetPosition);
+  }
+
+  public void setClimberToTargetBackwardDistanceOne() {
+    double leftMotorCurrentPosition = getLeftMotorCurrentPosition();
+    double rghtMotorCurrentPosition = getRghtMotorCurrentPosition();
+    double leftTargetPosition = leftMotorCurrentPosition + Constants.FixedBackwardDistanceEncUnitOne;
+    double rghtTargetPosition = rghtMotorCurrentPosition + Constants.FixedBackwardDistanceEncUnitOne;
+    m_leftclimberMastermotor.set(ControlMode.MotionMagic, leftTargetPosition);
+    m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, rghtTargetPosition);
+  }
+
+   public void setClimberToTargetBackwardDistanceTwo() {
+    double leftMotorCurrentPosition = getLeftMotorCurrentPosition();
+    double rghtMotorCurrentPosition = getRghtMotorCurrentPosition();
+    double leftTargetPosition = leftMotorCurrentPosition + Constants.FixedBackwardDistanceEncUnitTwo;
+    double rghtTargetPosition = rghtMotorCurrentPosition + Constants.FixedBackwardDistanceEncUnitTwo;
+    m_leftclimberMastermotor.set(ControlMode.MotionMagic, leftTargetPosition);
+    m_rghtclimberFollowermotor.set(ControlMode.MotionMagic, rghtTargetPosition);
+  }
+
+  public boolean forwardLeftClimberIsReadyOne() {
+    return leftDeltaUnit <= (Constants.FixedForwardDistanceEncUnitOne + 10)
+        && leftDeltaUnit >= (Constants.FixedForwardDistanceEncUnitOne - 10);
+  }
+
+  public boolean forwardRghtClimberIsReadyOne() {
+    return rghtDeltaUnit <= (Constants.FixedForwardDistanceEncUnitOne + 10)
+        && rghtDeltaUnit >= (Constants.FixedForwardDistanceEncUnitOne - 10);
+  }
+
+  public boolean forwardLeftClimberIsReadyTwo() {
+    return leftDeltaUnit <= (Constants.FixedForwardDistanceEncUnitTwo + 10)
+        && leftDeltaUnit >= (Constants.FixedForwardDistanceEncUnitTwo - 10);
+  }
+
+  public boolean forwardRghtClimberIsReadyTwo() {
+    return rghtDeltaUnit <= (Constants.FixedForwardDistanceEncUnitTwo + 10)
+        && rghtDeltaUnit >= (Constants.FixedForwardDistanceEncUnitTwo - 10);
+  }
+
+  public boolean backwardLeftClimberIsReadyOne() {
+    return leftDeltaUnit <= (Constants.FixedBackwardDistanceEncUnitOne + 10)
+        && leftDeltaUnit >= (Constants.FixedBackwardDistanceEncUnitOne - 10);
+  }
+
+  public boolean backwardRghtClimberIsReadyOne() {
+    return rghtDeltaUnit <= (Constants.FixedBackwardDistanceEncUnitOne + 10)
+        && rghtDeltaUnit >= (Constants.FixedBackwardDistanceEncUnitOne - 10);
+  }
+
+  public boolean backwardLeftClimberIsReadyTwo() {
+    return leftDeltaUnit <= (Constants.FixedBackwardDistanceEncUnitTwo + 10)
+        && leftDeltaUnit >= (Constants.FixedBackwardDistanceEncUnitTwo - 10);
+  }
+
+  public boolean backwardRghtClimberIsReadyTwo() {
+    return rghtDeltaUnit <= (Constants.FixedBackwardDistanceEncUnitTwo + 10)
+        && rghtDeltaUnit >= (Constants.FixedBackwardDistanceEncUnitTwo - 10);
   }
 
   @Override
@@ -129,7 +238,10 @@ public class Climber extends SubsystemBase {
     STRAIGHTCLIMBER_ON,
     STRAIGHTCLIMBER_OFF,
     AUTO_CLIMB_FORWARD,
-    AUTO_CLIMB_REVERSE
+    AUTO_CLIMB_REVERSE,
+    AUTO_CLIMB_TO_TRAVERSAL_STAGE1,
+    AUTO_CLIMB_TO_TRAVERSAL_STAGE2,
+    AUTO_CLIMB_TO_TRAVERSAL_STAGE3,
   }
 
   public static class PeriodicIO {
