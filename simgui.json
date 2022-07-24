@@ -44,7 +44,9 @@
       "/LiveWindow/BallLoader": "Subsystem",
       "/LiveWindow/Blocker": "Subsystem",
       "/LiveWindow/Climber": "Subsystem",
+      "/LiveWindow/ClimberOld": "Subsystem",
       "/LiveWindow/ColorSensor": "Subsystem",
+      "/LiveWindow/Conveyor": "Subsystem",
       "/LiveWindow/Feeder": "Subsystem",
       "/LiveWindow/Hood": "Subsystem",
       "/LiveWindow/Intaker": "Subsystem",
@@ -58,6 +60,7 @@
       "/LiveWindow/Turret": "Subsystem",
       "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[4]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[5]": "Digital Input",
       "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
@@ -169,6 +172,7 @@
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/Shuffleboard/Auto settings/autoMode": "String Chooser",
       "/SmartDashboard/Auto": "String Chooser",
+      "/SmartDashboard/Debug/Drive/Field": "Field2d",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
@@ -192,6 +196,9 @@
     },
     "Shuffleboard": {
       "Auto settings": {
+        "open": true
+      },
+      "Hood Angle": {
         "open": true
       },
       "Shooter Speed": {
