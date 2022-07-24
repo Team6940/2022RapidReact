@@ -858,4 +858,12 @@ public final class Climber extends SubsystemBase {
         return isPaused;
     }
 
+    public void autoStartClimb(){
+        if (this.getClimbState() == ClimbState.IDLE) {
+            this.startClimb();
+        } else {
+            this.resumeClimb();
+            this.advanceStep();
+        }
+    }
 }
