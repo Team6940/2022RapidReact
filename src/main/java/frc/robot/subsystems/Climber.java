@@ -90,6 +90,7 @@ public final class Climber extends SubsystemBase {
     private final  Solenoid pivotSolenoid; /* 两侧控制机器人倾斜 */
     //private final  Solenoid brakeSolenoid; /* 控制elevator刹住不动,我们不用*/
 
+
     private double data;
 
     private Climber.ClimbState climbState = ClimbState.IDLE;
@@ -534,7 +535,6 @@ public final class Climber extends SubsystemBase {
     }
 
     private int timesRun;
-
 
     private Climber() {
         //super(Constants.CLIMBER_PERIOD, 1);

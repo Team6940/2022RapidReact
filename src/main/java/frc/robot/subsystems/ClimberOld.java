@@ -130,6 +130,7 @@ public class ClimberOld extends SubsystemBase {
     STRAIGHTCLIMBER_OFF,
     AUTO_CLIMB_FORWARD,
     AUTO_CLIMB_REVERSE
+
   }
 
   public static class PeriodicIO {

@@ -235,8 +235,8 @@ public class Turret extends SubsystemBase {
             Shooter.getInstance().setShootShooter();
             if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
                 if(Shooter.getInstance().getShooterMode() == 1){
-                    //Shooter.getInstance().SetMovingShootParams();
-                    Shooter.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
+                    Shooter.getInstance().SetMovingShootParams();
+                    //Shooter.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
                     desiredAngle = getAngleDeg();
                     periodicIO.demand = turretAngleToEncUnits(desiredAngle + Shooter.getInstance().getMoveOffset()) + offset;
                 }else{

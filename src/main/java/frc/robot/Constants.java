@@ -52,11 +52,11 @@ public final class Constants {
     public static double ACCEPT_SPEED = 1.0; //TODO
     public static double REJECT_SPEED = -1.0; //TODO
 
-    // Blocker port
+    // Blocker
     public static int BlockerMotorPort = 27; //TODO
     public static double BlockerMotorSpeed = 0.4;
 
-    // Climber port
+    // Climber
     public static int leftClimberMotorPort = 25; // TODO
     public static int rghtClimberMotorPort = 26; //TODO
     public static int ClimberSolenoidPort = 0; //TODO
@@ -78,6 +78,11 @@ public final class Constants {
     public static double kRghtClimberMotorkIZone = 0;
     public static double RghtClimbermotionCruiseVelocity = 1200;
     public static double RghtClimbermotionAcceleration = 3500;
+
+    public static double FixedForwardDistanceEncUnitOne = 4096;
+    public static double FixedBackwardDistanceEncUnitOne = -4096;
+    public static double FixedForwardDistanceEncUnitTwo = 2048;
+    public static double FixedBackwardDistanceEncUnitTwo = -2048;
 
     // Ball Loader port
     public static int BallLoaderPort = 24; //TODO
