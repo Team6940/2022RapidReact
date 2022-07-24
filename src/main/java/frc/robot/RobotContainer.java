@@ -10,8 +10,8 @@ import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Blocker;
-import frc.robot.subsystems.ClimberNew;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ClimberOld;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -42,7 +42,7 @@ public class RobotContainer {
   public static Turret m_turret;
   public static Shooter m_shooter;
   public static Feeder m_feeder;
-  public static Climber m_climber;
+  public static ClimberOld m_climber;
   public static Blocker m_blocker;
   public static Conveyor m_conveyor;
 
@@ -77,7 +77,7 @@ public class RobotContainer {
     m_turret = Turret.getInstance();
     m_shooter = Shooter.getInstance();
     m_feeder = Feeder.getInstance();
-    m_climber = Climber.getInstance();
+    m_climber = ClimberOld.getInstance();
     m_blocker = Blocker.getInstance();
     m_conveyor = Conveyor.getInstance();
 
