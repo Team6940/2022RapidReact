@@ -109,7 +109,7 @@ public final class Constants {
     public static final int kTurretStep = 10;
     public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
-    public static final double TargetMinError = 1.0; //TODO 目标锁定的最小误差
+    public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
@@ -259,5 +259,120 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
 				3*Math.PI, 3*Math.PI);
-      }
+    }
+
+    //Climber Constants
+    public static final int CLIMBER_PERIOD = 50;
+    public static final int CLIMBER_MOTOR_ID = 25;
+    public static final int CLIMBER_MOTOR_2_ID = 26;
+
+    public static final double CLIMBER_MOTOR_KF = 0.0;
+    public static final double CLIMBER_MOTOR_KP = 0.2;
+    public static final double CLIMBER_MOTOR_KI = 0.0;
+    public static final double CLIMBER_MOTOR_KD = 0.0;
+    public static final double CLIMBER_MOTOR_IZONE = 10;
+    public static final double CLIMBER_MOTOR_MAX_IACCUMULATOR = 0.1;
+    public static final double CLIMBER_MOTOR_MAX_OUTPUT = 1;
+
+    public static final int CLIMBER_CURRENT_LIMIT = 37;
+
+    public static final int ELEVATOR_ARM_CONTACT_SWITCH_A_DIO_CHANNEL = 0;
+    public static final int ELEVATOR_ARM_CONTACT_SWITCH_B_DIO_CHANNEL = 1;
+
+    public static final int PIVOTING_ARM_CONTACT_SWITCH_A_DIO_CHANNEL = 2;
+    public static final int PIVOTING_ARM_CONTACT_SWITCH_B_DIO_CHANNEL = 3;
+
+    public static final int PIVOTING_ARM_LATCHED_SWITCH_A_DIO_CHANNEL = 4;
+    public static final int PIVOTING_ARM_LATCHED_SWITCH_B_DIO_CHANNEL = 5;
+
+    public static final int LATCH_SOLENOID_ID = 1;
+    public static final int PIVOT_SOLENOID_ID = 0;
+    public static final int BRAKE_SOLENOID_ID = 2;
+
+
+    public static final double CLIMBER_ENCODER_TICKS_PER_INCH = 2048 * ((68.0 / 9.0) * (32.0 / 24.0)) / (12 * (3.0 / 8.0));
+
+    public static final double CLIMBER_MOTOR_MAX_ERROR = 0.07 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    public static final boolean DO_BACK_HOOK_CLIMB = true;
+
+    /**
+     * The height to go to once the drivers request the climber to deploy
+     */
+    public static final double CLIMBER_DEPLOY_HEIGHT = 23.6 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * If the elevator arm is below this height and going down, the climb will abort
+     */
+
+    public static final double MIN_CLIMBER_ELEVATOR_HEIGHT = -0.5 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * If the elevator arm is above this height and going down, the climb will abort
+     */
+
+    public static final double MAX_CLIMBER_ELEVATOR_HEIGHT = 27.3 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+
+    /**
+     * How long it takes for the pivot pneumatic to pivot open (become pivoted) (in seconds)
+     */
+    public static final double ARM_PIVOT_DURATION = 0.5;
+
+    /**
+     * How long it takes for the pivot pneumatic to close (become inline) (in seconds)
+     */
+    public static final double ARM_UNPIVOT_DURATION = 0.5;
+
+    /**
+     * How long it takes for the latch pneumatic on the pivot arm to unlatch (in seconds)
+     */
+    public static final double PIVOT_ARM_UNLATCH_DURATION = 0.3;
+
+    /**
+     * Amount (relative) to move the climber arm up to unlatch the elevator arm.
+     */
+    public static final double CLIMBER_ELEVATOR_UNLATCH_AMOUNT = 5 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * The max safe height for the elevator arm during the swinging part of the climb
+     */
+    public static final double CLIMBER_ELEVATOR_MAX_SAFE_HEIGHT = 15 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * The height the elevator arm should be at when the climber is doing the final extension to hit the bar
+     */
+    public static final double MAX_CLIMBER_EXTENSION = 27.07 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * Length to grab onto mid-bar
+     */
+    public static final double CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION = 0 * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * Length to grab on with front hooks
+     */
+    public static final double CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_FRONT_HOOK = (27.2 - 3.5) * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * Length to grab with back hooks
+     */
+    public static final double CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_BACK_HOOK = (27.2 - 3) * CLIMBER_ENCODER_TICKS_PER_INCH;
+
+    /**
+     * Roll angle at which the elevator arm won't contact the next bar when extending past the {@link
+     * #CLIMBER_ELEVATOR_MAX_SAFE_HEIGHT} (in degrees)
+     */
+    public static final double ELEVATOR_ARM_SAFE_ANGLE = 42.5;
+
+    /**
+     * Roll angle at which the elevator arm is contacting the next bar when extended (in degrees)
+     */
+    public static final double ON_NEXT_BAR_ANGLE = 41.0;
+
+    /**
+     * How long only one of the sensor switches can be closed for before the climb will pause
+     */
+    public static final double MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME = 0.1;
+    
 }

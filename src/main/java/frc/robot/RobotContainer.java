@@ -10,6 +10,7 @@ import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Blocker;
+import frc.robot.subsystems.ClimberNew;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LedSubsystem;

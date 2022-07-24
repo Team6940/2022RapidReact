@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Blocker;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ClimberNew;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Hood;
@@ -62,8 +62,8 @@ public class Robot extends TimedRobot {
     Blocker.getInstance().writePeriodicOutputs();
     Blocker.getInstance().outputTelemetry();
 
-    Climber.getInstance().writePeriodicOutputs();
-    Climber.getInstance().outputTelemetry();
+    //ClimberOld.getInstance().writePeriodicOutputs();
+    //ClimberOld.getInstance().outputTelemetry();
 
     //PixyCamSPI.getInstance().readPeriodicInputs();
     //PixyCamSPI.getInstance().outputTelemetry();

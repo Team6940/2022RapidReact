@@ -114,6 +114,51 @@ public class SwerveDriveTrain extends SubsystemBase {
       }  
   }
 
+      /**
+     * What the module states should be in hold mode. The wheels will be put in an X pattern to prevent the robot from moving.
+     * <p>
+     * 0 -> Left Front
+     * <p>
+     * 1 -> Left Back
+     * <p>
+     * 2 -> Right Front
+     * <p>
+     * 3 -> Right Back
+     */
+    public static final SwerveModuleState[] HOLD_MODULE_STATES = {
+      new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+      new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+      new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+      new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+  };
+
+  /**
+  * What the module states should be set to when we start climbing. All the wheels will face forward to make the robot easy to
+  * push once it is disabled.
+  * <p>
+  * 0 -> Left Front
+  * <p>
+  * 1 -> Left Back
+  * <p>
+  * 2 -> Right Front
+  * <p>
+  * 3 -> Right Back
+  */
+  public static final SwerveModuleState[] SWERVE_MODULE_STATE_FORWARD = {
+        new SwerveModuleState(0, Rotation2d.fromDegrees(90)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(90)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(90)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(90))
+  };
+
+  public void setSWERVE_MODULE_STATE_FORWARD(){
+    SetModuleStates(SWERVE_MODULE_STATE_FORWARD);
+  }
+
+  public void setHOLD_MODULE_STATES(){
+    SetModuleStates(HOLD_MODULE_STATES);
+  }
+
     /**
      * Returns the currently-estimated pose of the robot.
      *
@@ -269,6 +314,9 @@ public class SwerveDriveTrain extends SubsystemBase {
     gyro.setFusedHeading(reset);
   }
 
+  public double getRoll() {
+    return gyro.getRoll();
+  }
   public Rotation2d getYaw() {
       return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
