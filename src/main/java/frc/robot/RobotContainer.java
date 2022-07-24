@@ -129,9 +129,11 @@ public class RobotContainer {
     BlockerButton.whenReleased(new InstantCommand(() -> m_blocker.turnoffballLocker()));
 
     // Climber button
-    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
-    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
-    StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
+    //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
+    //ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
+    //StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
+    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autoStartClimb()));
+    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
 
     // Shooter button
     ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter.autoSwitchShooterMode()));
