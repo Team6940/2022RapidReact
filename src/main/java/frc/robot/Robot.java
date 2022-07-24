@@ -62,8 +62,8 @@ public class Robot extends TimedRobot {
     Blocker.getInstance().writePeriodicOutputs();
     Blocker.getInstance().outputTelemetry();
 
-    Climber.getInstance().writePeriodicOutputs();
-    Climber.getInstance().outputTelemetry();
+    //ClimberOld.getInstance().writePeriodicOutputs();
+    //ClimberOld.getInstance().outputTelemetry();
 
     //PixyCamSPI.getInstance().readPeriodicInputs();
     //PixyCamSPI.getInstance().outputTelemetry();
