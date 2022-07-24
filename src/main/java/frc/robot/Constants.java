@@ -104,7 +104,7 @@ public final class Constants {
     public static final int kTurretStep = 10;
     public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
-    public static final double TargetMinError = 1.0; //TODO 目标锁定的最小误差
+    public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO

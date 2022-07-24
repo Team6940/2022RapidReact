@@ -14,18 +14,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Climber extends SubsystemBase {
+public class ClimberOld extends SubsystemBase {
   /** Creates a new Climber. */
   WPI_TalonFX m_leftclimberMastermotor;
   WPI_TalonFX m_rghtclimberFollowermotor;
   Solenoid m_climbersolenoid;
-  private static Climber instance = null;
+  private static ClimberOld instance = null;
   PeriodicIO periodicIO = new PeriodicIO();
   private ClimberControlState currentState = ClimberControlState.CLIBER_NOTHING;
   private int num_ElasticClimber = 1;
   private int num_StraightClimber = 1;
 
-  public Climber() {
+  public ClimberOld() {
     m_leftclimberMastermotor = new WPI_TalonFX(Constants.leftClimberMotorPort);
     m_rghtclimberFollowermotor = new WPI_TalonFX(Constants.rghtClimberMotorPort);
 
@@ -59,9 +59,9 @@ public class Climber extends SubsystemBase {
     m_climbersolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.ClimberSolenoidPort);
   }
 
-  public static Climber getInstance() {
+  public static ClimberOld getInstance() {
     if (instance == null){
-        instance = new Climber();
+        instance = new ClimberOld();
     }
     return instance;
   }
