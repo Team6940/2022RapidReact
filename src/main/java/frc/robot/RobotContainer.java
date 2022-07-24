@@ -42,7 +42,7 @@ public class RobotContainer {
   public static Turret m_turret;
   public static Shooter m_shooter;
   public static Feeder m_feeder;
-  public static Climber m_climber;
+  public static ClimberOld m_climber;
   public static Blocker m_blocker;
   public static Conveyor m_conveyor;
 
@@ -77,7 +77,7 @@ public class RobotContainer {
     m_turret = Turret.getInstance();
     m_shooter = Shooter.getInstance();
     m_feeder = Feeder.getInstance();
-    m_climber = Climber.getInstance();
+    m_climber = ClimberOld.getInstance();
     m_blocker = Blocker.getInstance();
     m_conveyor = Conveyor.getInstance();
 
@@ -129,11 +129,9 @@ public class RobotContainer {
     BlockerButton.whenReleased(new InstantCommand(() -> m_blocker.turnoffballLocker()));
 
     // Climber button
-    //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
-    //ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
-    //StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
-    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autoStartClimb()));
-    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
+    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
+    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
+    StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
 
     // Shooter button
     ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter.autoSwitchShooterMode()));
