@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.RobotBase;
 
 class ClimbStep {
     /**
@@ -626,7 +627,11 @@ public final class Climber extends SubsystemBase {
      */
     public synchronized void pauseClimb() {
         isPaused = true;
-        pausedClimberMode = climberMotor.getControlMode();
+        if (!RobotBase.isSimulation()) {
+            pausedClimberMode = climberMotor.getControlMode();
+        }else{
+            pausedClimberMode = ControlMode.PercentOutput;
+        }
         if (pausedClimberMode == ControlMode.PercentOutput) {
             pausedClimberSetpoint = climberMotor.getMotorOutputPercent();
         } else {
@@ -708,13 +713,13 @@ public final class Climber extends SubsystemBase {
         }
 
         if (!isPaused) {
-//            if (climberMotor.getSelectedSensorPosition() < Constants.MIN_CLIMBER_ELEVATOR_HEIGHT
-//                    && climberMotor.getSelectedSensorVelocity() < 0) {
-//                stopClimb();
-//            } else if (climberMotor.getSelectedSensorPosition() > Constants.MAX_CLIMBER_ELEVATOR_HEIGHT
-//                    && climberMotor.getSelectedSensorVelocity() > 0) {
-//                stopClimb();
-//            }
+            //            if (climberMotor.getSelectedSensorPosition() < Constants.MIN_CLIMBER_ELEVATOR_HEIGHT
+            //                    && climberMotor.getSelectedSensorVelocity() < 0) {
+            //                stopClimb();
+            //            } else if (climberMotor.getSelectedSensorPosition() > Constants.MAX_CLIMBER_ELEVATOR_HEIGHT
+            //                    && climberMotor.getSelectedSensorVelocity() > 0) {
+            //                stopClimb();
+            //            }
 
             if (currentClimbStep.waitCondition.apply(this)) {
                 currentClimbStep.endAction.accept(this);
@@ -722,7 +727,8 @@ public final class Climber extends SubsystemBase {
             }
 
             if (skipChecks || ((currentClimbStep.waitCondition.apply(this)) && (!stepByStep || advanceStep))) {
-                if (!ranEndAction) currentClimbStep.endAction.accept(this);
+                if (!ranEndAction)
+                    currentClimbStep.endAction.accept(this);
                 do {
                     climbState = ClimbState.values()[(climbState.ordinal() + 1) % ClimbState.values().length];
                     if (climbState == ClimbState.IDLE && timesRun < 1) {
@@ -739,6 +745,7 @@ public final class Climber extends SubsystemBase {
                 ranEndAction = false;
             }
         }
+        outputTelemetry();
     }
 
     /**
