@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.team3476.utility.Timer;
+import frc.robot.subsystems.Hopper.OuttakeState;
+import edu.wpi.first.wpilibj.RobotBase;
 
 
 public class Intake extends SubsystemBase {
@@ -28,8 +30,8 @@ public class Intake extends SubsystemBase {
     }
 
     private Intake() {
-        intakeMotor = new WPI_TalonFX(Constants.IntakerPort);
-        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort);
+        intakeMotor = new WPI_TalonFX(Constants.IntakerPort+10); //TODO
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort+5); //TODO
         intakeMotor.configVoltageCompSaturation(12);
         intakeMotor.enableVoltageCompensation(true);
         intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
@@ -52,8 +54,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void outputTelemetry(){
-        SmartDashboard.putNumber("Debug/Intake/Current", intakeMotor.getStatorCurrent());
-        SmartDashboard.putNumber("Debug/Intake/CMotor Speed: ", intakeMotor.getMotorOutputPercent());
+        //SmartDashboard.putNumber("Debug/Intake/Current", intakeMotor.getStatorCurrent());
+        SmartDashboard.putNumber("Debug/Intake/CMotor Output: ", intakeMotor.getMotorOutputPercent());
         SmartDashboard.putBoolean("Debug/Intake/CSolenoid State: ", intakeSolenoid.get());
         SmartDashboard.putString("Debug/Intake/Wanted Intake State", wantedIntakeState.toString());
     }
@@ -66,7 +68,12 @@ public class Intake extends SubsystemBase {
     }
 
     public IntakeSolState getIntakeSolState() {
-        return intakeSolenoid.get() ? IntakeSolState.OPEN : IntakeSolState.CLOSE;
+        if (RobotBase.isSimulation()){
+            return wantedIntakeSolState;
+        }else{
+            return intakeSolenoid.get() ? IntakeSolState.OPEN : IntakeSolState.CLOSE;
+        }
+  
     }
 
     // Intake States
@@ -75,9 +82,12 @@ public class Intake extends SubsystemBase {
         OPEN, CLOSE
     }
 
+    private IntakeSolState wantedIntakeSolState = IntakeSolState.CLOSE;
 
+    // this a extern func for other command call.
     public synchronized void setIntakeSolState(IntakeSolState intakeSolState) {
         SmartDashboard.putString("Intake State", intakeSolState.toString());
+        wantedIntakeSolState = intakeSolState;
         switch (intakeSolState) {
             case OPEN:
                 if (Timer.getFPGATimestamp() + Constants.INTAKE_OPEN_TIME < allowIntakeRunTime) {
@@ -92,11 +102,12 @@ public class Intake extends SubsystemBase {
     }
 
     public enum IntakeState {
-        INTAKE, OFF
+        INTAKE, EJECT, SLOW_EJECT, OFF
     }
 
     private IntakeState wantedIntakeState = IntakeState.OFF;
-
+    
+    // this a extern func for other command call.
     public synchronized void setWantedIntakeState(IntakeState intakeState) {
         wantedIntakeState = intakeState;
     }
@@ -108,8 +119,20 @@ public class Intake extends SubsystemBase {
     private void setIntakeState(IntakeState intakeState) {
         switch (intakeState) {
             case INTAKE:
-                setIntakeMotor(Constants.INTAKE_SPEED);
+                if (Hopper.getInstance().getOuttakeState() == OuttakeState.AUTO_EJECT) {
+                    setIntakeMotor(Constants.INTAKE_EJECTION_SPEED);
+                } else {
+                    setIntakeMotor(Constants.INTAKE_SPEED);
+                }
                 break;
+
+            case EJECT:
+                setIntakeMotor(-Constants.INTAKE_SPEED);
+                break;
+            case SLOW_EJECT:
+                setIntakeMotor(-Constants.INTAKE_SPEED / 2.5);
+                break;
+
             case OFF:
                 setIntakeMotor(0);
                 break;
@@ -123,5 +146,6 @@ public class Intake extends SubsystemBase {
         } else {
             setIntakeState(IntakeState.OFF);
         }
+        outputTelemetry();
     }
 }

@@ -78,7 +78,7 @@ public class RobotContainer {
     m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
     m_blocker = Blocker.getInstance();
-    m_conveyor = Conveyor.getInstance();
+    //m_conveyor = Conveyor.getInstance();
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);

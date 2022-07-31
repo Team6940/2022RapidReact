@@ -86,7 +86,8 @@ public final class Constants {
 
     // Ball Loader port
     public static int BallLoaderPort = 24; //TODO
-    public static double BallLoadSpeed = 0.3;
+    public static double BallLoadSpeed = 0.3;  //TODO
+    public static double BallLoadSpeedSlow = 0.1; //TODO
 
     // Intaker port
     public static final int IntakerPort = 23; //TODO
@@ -94,6 +95,40 @@ public final class Constants {
     public static final boolean vSwitchIntake = false;
     public static final double INTAKE_OPEN_TIME = 0.0;
     public static final double INTAKE_SPEED = 1.0;
+    public static final double INTAKE_EJECTION_SPEED = -0.5;
+
+    // Outtake
+    /**
+     * Outtake will run for this time (Sec) after color sensor trigger
+     */
+    public static final double OUTTAKE_RUN_PERIOD = 50 / 1000.0d;
+    /**
+     * Outtake's speed when automatically ejecting balls
+     */
+    public static final double OUTTAKE_AUTO_EJECTION_SPEED = 0.2;
+
+    /**
+     * Outtake's speed when manually ejecting balls
+     */
+    public static final double OUTTAKE_MANUAL_EJECTION_SPEED = 1;
+
+    /**
+     * Outtake's speed when intaking balls
+     */
+    public static final double OUTTAKE_SPEED = -1;
+
+
+
+    // hopper port
+    public static final double HOPPER_SPEED = 1.0;
+    public static final double HOPPER_SLOW_SPEED = HOPPER_SPEED / 2;
+    /**
+     * Slower speed for the hopper when outtaking to prevent the cargo from exiting the hopper way to fast (and getting launched
+     * out of the arena)
+     */
+    public static final double HOPPER_OUTTAKING_SPEED = 0.3;
+
+
 
     // Pigeon Port
     public static final int PigeonIMUPort = 16;
