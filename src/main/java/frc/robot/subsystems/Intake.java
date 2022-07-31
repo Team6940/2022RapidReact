@@ -1,0 +1,127 @@
+package frc.robot.subsystems;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.ControlFrame;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.lib.team3476.utility.Timer;
+
+
+public class Intake extends SubsystemBase {
+
+    private static Intake instance ;
+    private Solenoid intakeSolenoid;
+    private WPI_TalonFX intakeMotor;
+
+    private double allowIntakeRunTime = Double.MAX_VALUE;
+
+    public static Intake getInstance() {
+        if (instance == null){
+            instance = new Intake();
+        }
+        return instance;
+    }
+
+    private Intake() {
+        intakeMotor = new WPI_TalonFX(Constants.IntakerPort);
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort);
+        intakeMotor.configVoltageCompSaturation(12);
+        intakeMotor.enableVoltageCompensation(true);
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 101); // Default is 10ms
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 103); // Default is 50ms
+        intakeMotor.setControlFramePeriod(ControlFrame.Control_3_General, 23);
+        intakeMotor.setControlFramePeriod(ControlFrame.Control_4_Advanced, 29);
+        intakeMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 547);
+        intakeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 70, 0), 1000);
+        intakeMotor.configOpenloopRamp(0.2, 1000);
+    }
+
+    public void selfTest() {
+        setIntakeSolState(IntakeSolState.OPEN);
+        //OrangeUtility.sleep(1000);
+        setIntakeState(IntakeState.INTAKE);
+        //OrangeUtility.sleep(3000);
+        setIntakeState(IntakeState.OFF);
+        setIntakeSolState(IntakeSolState.CLOSE);
+    }
+
+    public void outputTelemetry(){
+        SmartDashboard.putNumber("Debug/Intake/Current", intakeMotor.getStatorCurrent());
+        SmartDashboard.putNumber("Debug/Intake/CMotor Speed: ", intakeMotor.getMotorOutputPercent());
+        SmartDashboard.putBoolean("Debug/Intake/CSolenoid State: ", intakeSolenoid.get());
+        SmartDashboard.putString("Debug/Intake/Wanted Intake State", wantedIntakeState.toString());
+    }
+
+
+    public void close() {
+        intakeSolenoid.close();
+        intakeMotor.close();
+        instance = new Intake();
+    }
+
+    public IntakeSolState getIntakeSolState() {
+        return intakeSolenoid.get() ? IntakeSolState.OPEN : IntakeSolState.CLOSE;
+    }
+
+    // Intake States
+
+    public enum IntakeSolState {
+        OPEN, CLOSE
+    }
+
+
+    public synchronized void setIntakeSolState(IntakeSolState intakeSolState) {
+        SmartDashboard.putString("Intake State", intakeSolState.toString());
+        switch (intakeSolState) {
+            case OPEN:
+                if (Timer.getFPGATimestamp() + Constants.INTAKE_OPEN_TIME < allowIntakeRunTime) {
+                    allowIntakeRunTime = Timer.getFPGATimestamp() + Constants.INTAKE_OPEN_TIME;
+                }
+                intakeSolenoid.set(true);
+                break;
+            case CLOSE:
+                intakeSolenoid.set(false);
+                allowIntakeRunTime = Double.MAX_VALUE;
+        }
+    }
+
+    public enum IntakeState {
+        INTAKE, OFF
+    }
+
+    private IntakeState wantedIntakeState = IntakeState.OFF;
+
+    public synchronized void setWantedIntakeState(IntakeState intakeState) {
+        wantedIntakeState = intakeState;
+    }
+
+    private void setIntakeMotor(double speed) {
+        intakeMotor.set(ControlMode.PercentOutput, speed);
+    }
+
+    private void setIntakeState(IntakeState intakeState) {
+        switch (intakeState) {
+            case INTAKE:
+                setIntakeMotor(Constants.INTAKE_SPEED);
+                break;
+            case OFF:
+                setIntakeMotor(0);
+                break;
+        }
+    }
+
+    @Override
+    public void periodic() {
+        if (Timer.getFPGATimestamp() > allowIntakeRunTime) {
+            setIntakeState(wantedIntakeState);
+        } else {
+            setIntakeState(IntakeState.OFF);
+        }
+    }
+}

@@ -92,6 +92,8 @@ public final class Constants {
     public static final int IntakerPort = 23; //TODO
     public static final int IntakerSolenoidPort = 1; //TODO
     public static final boolean vSwitchIntake = false;
+    public static final double INTAKE_OPEN_TIME = 0.0;
+    public static final double INTAKE_SPEED = 1.0;
 
     // Pigeon Port
     public static final int PigeonIMUPort = 16;
