@@ -79,4 +79,8 @@ public class Blocker extends SubsystemBase {
       // Outputs
       public double demand;
   }
+
+  public BlockerControlState getBlockerState(){
+      return currentState;
+  }
 }
