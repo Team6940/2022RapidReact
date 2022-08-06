@@ -81,6 +81,9 @@ dependencies {
     implementation "com.github.StuyPulse:StuyLib:${STUYLIB_VERSION}";
 
     testImplementation 'junit:junit:4.13.1'
+
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.jetbrains:annotations:23.0.0'
 }
 
 // Simulation configuration (e.g. environment variables).

@@ -197,6 +197,9 @@
       }
     },
     "Shuffleboard": {
+      "Shooter Speed": {
+        "open": true
+      },
       "open": true
     },
     "SmartDashboard": {

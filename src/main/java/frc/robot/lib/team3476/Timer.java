@@ -1,4 +1,4 @@
-package frc.robot.lib.team3476.utility;
+package frc.robot.lib.team3476;
 
 public final class Timer {
 

@@ -5,7 +5,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
-import frc.robot.lib.team3476.utility.Timer;
+import frc.robot.lib.team3476.Timer;
 //import frc.utility.controllers.LazyTalonSRX;
 //import org.jetbrains.annotations.NotNull;
 
@@ -172,7 +172,7 @@ public final class Climber extends SubsystemBase {
                             // of the swing and be moving towards the field. Climbing at this point gives the robot the least
                             // amount of rotational energy.
                             double Roll = SwerveDriveTrain.getInstance().getRoll();
-                            return (Roll < 10 && Roll > -10 /*&& RobotTracker.getInstance().getGyroRollVelocity() < 0*/); //TODO 暂时删除
+                            return (Roll < 10 && Roll > -10 && RobotTracker.getInstance().getGyroRollVelocity() < 0); //TODO 暂时删除
                         },
                         (cl) -> {},
                         false
