@@ -18,14 +18,17 @@ public class LimelightSubsystem extends SubsystemBase {
   private static LimelightSubsystem instance = null;
   /** Creates a new Limelight. */
   public NetworkTable m_limTable;
-
+  public double constTx = 4.0;
+  public double constTv = 4.0;
+  public double constTy = 4.0;
   public double tv ;
   public double ta ;
   public double tx ;
   public double ty ;
-  public double simTx = 30 ;
-  public double simTy = 20.5 ;
-  public double simTv = 10.0 ;
+  public double simTx = constTx ;
+  public double simTy = constTy ;
+  public double simTv = constTv ;
+  public int simuTxStop = 0;
   public OptionalDouble distancetoTarget = OptionalDouble.empty();
   
   public LimelightSubsystem() {
@@ -41,9 +44,8 @@ public class LimelightSubsystem extends SubsystemBase {
   public double Get_tx(){
     tx = m_limTable.getEntry("tx").getDouble(0);
     if (RobotBase.isSimulation()){
-      simTx = simTx-0.5;
-      if( simTx <= -27.0){
-        simTx = -27.0;
+      if(simTx >= 0.2){
+        simTx = simTx-0.2;
       }
       tx = simTx; 
     }
@@ -54,9 +56,8 @@ public class LimelightSubsystem extends SubsystemBase {
   public double Get_ty(){
     ty = m_limTable.getEntry("ty").getDouble(0);
     if (RobotBase.isSimulation()){
-      simTy = simTy-0.5;
-      if( simTy <= -20.5){
-        simTy = -20.5;
+      if(simTy >= 0.2){
+        simTy = simTy-0.2;
       }
       ty = simTy; 
     }
@@ -145,9 +146,10 @@ public class LimelightSubsystem extends SubsystemBase {
     PIPELINE, OFF, BLINK, ON
   }
   public void reloadLimeLightSimu() {
-    simTx = 27 ;
-    simTy = 20.5 ;
-    simTv = 10.0 ;
+    simTx = constTx ;
+    simTy = constTy;
+    simTv = constTv ;
+    simuTxStop = 0;
   }
 
 }
