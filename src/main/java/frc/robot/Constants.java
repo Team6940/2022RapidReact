@@ -25,8 +25,11 @@ public final class Constants {
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
     // Hood constants
-    public static int HoodMotorPort = 28;
-    public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;
+    public static int HoodMotorPort = 28; //TODO
+    public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
+    
+    public static final double HOOD_MAX_ANGLE = 90; //TODO
+    public static final double HOOD_MIN_ANGLE = 50;  //TODO
 
     // colorsendor constants
     public interface ColorConstant {
@@ -94,8 +97,8 @@ public final class Constants {
     public static final int IntakerSolenoidPort = 1; //TODO
     public static final boolean vSwitchIntake = false;
     public static final double INTAKE_OPEN_TIME = 0.0;
-    public static final double INTAKE_SPEED = 1.0;
-    public static final double INTAKE_EJECTION_SPEED = -0.5;
+    public static final double INTAKE_SPEED = 1.0;  //TODO
+    public static final double INTAKE_EJECTION_SPEED = -0.5; //TODO
 
     // Outtake
     /**
@@ -128,9 +131,16 @@ public final class Constants {
      */
     public static final double HOPPER_OUTTAKING_SPEED = 0.3;
 
+        
+    public static final double BEAM_BREAK_EJECT_TIME = 0.75;
+    public static final double MIN_AUTO_EJECT_TIME = 0.5;
+    
+
     //Robot Tracker
     public static final double DRIVE_VELOCITY_MEASUREMENT_LATENCY = 0.0025;
     public static final int ROBOT_TRACKER_PERIOD = 10;
+
+
 
     // Pigeon Port
     public static final int PigeonIMUPort = 16;

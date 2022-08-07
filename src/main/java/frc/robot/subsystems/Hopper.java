@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.subsystems.ColorSensor2;
-import frc.robot.subsystems.Blocker;
+import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.Intake.IntakeSolState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -17,11 +17,11 @@ public final class Hopper extends SubsystemBase  {
     private static Hopper instance ;
     WPI_TalonFX hopperMotor;
     private double lastDetectionTime;
-    private final ColorSensor2 colorSensor;  /* 位于球道顶部，用于识别当前将要给shooter发射的球颜色 */
-    private final DigitalInput topIRSensor; /* 位于球道顶部，用于判断是否有球在顶部*/
     private boolean disableEject = false;
+    private final ColorSensor2 colorSensor;  /* 位于球道顶部，用于识别当前将要给shooter发射的球颜色 */
     private boolean isBeamBreakEnabled = true;
     private final DigitalInput beamBreak;   /* 位于球道底部，用于判断intake是否已经收入一个新球进来 */
+    private final DigitalInput topIRSensor; /* 位于球道顶部，用于判断是否有球在顶部*/
     private double lastBeamBreakOpenTime = 0;
 
     public static Hopper getInstance() {
@@ -162,9 +162,7 @@ public final class Hopper extends SubsystemBase  {
             lastBeamBreakOpenTime = Timer.getFPGATimestamp();
         }
 
-        outputTelemetry();
-
-   // Outtake motor control
+        // Outtake motor control
 
         switch (outtakeState) {
             case OFF:
@@ -186,7 +184,7 @@ public final class Hopper extends SubsystemBase  {
             case ON:
                 if (outtakeState == OuttakeState.AUTO_EJECT
                     //&& Shooter.getInstance().getFeederWheelState() != FeederWheelState.FORWARD) 
-                    && (Blocker.getInstance().getBlockerState() != Blocker.BlockerControlState.BALLLOCKER_ON)){
+                    && (Shooter2.getInstance().getBlockerState() != Shooter2.BlockerControlState.BALLLOCKER_ON)){
                     setHopperSpeed(Constants.HOPPER_OUTTAKING_SPEED);
                 } else {
                     setHopperSpeed(Constants.HOPPER_SPEED);
@@ -194,8 +192,8 @@ public final class Hopper extends SubsystemBase  {
                 break;
             case OFF:
                 if (isBeamBroken() &&
-                        !(Blocker.getInstance().getBlockerState() == Blocker.BlockerControlState.BALLLOCKER_ON &&
-                                Shooter.getInstance().getState() == Shooter.ShooterControlState.SHOOT)) {
+                        !(Shooter2.getInstance().getBlockerState() == Shooter2.BlockerControlState.BALLLOCKER_ON &&
+                                Shooter2.getInstance().getState() == Shooter2.ShooterControlState.SHOOT)) {
                     //If a ball is blocking the beam break sensor we want to run the hopper to move the ball up to unblock it.
                     setHopperSpeed(Constants.HOPPER_SPEED);
                 } else {
@@ -209,6 +207,8 @@ public final class Hopper extends SubsystemBase  {
                 setHopperSpeed(Constants.HOPPER_SLOW_SPEED);
                 break;
         }
+
+        outputTelemetry();
     }
 
     private void setHopperSpeed(double speed) {
