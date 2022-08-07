@@ -28,8 +28,8 @@ public final class Constants {
     public static int HoodMotorPort = 28; //TODO
     public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
     
-    public static final double HOOD_MAX_ANGLE = 90; //TODO
-    public static final double HOOD_MIN_ANGLE = 50;  //TODO
+    public static final double HOOD_MAX_ANGLE = 70; //TODO
+    public static final double HOOD_MIN_ANGLE = 20;  //TODO
 
     // colorsendor constants
     public interface ColorConstant {
