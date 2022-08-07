@@ -7,7 +7,7 @@ import frc.robot.subsystems.Intake.IntakeSolState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.lib.team3476.utility.Timer;
+import frc.robot.lib.team3476.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;

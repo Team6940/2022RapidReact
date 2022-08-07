@@ -128,7 +128,9 @@ public final class Constants {
      */
     public static final double HOPPER_OUTTAKING_SPEED = 0.3;
 
-
+    //Robot Tracker
+    public static final double DRIVE_VELOCITY_MEASUREMENT_LATENCY = 0.0025;
+    public static final int ROBOT_TRACKER_PERIOD = 10;
 
     // Pigeon Port
     public static final int PigeonIMUPort = 16;

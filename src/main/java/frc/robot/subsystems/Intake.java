@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.lib.team3476.utility.Timer;
+import frc.robot.lib.team3476.Timer;
 import frc.robot.subsystems.Hopper.OuttakeState;
 import edu.wpi.first.wpilibj.RobotBase;
 
