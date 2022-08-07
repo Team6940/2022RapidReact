@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private double hoodEjectUntilTime = 0;
+  private boolean newSystem = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -59,7 +60,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     //LedSubsystem.getInstance().writePeriodicOutputs();
-
+    if( !newSystem){
     Feeder.getInstance().writePeriodicOutputs();
     Feeder.getInstance().outputTelemetry();
 
@@ -72,16 +73,14 @@ public class Robot extends TimedRobot {
     //PixyCamSPI.getInstance().readPeriodicInputs();
     //PixyCamSPI.getInstance().outputTelemetry();
     //PixyCamSPI.getInstance().writePeriodicOutputs();
-    Turret.getInstance().readPeriodicInputs();
-    Shooter.getInstance().readPeriodicInputs();
-    Hood.getInstance().readPeriodicInputs();
-    if(LimelightSubsystem.getInstance().getLightMode() == 3){
-      Turret.getInstance().writePeriodicOutputs();
-      Shooter.getInstance().writePeriodicOutputs();
-    }
-    Turret.getInstance().outputTelemetry();
-    Shooter.getInstance().outputTelemetry();
-    Hood.getInstance().outputTelemetry();
+        Shooter.getInstance().readPeriodicInputs();
+        Hood.getInstance().readPeriodicInputs();
+        if(LimelightSubsystem.getInstance().getLightMode() == 3){
+          Shooter.getInstance().writePeriodicOutputs();
+        }
+        Shooter.getInstance().outputTelemetry();
+        Hood.getInstance().outputTelemetry();
+      }
 
     //Shooter.getInstance().readHoodAngleFromShuffleBoard();
     //Shooter.getInstance().readShooterSpeedFromShuffleBoard();
@@ -127,8 +126,10 @@ public class Robot extends TimedRobot {
     RobotContainer.m_swerve.whetherstoreyaw = false;
     ColorSensor.getInstance().getTargetBallUpdate();
     Turret.getInstance().ZeroTurret();
-    Hood.getInstance().ZeroHood();
-    Shooter.getInstance().setStopShooter();
+    if(!newSystem){
+      Hood.getInstance().ZeroHood();
+      Shooter.getInstance().setStopShooter();
+    }
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     Turret.getInstance().startVisionFinding();
   }

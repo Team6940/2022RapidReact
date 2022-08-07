@@ -25,8 +25,11 @@ public final class Constants {
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
     // Hood constants
-    public static int HoodMotorPort = 28;
-    public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;
+    public static int HoodMotorPort = 28; //TODO
+    public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
+    
+    public static final double HOOD_MAX_ANGLE = 90; //TODO
+    public static final double HOOD_MIN_ANGLE = 50;  //TODO
 
     // colorsendor constants
     public interface ColorConstant {

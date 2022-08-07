@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.subsystems.ColorSensor2;
-import frc.robot.subsystems.Blocker;
+import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.Intake.IntakeSolState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -184,7 +184,7 @@ public final class Hopper extends SubsystemBase  {
             case ON:
                 if (outtakeState == OuttakeState.AUTO_EJECT
                     //&& Shooter.getInstance().getFeederWheelState() != FeederWheelState.FORWARD) 
-                    && (Blocker.getInstance().getBlockerState() != Blocker.BlockerControlState.BALLLOCKER_ON)){
+                    && (Shooter2.getInstance().getBlockerState() != Shooter2.BlockerControlState.BALLLOCKER_ON)){
                     setHopperSpeed(Constants.HOPPER_OUTTAKING_SPEED);
                 } else {
                     setHopperSpeed(Constants.HOPPER_SPEED);
@@ -192,8 +192,8 @@ public final class Hopper extends SubsystemBase  {
                 break;
             case OFF:
                 if (isBeamBroken() &&
-                        !(Blocker.getInstance().getBlockerState() == Blocker.BlockerControlState.BALLLOCKER_ON &&
-                                Shooter.getInstance().getState() == Shooter.ShooterControlState.SHOOT)) {
+                        !(Shooter2.getInstance().getBlockerState() == Shooter2.BlockerControlState.BALLLOCKER_ON &&
+                                Shooter2.getInstance().getState() == Shooter2.ShooterControlState.SHOOT)) {
                     //If a ball is blocking the beam break sensor we want to run the hopper to move the ball up to unblock it.
                     setHopperSpeed(Constants.HOPPER_SPEED);
                 } else {
