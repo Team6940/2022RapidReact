@@ -12,6 +12,8 @@ import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotTracker;
@@ -46,6 +48,8 @@ public class RobotContainer {
   public static Blocker m_blocker;
   public static Conveyor m_conveyor;
   public static RobotTracker m_robotTracker;
+  public static Hopper m_hopper;
+  public static Intake m_intake;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -81,6 +85,8 @@ public class RobotContainer {
     m_climber = Climber.getInstance();
     m_blocker = Blocker.getInstance();
     m_robotTracker = RobotTracker.getInstance();
+    m_hopper = Hopper.getInstance();
+    m_intake = Intake.getInstance();
     //m_conveyor = Conveyor.getInstance();
 
     // The Swerve Driver's buttons
