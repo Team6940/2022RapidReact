@@ -19,10 +19,10 @@ public class AutonomousSelector {
         ShuffleboardTab autoTab = Shuffleboard.getTab("Auto settings");
 
         autonomousModeChooser = new SendableChooser<>();
-        autonomousModeChooser.setDefaultOption("FiveBallBottom2", AutonomousMode.FIVE_BALL_BOTTOM2);
+        autonomousModeChooser.setDefaultOption("FiveBallBottom", AutonomousMode.FIVE_BALL_BOTTOM);
         autonomousModeChooser.addOption("SixBall", AutonomousMode.SIX_BALL);
         autonomousModeChooser.addOption("TwoBall", AutonomousMode.TWO_BALL);
-        autonomousModeChooser.addOption("FiveBallBottom", AutonomousMode.FIVE_BALL_BOTTOM);
+        autonomousModeChooser.addOption("FiveBallBottom2", AutonomousMode.FIVE_BALL_BOTTOM2);
 
         autoTab.add("autoMode", autonomousModeChooser);
     }

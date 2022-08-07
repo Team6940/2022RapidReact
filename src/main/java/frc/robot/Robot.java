@@ -17,9 +17,6 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PixyCamSPI;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Hopper;
-import frc.robot.lib.team3476.Timer;
-
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -30,8 +27,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private double hoodEjectUntilTime = 0;
-  private boolean newSystem = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,7 +55,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     //LedSubsystem.getInstance().writePeriodicOutputs();
-    if( !newSystem){
+
     Feeder.getInstance().writePeriodicOutputs();
     Feeder.getInstance().outputTelemetry();
 
@@ -73,14 +68,16 @@ public class Robot extends TimedRobot {
     //PixyCamSPI.getInstance().readPeriodicInputs();
     //PixyCamSPI.getInstance().outputTelemetry();
     //PixyCamSPI.getInstance().writePeriodicOutputs();
-        Shooter.getInstance().readPeriodicInputs();
-        Hood.getInstance().readPeriodicInputs();
-        if(LimelightSubsystem.getInstance().getLightMode() == 3){
-          Shooter.getInstance().writePeriodicOutputs();
-        }
-        Shooter.getInstance().outputTelemetry();
-        Hood.getInstance().outputTelemetry();
-      }
+    Turret.getInstance().readPeriodicInputs();
+    Shooter.getInstance().readPeriodicInputs();
+    Hood.getInstance().readPeriodicInputs();
+    if(LimelightSubsystem.getInstance().getLightMode() == 3){
+      Turret.getInstance().writePeriodicOutputs();
+      Shooter.getInstance().writePeriodicOutputs();
+    }
+    Turret.getInstance().outputTelemetry();
+    Shooter.getInstance().outputTelemetry();
+    Hood.getInstance().outputTelemetry();
 
     //Shooter.getInstance().readHoodAngleFromShuffleBoard();
     //Shooter.getInstance().readShooterSpeedFromShuffleBoard();
@@ -126,10 +123,8 @@ public class Robot extends TimedRobot {
     RobotContainer.m_swerve.whetherstoreyaw = false;
     ColorSensor.getInstance().getTargetBallUpdate();
     Turret.getInstance().ZeroTurret();
-    if(!newSystem){
-      Hood.getInstance().ZeroHood();
-      Shooter.getInstance().setStopShooter();
-    }
+    Hood.getInstance().ZeroHood();
+    Shooter.getInstance().setStopShooter();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     Turret.getInstance().startVisionFinding();
   }
@@ -144,27 +139,6 @@ public class Robot extends TimedRobot {
     }else{
       Turret.getInstance().Stop();
     }
-    //
-    //
-    double btime = Hopper.getInstance().getLastBeamBreakOpenTime();
-    if ((btime != 0 && (Timer.getFPGATimestamp() - btime > Constants.BEAM_BREAK_EJECT_TIME))
-        || Timer.getFPGATimestamp() < hoodEjectUntilTime) {
-      // Eject a ball if the there has been a 3rd ball detected in the hopper for a certain amount of time
-      if (Timer.getFPGATimestamp() - btime > Constants.BEAM_BREAK_EJECT_TIME
-          && !(Timer.getFPGATimestamp() < hoodEjectUntilTime)) {
-        hoodEjectUntilTime = Timer.getFPGATimestamp() + Constants.MIN_AUTO_EJECT_TIME;
-        Hopper.getInstance().resetBeamBreakOpenTime();
-      }
-      //shooter.setFeederChecksDisabled(false);
-      //doShooterEject();
-    } else {
-      // Not trying to do anything else with shooter will stop all action with it
-      //shooter.setFeederChecksDisabled(false);
-      //shooter.setFiring(false);
-      //shooter.setSpeed(0);
-    }
-
-    
   }
 
   @Override

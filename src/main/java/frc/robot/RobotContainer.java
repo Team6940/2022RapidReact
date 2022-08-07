@@ -12,13 +12,10 @@ import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotTracker;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Conveyor;
@@ -43,15 +40,12 @@ public class RobotContainer {
   public static LedSubsystem m_leds;
   public static LimelightSubsystem m_limelight;
   public static Turret m_turret;
-  //public static Shooter m_shooter;
-  public static Shooter2 m_shooter2;
+  public static Shooter m_shooter;
   public static Feeder m_feeder;
   public static Climber m_climber;
   public static Blocker m_blocker;
   public static Conveyor m_conveyor;
   public static RobotTracker m_robotTracker;
-  public static Hopper m_hopper;
-  public static Intake m_intake;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -82,14 +76,11 @@ public class RobotContainer {
     m_leds = LedSubsystem.getInstance();
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
     m_turret = Turret.getInstance();
-    //m_shooter = Shooter.getInstance();
-    m_shooter2 = Shooter2.getInstance();
-    //m_feeder = Feeder.getInstance();
+    m_shooter = Shooter.getInstance();
+    m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
-    //m_blocker = Blocker.getInstance();
+    m_blocker = Blocker.getInstance();
     m_robotTracker = RobotTracker.getInstance();
-    m_hopper = Hopper.getInstance();
-    m_intake = Intake.getInstance();
     //m_conveyor = Conveyor.getInstance();
 
     // The Swerve Driver's buttons
@@ -147,20 +138,20 @@ public class RobotContainer {
     ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
 
     // Shooter button
-    ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter2.autoSwitchShooterMode()));
+    ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter.autoSwitchShooterMode()));
 
     // Turret button
     TurretButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(3)),
         new InstantCommand(() -> m_turret.startVisionFinding()),
-        new InstantCommand(() -> m_shooter2.setInitShooter()) )
+        new InstantCommand(() -> m_shooter.setInitShooter()) )
       );
     TurretButton.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
         new InstantCommand(() -> m_turret.Stop()),
-        new InstantCommand(() -> m_shooter2.setStopShooter()) )
+        new InstantCommand(() -> m_shooter.setStopShooter()) )
       );
 
     // Reset Yaw button . Remember to protect it during the game!

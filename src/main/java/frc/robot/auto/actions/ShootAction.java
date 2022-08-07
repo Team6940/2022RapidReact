@@ -5,16 +5,20 @@
 package frc.robot.auto.actions;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooter2;
+import frc.robot.subsystems.Blocker;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
 
 public class ShootAction extends CommandBase {
   /** Creates a new ShootAction. */
-  Shooter2 vShooter = Shooter2.getInstance();
+  Blocker vBlocker = Blocker.getInstance();
+  Shooter vShooter = Shooter.getInstance();
+  Feeder vFeeder = Feeder.getInstance();
   Turret vTurret = Turret.getInstance();
   public ShootAction() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(vShooter);
+    addRequirements(vBlocker,vShooter,vFeeder);
   }
 
   // Called when the command is initially scheduled.
@@ -25,14 +29,15 @@ public class ShootAction extends CommandBase {
   @Override
   public void execute() {
     if(vShooter.shootIsReady()){
-      vShooter.setFiring(true);
+      vBlocker.turnonballLocker();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    vShooter.setFiring(false);
+    vFeeder.turnOffIntakeAndBallLoader();
+    vBlocker.turnoffballLocker();
     vTurret.Stop();
   }
 

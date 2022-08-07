@@ -183,13 +183,13 @@ public class Turret extends SubsystemBase {
         if (currentState == TurretControlState.ZERO_TURRET) {
             periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            Shooter2.getInstance().setStopShooter();
+            Shooter.getInstance().setStopShooter();
         } 
         if (currentState == TurretControlState.STOP) {
             desiredAngle = getAngleDeg();
             periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            Shooter2.getInstance().setStopShooter();
+            Shooter.getInstance().setStopShooter();
         } 
         if ((currentState == TurretControlState.VISION_FINDING)
               && ((TurrentFindingTimes % 5) == 0 )){
@@ -212,7 +212,7 @@ public class Turret extends SubsystemBase {
             if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
                 currentState = TurretControlState.VISION_MOVING;
             }
-            Shooter2.getInstance().setPrepareShooter();
+            Shooter.getInstance().setPrepareShooter();
         } 
         if (currentState == TurretControlState.VISION_MOVING) {
             desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngleDeg();
@@ -221,7 +221,7 @@ public class Turret extends SubsystemBase {
             mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
             if (isTargetLocked()) {
                 currentState = TurretControlState.VISION_LOCKED;
-                Shooter2.getInstance().setShootShooter();
+                Shooter.getInstance().setShootShooter();
             } else if (!isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
                 currentState = TurretControlState.VISION_FINDING;
                 TurrentFindingTimes = 0;
@@ -230,23 +230,23 @@ public class Turret extends SubsystemBase {
                 } else {
                     direction = 1;
                 }
-                Shooter2.getInstance().setPrepareShooter();
+                Shooter.getInstance().setPrepareShooter();
             }
             else{  // still is VISION_MOVING
-                Shooter2.getInstance().setPrepareShooter();
+                Shooter.getInstance().setPrepareShooter();
             }
             
         }
         if (currentState == TurretControlState.VISION_LOCKED) {
-            Shooter2.getInstance().setShootShooter();
+            Shooter.getInstance().setShootShooter();
             if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
-                if(Shooter2.getInstance().getShooterMode() == 1){
-                    Shooter2.getInstance().SetMovingShootParams();
-                    //Shooter2.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
+                if(Shooter.getInstance().getShooterMode() == 1){
+                    Shooter.getInstance().SetMovingShootParams();
+                    //Shooter.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
                     desiredAngle = getAngleDeg();
-                    periodicIO.demand = turretAngleToEncUnits(desiredAngle /*+ Shooter2.getInstance().getMoveOffset()*/) + offset;
+                    periodicIO.demand = turretAngleToEncUnits(desiredAngle /*+ Shooter.getInstance().getMoveOffset()*/) + offset;
                 }else{
-                    Shooter2.getInstance().setFixedShootParams();
+                    Shooter.getInstance().setFixedShootParams();
                     desiredAngle = getAngleDeg();
                     periodicIO.demand = turretAngleToEncUnits(desiredAngle  + offset);
                 }
@@ -292,15 +292,4 @@ public class Turret extends SubsystemBase {
         // Outputs
         public double demand;
     }
-
-    @Override
-    public void periodic() {
-        readPeriodicInputs();
-        if(LimelightSubsystem.getInstance().getLightMode() == 3){
-            Turret.getInstance().writePeriodicOutputs();
-        }
-        Turret.getInstance().outputTelemetry();       
-
-    }
-    
 }
