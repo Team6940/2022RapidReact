@@ -187,7 +187,7 @@ public final class Climber extends SubsystemBase {
                         (cl) -> {
                             cl.startingClimb = false;
                             //cl.setBrakeState(BrakeState.FREE);
-                            cl.climberMotor.set(ControlMode.MotionMagic, Constants.CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION);
+                            cl.climberMotor.set(ControlMode.MotionMagic, Constants.CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION);//TODO Change value the extension
                             //cl.setClawState(ClawState.UNLATCHED);
                         },
                         (cl) -> Math.abs(
@@ -291,8 +291,8 @@ public final class Climber extends SubsystemBase {
                             if (cl.shouldDoBackHookStep()) {
                                 return true;
                             } else {
-                                return /**RobotTracker.getInstance().getGyroRollVelocity() > 0
-                                        &&*/ Roll > Constants.ELEVATOR_ARM_SAFE_ANGLE;  //TODO  暂时删除getGyroRollVelocity
+                                return RobotTracker.getInstance().getGyroRollVelocity() > 0
+                                        && Roll > Constants.ELEVATOR_ARM_SAFE_ANGLE;  //TODO  暂时删除getGyroRollVelocity
                             }
                         },
                         (cl) -> {},
