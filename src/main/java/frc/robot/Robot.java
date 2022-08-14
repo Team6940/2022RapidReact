@@ -7,15 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ColorSensor;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PixyCamSPI;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Hopper;
 import frc.robot.lib.team3476.Timer;
@@ -31,7 +28,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private double hoodEjectUntilTime = 0;
-  private boolean newSystem = true;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -58,33 +54,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
-    //LedSubsystem.getInstance().writePeriodicOutputs();
-    if( !newSystem){
-    Feeder.getInstance().writePeriodicOutputs();
-    Feeder.getInstance().outputTelemetry();
-
-    Blocker.getInstance().writePeriodicOutputs();
-    Blocker.getInstance().outputTelemetry();
-
-    //ClimberOld.getInstance().writePeriodicOutputs();
-    //ClimberOld.getInstance().outputTelemetry();
-
-    //PixyCamSPI.getInstance().readPeriodicInputs();
-    //PixyCamSPI.getInstance().outputTelemetry();
-    //PixyCamSPI.getInstance().writePeriodicOutputs();
-        Shooter.getInstance().readPeriodicInputs();
-        Hood.getInstance().readPeriodicInputs();
-        if(LimelightSubsystem.getInstance().getLightMode() == 3){
-          Shooter.getInstance().writePeriodicOutputs();
-        }
-        Shooter.getInstance().outputTelemetry();
-        Hood.getInstance().outputTelemetry();
-      }
-
-    //Shooter.getInstance().readHoodAngleFromShuffleBoard();
-    //Shooter.getInstance().readShooterSpeedFromShuffleBoard();
-
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -126,10 +95,7 @@ public class Robot extends TimedRobot {
     RobotContainer.m_swerve.whetherstoreyaw = false;
     ColorSensor.getInstance().getTargetBallUpdate();
     Turret.getInstance().ZeroTurret();
-    if(!newSystem){
-      Hood.getInstance().ZeroHood();
-      Shooter.getInstance().setStopShooter();
-    }
+    Shooter2.getInstance().setStopShooter();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     Turret.getInstance().startVisionFinding();
   }
