@@ -9,19 +9,17 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
-import frc.robot.subsystems.Blocker;
 import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotTracker;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Conveyor;
+import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -45,9 +43,7 @@ public class RobotContainer {
   public static Turret m_turret;
   //public static Shooter m_shooter;
   public static Shooter2 m_shooter2;
-  public static Feeder m_feeder;
   public static Climber m_climber;
-  public static Blocker m_blocker;
   public static Conveyor m_conveyor;
   public static RobotTracker m_robotTracker;
   public static Hopper m_hopper;
@@ -129,15 +125,15 @@ public class RobotContainer {
     limelightButton.whenHeld(new AutoAim());
 
     // Intake button
-    IntakeButton.whenPressed(new InstantCommand(() -> m_feeder.autoturnintaker()));
+    IntakeButton.whenPressed(new InstantCommand(() -> Intake.getInstance().autoturnintaker()));
   
     // Ball Lodaer button
-    BallLoadButton.whenHeld(new InstantCommand(() -> m_feeder.turnonballLoader()));
-    BallLoadButton.whenReleased(new InstantCommand(() -> m_feeder.turnoffballLoader()));
+    BallLoadButton.whenHeld(new InstantCommand(() ->Hopper.getInstance().setHopperState(HopperState.ON)));
+    BallLoadButton.whenReleased(new InstantCommand(() -> Hopper.getInstance().setHopperState(HopperState.OFF)));
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() -> m_blocker.turnonballLocker()));
-    BlockerButton.whenReleased(new InstantCommand(() -> m_blocker.turnoffballLocker()));
+    BlockerButton.whenHeld(new InstantCommand(() ->Shooter2.getInstance().setFiring(true)));
+    BlockerButton.whenReleased(new InstantCommand(() -> Shooter2.getInstance().setFiring(false)));
 
     // Climber button
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));

@@ -60,7 +60,7 @@ public class Blocker extends SubsystemBase {
   }
 
   public void autoTurnOnBlocker(){
-    if(Shooter.getInstance().whetherReadyToShoot()){
+    if(Shooter2.getInstance().whetherReadyToShoot()){
       currentState = BlockerControlState.BALLLOCKER_ON;
     }else{
       currentState = BlockerControlState.BALLLOCKER_OFF;

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.team3476.Timer;
-import frc.robot.subsystems.Hopper.OuttakeState;
+import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj.RobotBase;
 
 
@@ -148,4 +148,22 @@ public class Intake extends SubsystemBase {
         }
         outputTelemetry();
     }
+
+    private int cnt = 0;
+    public void autoturnintaker()
+    {
+        if(cnt % 2 == 0){
+             setIntakeSolState(IntakeSolState.OPEN);
+             setWantedIntakeState(IntakeState.INTAKE);
+             Hopper.getInstance().setHopperState(HopperState.ON);
+        }
+        else{
+            setIntakeSolState(IntakeSolState.CLOSE);
+            setWantedIntakeState(IntakeState.OFF);
+            Hopper.getInstance().setHopperState(HopperState.OFF);
+        }
+        cnt++;
+
+    }
+    
 }
