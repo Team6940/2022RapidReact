@@ -72,8 +72,6 @@ public class Shooter2 extends SubsystemBase {
     private WPI_TalonSRX mHoodmotor;
     private static final double kEncMin = 0.0;//TODO
     private static final double kEncMax = 627;
-    private static final double kAngleMin = 20.0;
-    private static final double kAngleMax = 70.0;
     private int offset = 0;
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();
     private double HoodDesiredAngle;
