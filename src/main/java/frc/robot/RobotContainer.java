@@ -18,6 +18,7 @@ import frc.robot.subsystems.RobotTracker;
 import frc.robot.subsystems.Shooter2;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Turret2;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,7 @@ public class RobotContainer {
   public static LedSubsystem m_leds;
   public static LimelightSubsystem m_limelight;
   public static Turret m_turret;
+  public static Turret2 m_turret2;
   //public static Shooter m_shooter;
   public static Shooter2 m_shooter2;
   public static Climber m_climber;
@@ -78,6 +80,7 @@ public class RobotContainer {
     m_leds = LedSubsystem.getInstance();
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
     m_turret = Turret.getInstance();
+    m_turret2 = Turret2.getInstance();  
     //m_shooter = Shooter.getInstance();
     m_shooter2 = Shooter2.getInstance();
     //m_feeder = Feeder.getInstance();

@@ -122,6 +122,7 @@ public class Turret extends SubsystemBase {
     public void startVisionFinding() {
         currentState = TurretControlState.VISION_FINDING;
         TurrentFindingTimes = 0;
+        Turret2.getInstance().On(true);
     }
 
     public void Stop() {
@@ -180,20 +181,21 @@ public class Turret extends SubsystemBase {
 
     public void writePeriodicOutputs() {
         double desiredAngle = 0;
+        Turret2  turret = Turret2.getInstance();
+        Shooter2 shooter = Shooter2.getInstance();
+        LimelightSubsystem limelight = LimelightSubsystem.getInstance();
+
         if (currentState == TurretControlState.ZERO_TURRET) {
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
-            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            Shooter2.getInstance().setStopShooter();
+            turret.ZeroTurret();
+            shooter.setStopShooter();
         } 
         if (currentState == TurretControlState.STOP) {
-            desiredAngle = getAngleDeg();
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
-            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            Shooter2.getInstance().setStopShooter();
+            turret.setTurretAngle(turret.getAngleDeg());
+            shooter.setStopShooter();
         } 
         if ((currentState == TurretControlState.VISION_FINDING)
               && ((TurrentFindingTimes % 5) == 0 )){
-            desiredAngle = getAngleDeg();
+            desiredAngle = turret.getAngleDeg();
             if (direction == 0) {
                 desiredAngle -= Constants.kTurretStep;
                 desiredAngle = Math.max(desiredAngle, minSoftLimit);
@@ -207,22 +209,20 @@ public class Turret extends SubsystemBase {
                     direction = 0;
                 }
             }
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
-            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
-            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
+            turret.setTurretAngle(desiredAngle);
+            if (isVisionGoodRange(limelight.Get_tx() + getAngleDeg())) {
                 currentState = TurretControlState.VISION_MOVING;
             }
-            Shooter2.getInstance().setPrepareShooter();
+            shooter.setPrepareShooter();
         } 
         if (currentState == TurretControlState.VISION_MOVING) {
-            desiredAngle = LimelightSubsystem.getInstance().Get_tx() + getAngleDeg();
+            desiredAngle = limelight.Get_tx() + turret.getAngleDeg();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
-            periodicIO.demand = turretAngleToEncUnits(desiredAngle) + offset;
-            mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+            turret.setTurretAngle(desiredAngle);
             if (isTargetLocked()) {
                 currentState = TurretControlState.VISION_LOCKED;
-                Shooter2.getInstance().setShootShooter();
-            } else if (!isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
+                shooter.setShootShooter();
+            } else if (!isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
                 currentState = TurretControlState.VISION_FINDING;
                 TurrentFindingTimes = 0;
                 if (desiredAngle > 0) {
@@ -230,27 +230,25 @@ public class Turret extends SubsystemBase {
                 } else {
                     direction = 1;
                 }
-                Shooter2.getInstance().setPrepareShooter();
+                shooter.setPrepareShooter();
             }
             else{  // still is VISION_MOVING
-                Shooter2.getInstance().setPrepareShooter();
+                shooter.setPrepareShooter();
             }
             
         }
         if (currentState == TurretControlState.VISION_LOCKED) {
-            Shooter2.getInstance().setShootShooter();
-            if (isVisionGoodRange(LimelightSubsystem.getInstance().Get_tx() + getAngleDeg())) {
-                if(Shooter2.getInstance().getShooterMode() == 1){
-                    Shooter2.getInstance().SetMovingShootParams();
+            shooter.setShootShooter();
+            if (isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
+                if(shooter.getShooterMode() == 1){
+                    shooter.SetMovingShootParams();
                     //Shooter2.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
-                    desiredAngle = getAngleDeg();
-                    periodicIO.demand = turretAngleToEncUnits(desiredAngle /*+ Shooter2.getInstance().getMoveOffset()*/) + offset;
+                    desiredAngle = turret.getAngleDeg()  /*+ Shooter2.getInstance().getMoveOffset()*/;  //TODO
                 }else{
-                    Shooter2.getInstance().setFixedShootParams();
+                    shooter.setFixedShootParams();
                     desiredAngle = getAngleDeg();
-                    periodicIO.demand = turretAngleToEncUnits(desiredAngle  + offset);
                 }
-                mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+                turret.setTurretAngle(desiredAngle);
             }else {
                 currentState = TurretControlState.VISION_FINDING;
                 TurrentFindingTimes = 0;
