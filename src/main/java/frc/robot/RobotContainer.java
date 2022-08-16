@@ -44,7 +44,7 @@ public class RobotContainer {
   public static VisionManager m_visionManager;
   public static Turret m_turret;
   //public static Shooter m_shooter;
-  public static Shooter m_shooter2;
+  public static Shooter m_shooter;
   public static Climber m_climber;
   public static Conveyor m_conveyor;
   public static RobotTracker m_robotTracker;
@@ -82,7 +82,7 @@ public class RobotContainer {
     m_visionManager = VisionManager.getInstance();
     m_turret = Turret.getInstance();  
     //m_shooter = Shooter.getInstance();
-    m_shooter2 = Shooter.getInstance();
+    m_shooter = Shooter.getInstance();
     //m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
     //m_blocker = Blocker.getInstance();
@@ -146,20 +146,20 @@ public class RobotContainer {
     ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
 
     // Shooter button
-    ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_shooter2.autoSwitchShooterMode()));
+    ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_visionManager.autoSwitchShooterMode()));
 
     // Turret button
     TurretButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(3)),
         new InstantCommand(() -> m_visionManager.startVisionFinding()),
-        new InstantCommand(() -> m_shooter2.setInitShooter()) )
+        new InstantCommand(() -> m_shooter.setInitShooter()) )
       );
     TurretButton.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
         new InstantCommand(() -> m_visionManager.Stop()),
-        new InstantCommand(() -> m_shooter2.setStopShooter()) )
+        new InstantCommand(() -> m_shooter.setStopShooter()) )
       );
 
     // Reset Yaw button . Remember to protect it during the game!

@@ -11,10 +11,11 @@ import frc.robot.subsystems.VisionManager;
 public class ShootAction extends CommandBase {
   /** Creates a new ShootAction. */
   Shooter vShooter = Shooter.getInstance();
+  VisionManager vVisionManager = VisionManager.getInstance();
   VisionManager vTurret = VisionManager.getInstance();
   public ShootAction() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(vShooter);
+    addRequirements(vShooter,vVisionManager);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +25,7 @@ public class ShootAction extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(vShooter.shootIsReady()){
+    if(vVisionManager.isShooterCanShoot()){
       vShooter.setFiring(true);
     }
   }
