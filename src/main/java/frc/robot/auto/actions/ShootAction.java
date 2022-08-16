@@ -5,13 +5,13 @@
 package frc.robot.auto.actions;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Shooter2;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.VisionManager;
 
 public class ShootAction extends CommandBase {
   /** Creates a new ShootAction. */
-  Shooter2 vShooter = Shooter2.getInstance();
-  Turret vTurret = Turret.getInstance();
+  Shooter vShooter = Shooter.getInstance();
+  VisionManager vTurret = VisionManager.getInstance();
   public ShootAction() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(vShooter);

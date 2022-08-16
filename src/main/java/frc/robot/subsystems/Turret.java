@@ -18,14 +18,13 @@ public class Turret extends SubsystemBase {
 
     private static final double maxSoftLimit = 100; // 度数 //TODO
     private static final double minSoftLimit = -193; // TODO
-    private static int direction = 0;
     private static Turret instance = null;
     WPI_TalonSRX mTurretMotor;
     TalonSRXSimCollection mTurretSensorSim;
     PeriodicIO periodicIO = new PeriodicIO();
     private int offset = 1080; // TODO
-    private TurretControlState currentState = TurretControlState.ZERO_TURRET;
-    private int TurrentFindingTimes = 0;
+    private TurretControlState currentState = TurretControlState.STOP;
+    private double desiredTurretAngle = 0;
 
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
@@ -77,56 +76,23 @@ public class Turret extends SubsystemBase {
         return currentState;
     }
 
+    public void ZeroTurret() {
+        currentState = TurretControlState.HOME;
+    }
     public void setTurretState(TurretControlState state) {
         currentState = state;
-    }
-
-    public void ZeroTurret() {
-        currentState = TurretControlState.ZERO_TURRET;
-    }
-
-    public void startVisionMoving() {
-        currentState = TurretControlState.VISION_MOVING;
-    }
-
-    public void lockOnTarget() {
-        currentState = TurretControlState.VISION_LOCKED;
-    }
-
-    public boolean isVisionFinding() {
-        return (currentState == TurretControlState.VISION_FINDING);
-    }
-
-    public boolean isVisionMoving() {
-        return (currentState == TurretControlState.VISION_MOVING);
-    }
-
-    public boolean isVisionLocked() {
-        return (currentState == TurretControlState.VISION_LOCKED);
-    }
-
-    public boolean valueIsRange(double value, double minRange, double maxRange) {
-        //return Math.abs(Math.max(minRange, value) ) - Math.abs(Math.min(value, maxRange)) < 0.0001;
-        return Math.max(minRange, value) == Math.min(value, maxRange);
-    }
-
-    public boolean isVisionGoodRange(double angle) {
-        return (valueIsRange(angle, minSoftLimit, maxSoftLimit)
-                && LimelightSubsystem.getInstance().isTargetVisible());
     }
 
     public boolean isStop() {
         return (currentState == TurretControlState.STOP);
     }
 
-    public void startVisionFinding() {
-        currentState = TurretControlState.VISION_FINDING;
-        TurrentFindingTimes = 0;
-        Turret2.getInstance().On(true);
-    }
+    public boolean isOn() {
+        return (currentState == TurretControlState.ON);
+    }    
 
-    public void Stop() {
-        currentState = TurretControlState.STOP;
+    public void On(boolean on) {
+        currentState = on ? TurretControlState.ON : TurretControlState.STOP;
     }
 
     public double getAngleDeg() {
@@ -148,9 +114,13 @@ public class Turret extends SubsystemBase {
 
 
     public void setTurretAngle(double angle) {
-        double targetPos = turretAngleToEncUnits(angle);
-        periodicIO.position = targetPos;
-        mTurretMotor.set(ControlMode.MotionMagic, targetPos);
+        if (angle <= minSoftLimit) {
+            desiredTurretAngle = minSoftLimit;
+        }else if (angle >= maxSoftLimit) {
+            desiredTurretAngle = maxSoftLimit;
+        }else{
+            desiredTurretAngle = angle;
+        }
     }
 
     public double encUnitsToTurretAngle(int encUnits) {
@@ -174,92 +144,20 @@ public class Turret extends SubsystemBase {
         periodicIO.current = mTurretMotor.getStatorCurrent();
     }
 
-    public boolean isTargetLocked() {
-        return (Math.abs(LimelightSubsystem.getInstance().Get_tx()) < Constants.TargetMinError
-                && LimelightSubsystem.getInstance().isTargetVisible());
-    }
-
     public void writePeriodicOutputs() {
-        double desiredAngle = 0;
-        Turret2  turret = Turret2.getInstance();
-        Shooter2 shooter = Shooter2.getInstance();
-        LimelightSubsystem limelight = LimelightSubsystem.getInstance();
-
-        if (currentState == TurretControlState.ZERO_TURRET) {
-            turret.ZeroTurret();
-            shooter.setStopShooter();
+        if (currentState == TurretControlState.HOME) { 
+            desiredTurretAngle = Constants.kTurretStartingAngle;   //TODO  what is home angle?
         } 
         if (currentState == TurretControlState.STOP) {
-            turret.setTurretAngle(turret.getAngleDeg());
-            shooter.setStopShooter();
+            desiredTurretAngle = getAngleDeg();
         } 
-        if ((currentState == TurretControlState.VISION_FINDING)
-              && ((TurrentFindingTimes % 5) == 0 )){
-            desiredAngle = turret.getAngleDeg();
-            if (direction == 0) {
-                desiredAngle -= Constants.kTurretStep;
-                desiredAngle = Math.max(desiredAngle, minSoftLimit);
-                if (desiredAngle <= minSoftLimit) {
-                    direction = 1;
-                }
-            } else {
-                desiredAngle += Constants.kTurretStep;
-                desiredAngle = Math.min(desiredAngle, maxSoftLimit);
-                if (desiredAngle >= maxSoftLimit) {
-                    direction = 0;
-                }
-            }
-            turret.setTurretAngle(desiredAngle);
-            if (isVisionGoodRange(limelight.Get_tx() + getAngleDeg())) {
-                currentState = TurretControlState.VISION_MOVING;
-            }
-            shooter.setPrepareShooter();
-        } 
-        if (currentState == TurretControlState.VISION_MOVING) {
-            desiredAngle = limelight.Get_tx() + turret.getAngleDeg();
-            desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
-            turret.setTurretAngle(desiredAngle);
-            if (isTargetLocked()) {
-                currentState = TurretControlState.VISION_LOCKED;
-                shooter.setShootShooter();
-            } else if (!isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
-                currentState = TurretControlState.VISION_FINDING;
-                TurrentFindingTimes = 0;
-                if (desiredAngle > 0) {
-                    direction = 0;
-                } else {
-                    direction = 1;
-                }
-                shooter.setPrepareShooter();
-            }
-            else{  // still is VISION_MOVING
-                shooter.setPrepareShooter();
-            }
-            
+
+        if (currentState == TurretControlState.ON) {
+            ;
         }
-        if (currentState == TurretControlState.VISION_LOCKED) {
-            shooter.setShootShooter();
-            if (isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
-                if(shooter.getShooterMode() == 1){
-                    shooter.SetMovingShootParams();
-                    //Shooter2.getInstance().shootOnMoveOrbit();//Orbit's shotOnMove
-                    desiredAngle = turret.getAngleDeg()  /*+ Shooter2.getInstance().getMoveOffset()*/;  //TODO
-                }else{
-                    shooter.setFixedShootParams();
-                    desiredAngle = getAngleDeg();
-                }
-                turret.setTurretAngle(desiredAngle);
-            }else {
-                currentState = TurretControlState.VISION_FINDING;
-                TurrentFindingTimes = 0;
-                if (desiredAngle < 0) {
-                    direction = 0;
-                } else {
-                    direction = 1;
-                }
-            }
-        }
-        TurrentFindingTimes++;
+
+        periodicIO.demand = turretAngleToEncUnits(desiredTurretAngle) + offset;
+        mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
     }
 
     public void outputTelemetry() {
@@ -277,7 +175,7 @@ public class Turret extends SubsystemBase {
     }
 
     public enum TurretControlState {
-        ZERO_TURRET, VISION_LOCKED, VISION_MOVING, VISION_FINDING, STOP
+        HOME, ON, STOP
     }
 
     public static class PeriodicIO {
@@ -293,11 +191,11 @@ public class Turret extends SubsystemBase {
 
     @Override
     public void periodic() {
-        readPeriodicInputs();
         if(LimelightSubsystem.getInstance().getLightMode() == 3){
-            Turret.getInstance().writePeriodicOutputs();
+            writePeriodicOutputs();
         }
-        Turret.getInstance().outputTelemetry();       
+        readPeriodicInputs();
+        outputTelemetry();       
 
     }
     

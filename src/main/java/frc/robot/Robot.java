@@ -12,9 +12,9 @@ import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PixyCamSPI;
-import frc.robot.subsystems.Shooter2;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Turret2;
 import frc.robot.subsystems.Hopper;
 import frc.robot.lib.team3476.Timer;
 
@@ -95,21 +95,21 @@ public class Robot extends TimedRobot {
     RobotContainer.m_swerve.ZeroHeading();
     RobotContainer.m_swerve.whetherstoreyaw = false;
     ColorSensor.getInstance().getTargetBallUpdate();
-    Turret.getInstance().ZeroTurret();
-    Shooter2.getInstance().setStopShooter();
+    VisionManager.getInstance().ZeroTurret();
+    Shooter.getInstance().setStopShooter();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
-    Turret.getInstance().startVisionFinding();
+    VisionManager.getInstance().startVisionFinding();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     if(LimelightSubsystem.getInstance().getLightMode() == 3){
-      if(Turret.getInstance().isStop()){
-        Turret.getInstance().startVisionFinding();
+      if(VisionManager.getInstance().isStop()){
+        VisionManager.getInstance().startVisionFinding();
       }
     }else{
-      Turret.getInstance().Stop();
+      VisionManager.getInstance().Stop();
     }
     //
     //

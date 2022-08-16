@@ -5,11 +5,11 @@
 package frc.robot.auto.actions;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.VisionManager;
 
 public class TurretAction extends CommandBase {
   /** Creates a new TurretAction. */
-  Turret mTurret = Turret.getInstance();
+  VisionManager mTurret = VisionManager.getInstance();
   //Shooter mShooter = Shooter.getInstance();
 
   public TurretAction() {

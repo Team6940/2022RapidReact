@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Hopper.HopperState;
 import frc.robot.subsystems.Intake.IntakeSolState;
 import frc.robot.subsystems.Intake.IntakeState;
