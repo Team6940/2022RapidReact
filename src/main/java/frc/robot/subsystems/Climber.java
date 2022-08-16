@@ -805,7 +805,8 @@ public final class Climber extends SubsystemBase {
     }
 
     public boolean isPivotingArmLatched() {
-        return true;  //we havn't two sensor, so always true;
+        return true;  //TODO 
+        //we havn't two sensor, so always true;
         //return isPivotingArmLatchedSwitchA() && isPivotingArmLatchedSwitchB();
     }
 

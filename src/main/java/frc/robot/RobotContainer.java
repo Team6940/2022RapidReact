@@ -15,8 +15,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotTracker;
-import frc.robot.subsystems.Shooter2;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDriveTrain;
+import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Hopper.*;
@@ -40,9 +41,10 @@ public class RobotContainer {
 
   public static LedSubsystem m_leds;
   public static LimelightSubsystem m_limelight;
+  public static VisionManager m_visionManager;
   public static Turret m_turret;
   //public static Shooter m_shooter;
-  public static Shooter2 m_shooter2;
+  public static Shooter m_shooter2;
   public static Climber m_climber;
   public static Conveyor m_conveyor;
   public static RobotTracker m_robotTracker;
@@ -77,9 +79,10 @@ public class RobotContainer {
     m_limelight = LimelightSubsystem.getInstance();
     m_leds = LedSubsystem.getInstance();
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
-    m_turret = Turret.getInstance();
+    m_visionManager = VisionManager.getInstance();
+    m_turret = Turret.getInstance();  
     //m_shooter = Shooter.getInstance();
-    m_shooter2 = Shooter2.getInstance();
+    m_shooter2 = Shooter.getInstance();
     //m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
     //m_blocker = Blocker.getInstance();
@@ -132,8 +135,8 @@ public class RobotContainer {
     BallLoadButton.whenReleased(new InstantCommand(() -> Hopper.getInstance().setHopperState(HopperState.OFF)));
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() ->Shooter2.getInstance().setFiring(true)));
-    BlockerButton.whenReleased(new InstantCommand(() -> Shooter2.getInstance().setFiring(false)));
+    BlockerButton.whenHeld(new InstantCommand(() ->Shooter.getInstance().setFiring(true)));
+    BlockerButton.whenReleased(new InstantCommand(() -> Shooter.getInstance().setFiring(false)));
 
     // Climber button
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
@@ -149,13 +152,13 @@ public class RobotContainer {
     TurretButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(3)),
-        new InstantCommand(() -> m_turret.startVisionFinding()),
+        new InstantCommand(() -> m_visionManager.startVisionFinding()),
         new InstantCommand(() -> m_shooter2.setInitShooter()) )
       );
     TurretButton.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
-        new InstantCommand(() -> m_turret.Stop()),
+        new InstantCommand(() -> m_visionManager.Stop()),
         new InstantCommand(() -> m_shooter2.setStopShooter()) )
       );
 
