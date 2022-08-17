@@ -70,6 +70,7 @@ public class RobotContainer {
   public static JoystickButton StraightClimberButton;
   public static JoystickButton ShooterSwitchModeButton;
   public static JoystickButton TurretButton;
+  public static JoystickButton ShootParaButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -108,6 +109,8 @@ public class RobotContainer {
     StraightClimberButton = new JoystickButton(m_operatorController, 5);
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
     TurretButton = new JoystickButton(m_operatorController, 7);
+    ShootParaButton = new JoystickButton(m_operatorController, 8);
+
 
     m_swerve.setDefaultCommand(new SwerveControll());
 
@@ -173,6 +176,9 @@ public class RobotContainer {
 
     controlopenlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeOpen()));
     controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
+
+    // ShootPara debug Button 
+    ShootParaButton.whenPressed(new InstantCommand(() -> VisionManager.getInstance().DebugShootParameter()));
     
   }
 

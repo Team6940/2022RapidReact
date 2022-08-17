@@ -147,6 +147,12 @@ public class Shooter extends SubsystemBase {
                 setFiring(true);
             }
         }
+
+        if(shootState == ShooterControlState.MANNUL_SHOOT){
+            double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
+            ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
+            mShooter.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);       
+        }
     }
 
     public synchronized double getShooterSpeedRpm() {
@@ -174,8 +180,12 @@ public class Shooter extends SubsystemBase {
         shootState = ShooterControlState.INIT;
     }
 
+    public void setShooterToMannulShoot(){
+        shootState = ShooterControlState.MANNUL_SHOOT;
+    }
+    
     public enum ShooterControlState {
-        STOP, INIT,PREPARE_SHOOT, SHOOT
+        STOP, INIT,PREPARE_SHOOT, SHOOT,MANNUL_SHOOT
     }
 
     public class ShooterPeriodicIO {

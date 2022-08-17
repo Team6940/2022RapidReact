@@ -124,6 +124,10 @@ public class VisionManager extends SubsystemBase {
         currentState = VisionManagerState.STOP;
     }
 
+    public void startVisionMannul() {
+        currentState = VisionManagerState.VISION_MANUAL;
+    }
+    
     public void readPeriodicInputs() {
         ;
     }
@@ -135,6 +139,10 @@ public class VisionManager extends SubsystemBase {
 
     public void writePeriodicOutputs() {
         double desiredAngle = 0;
+
+        if (currentState == VisionManagerState.VISION_MANUAL) {
+            ;
+        }
 
         if (currentState == VisionManagerState.ZERO_TURRET) {
             turret.ZeroTurret();
@@ -438,4 +446,14 @@ public class VisionManager extends SubsystemBase {
         return MoveOffset;
     }
     
+    public void DebugShootParameter(){
+        double inputShootSpeedRPM = 0;
+        double inputHoodAngle = 0;
+        inputShootSpeedRPM = readShooterSpeedFromShuffleBoard();
+        inputHoodAngle = readHoodAngleFromShuffleBoard();
+        startVisionMannul();
+        shooter.setHoodAngle(inputHoodAngle);
+        shooter.setShooterToMannulShoot();
+        shooter.setSpeed(inputShootSpeedRPM);
+    }
 }
