@@ -205,11 +205,11 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public double getRadialVelocity(){
-    return getFieldRelativeXVelocity() * Math.cos(getFieldRelativeTurretAngleRad()) + getFieldRelativeYVelocity() * Math.sin(getFieldRelativeTurretAngleRad());
+    return (getFieldRelativeXVelocity() * Math.cos(getFieldRelativeTurretAngleRad())) + (getFieldRelativeYVelocity() * Math.sin(getFieldRelativeTurretAngleRad()));
   }
 
   public double getTangentialVelocity(){
-    return getFieldRelativeXVelocity() * Math.sin(getFieldRelativeTurretAngleRad()) - getFieldRelativeYVelocity() * Math.cos(getFieldRelativeTurretAngleRad());
+    return (getFieldRelativeXVelocity() * Math.sin(getFieldRelativeTurretAngleRad())) - (getFieldRelativeYVelocity() * Math.cos(getFieldRelativeTurretAngleRad()));
   }
 
   public double getFieldRelativeTurretAngleDeg(){
