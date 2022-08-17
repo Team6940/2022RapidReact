@@ -5,19 +5,13 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.TalonSRXSimCollection;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.RobotBase;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.lib.team503.util.Util;
 import frc.robot.lib.team1678.math.Conversions;
 
 public class Turret extends SubsystemBase {
-
-    private static final double maxSoftLimit = 100; // 度数 //TODO
-    private static final double minSoftLimit = -193; // TODO
     private static Turret instance = null;
     WPI_TalonSRX mTurretMotor;
     TalonSRXSimCollection mTurretSensorSim;
@@ -37,8 +31,8 @@ public class Turret extends SubsystemBase {
         setBrakeMode(false);
 
         configurationOne();
-        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(maxSoftLimit), 10); // TODO
-        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(minSoftLimit), 10); // TODO
+        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMaxSoftLimit), 10); // TODO
+        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMinSoftLimit), 10); // TODO
         mTurretMotor.configForwardSoftLimitEnable(true, 10);
         mTurretMotor.configReverseSoftLimitEnable(true, 10);
 
@@ -114,10 +108,10 @@ public class Turret extends SubsystemBase {
 
 
     public void setTurretAngle(double angle) {
-        if (angle <= minSoftLimit) {
-            desiredTurretAngle = minSoftLimit;
-        }else if (angle >= maxSoftLimit) {
-            desiredTurretAngle = maxSoftLimit;
+        if (angle <= Constants.TurretMinSoftLimit) {
+            desiredTurretAngle = Constants.TurretMinSoftLimit;
+        }else if (angle >= Constants.TurretMaxSoftLimit) {
+            desiredTurretAngle = Constants.TurretMaxSoftLimit;
         }else{
             desiredTurretAngle = angle;
         }
@@ -161,9 +155,6 @@ public class Turret extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        SmartDashboard.putString("Debug/Turret/State", getTurretState().name());
-        SmartDashboard.putNumber("Debug/Turret/Angle", getAngleDeg());
-
         if (Constants.kOutputTelemetry) {
             SmartDashboard.putNumber("Debug/Turret/Encoder", periodicIO.position);
             SmartDashboard.putNumber("Debug/Turret/Demand", periodicIO.demand);

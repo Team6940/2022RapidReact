@@ -28,6 +28,7 @@ public final class Constants {
     public static int HoodMotorPort = 28; //TODO
     public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
     
+    public static final double HOOD_HOME_ANGLE = 30;  //TODO
     public static final double HOOD_MAX_ANGLE = 70; //TODO
     public static final double HOOD_MIN_ANGLE = 20;  //TODO
 
@@ -159,6 +160,8 @@ public final class Constants {
     public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
     public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
+    public static final double TurretMaxSoftLimit = 100; // 度数 //TODO
+    public static final double TurretMinSoftLimit = -193; // TODO
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
