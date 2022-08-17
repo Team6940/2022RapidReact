@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
     RobotContainer.m_swerve.whetherstoreyaw = false;
     ColorSensor.getInstance().getTargetBallUpdate();
     VisionManager.getInstance().ZeroTurret();
-    Shooter.getInstance().setStopShooter();
+    Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     VisionManager.getInstance().startVisionFinding();
   }

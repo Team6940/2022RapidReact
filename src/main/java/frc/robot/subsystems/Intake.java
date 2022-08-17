@@ -58,7 +58,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("Debug/Intake/IntakeSolState: ", intakeSolenoid.get());
         SmartDashboard.putString("Debug/Intake/IntakeSolState", wantedIntakeSolState.toString());
         SmartDashboard.putNumber("Debug/Intake/CMotorOutput: ", intakeMotor.getMotorOutputPercent());
-        SmartDashboard.putString("Debug/Intake/WantedIntake State", wantedIntakeState.toString());
+        SmartDashboard.putString("Debug/Intake/WantedIntake State", getWantedIntakeState().name());
     }
 
 
@@ -110,6 +110,9 @@ public class Intake extends SubsystemBase {
     // this a extern func for other command call.
     public synchronized void setWantedIntakeState(IntakeState intakeState) {
         wantedIntakeState = intakeState;
+    }
+    public synchronized IntakeState getWantedIntakeState() {
+        return wantedIntakeState ;
     }
 
     private void setIntakeMotor(double speed) {

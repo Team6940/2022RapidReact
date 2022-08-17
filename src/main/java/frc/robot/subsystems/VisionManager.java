@@ -15,18 +15,16 @@ import frc.robot.lib.team2910.util.InterpolatingDouble;
 import frc.robot.lib.team2910.util.InterpolatingTreeMap;
 
 public class VisionManager extends SubsystemBase {
-
-    private static final double maxSoftLimit = 100; // 度数 //TODO
-    private static final double minSoftLimit = -193; // TODO
     private static int direction = 0;
     private static VisionManager instance = null;
-    PeriodicIO periodicIO = new PeriodicIO();
     private VisionManagerState currentState = VisionManagerState.ZERO_TURRET;
     private int TurrentFindingTimes = 0;
     Turret turret = Turret.getInstance();
     Shooter shooter= Shooter.getInstance();
     LimelightSubsystem limelight = LimelightSubsystem.getInstance();
     SwerveDriveTrain driveDrain = SwerveDriveTrain.getInstance();
+    Hopper hooper = Hopper.getInstance();
+    Intake intake = Intake.getInstance();
     
 
     static InterpolatingTreeMap<InterpolatingDouble, Vector2> SHOOTER_TUNING = new InterpolatingTreeMap<>();
@@ -106,7 +104,7 @@ public class VisionManager extends SubsystemBase {
     }
 
     public boolean isVisionGoodRange(double angle) {
-        return (valueIsRange(angle, minSoftLimit, maxSoftLimit)
+        return (valueIsRange(angle, Constants.TurretMinSoftLimit, Constants.TurretMaxSoftLimit)
                 && limelight.isTargetVisible());
     }
 
@@ -118,6 +116,8 @@ public class VisionManager extends SubsystemBase {
         currentState = VisionManagerState.VISION_FINDING;
         TurrentFindingTimes = 0;
         turret.On(true);
+        shooter.setHoodToOn();
+        shooter.setFiring(false);
     }
 
     public void Stop() {
@@ -138,25 +138,28 @@ public class VisionManager extends SubsystemBase {
 
         if (currentState == VisionManagerState.ZERO_TURRET) {
             turret.ZeroTurret();
-            shooter.setStopShooter();
+            shooter.setShooterToStop();
+            shooter.setFiring(false);
         } 
         if (currentState == VisionManagerState.STOP) {
             turret.setTurretAngle(turret.getAngleDeg());
-            shooter.setStopShooter();
+            shooter.setShooterToStop();
+            shooter.setFiring(false);
         } 
         if ((currentState == VisionManagerState.VISION_FINDING)
               && ((TurrentFindingTimes % 5) == 0 )){ //TODO  TurrentFindingTimes will bei delete
+            shooter.setFiring(false);
             desiredAngle = turret.getAngleDeg();
             if (direction == 0) {
                 desiredAngle -= Constants.kTurretStep;
-                desiredAngle = Math.max(desiredAngle, minSoftLimit);
-                if (desiredAngle <= minSoftLimit) {
+                desiredAngle = Math.max(desiredAngle, Constants.TurretMinSoftLimit);
+                if (desiredAngle <= Constants.TurretMinSoftLimit) {
                     direction = 1;
                 }
             } else {
                 desiredAngle += Constants.kTurretStep;
-                desiredAngle = Math.min(desiredAngle, maxSoftLimit);
-                if (desiredAngle >= maxSoftLimit) {
+                desiredAngle = Math.min(desiredAngle, Constants.TurretMaxSoftLimit);
+                if (desiredAngle >= Constants.TurretMaxSoftLimit) {
                     direction = 0;
                 }
             }
@@ -164,7 +167,7 @@ public class VisionManager extends SubsystemBase {
             if (isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
                 currentState = VisionManagerState.VISION_MOVING;
             }
-            shooter.setPrepareShooter();
+            shooter.setShooterToPrepare();
         } 
         if (currentState == VisionManagerState.VISION_MOVING) {
             desiredAngle = limelight.Get_tx() + turret.getAngleDeg();
@@ -172,7 +175,7 @@ public class VisionManager extends SubsystemBase {
             turret.setTurretAngle(desiredAngle);
             if (isTargetLocked()) {
                 currentState = VisionManagerState.VISION_LOCKED;
-                shooter.setShootShooter();
+                shooter.setShooterToShoot();
             } else if (!isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
                 currentState = VisionManagerState.VISION_FINDING;
                 TurrentFindingTimes = 0;
@@ -181,15 +184,16 @@ public class VisionManager extends SubsystemBase {
                 } else {
                     direction = 1;
                 }
-                shooter.setPrepareShooter();
+                shooter.setShooterToPrepare();
             }
             else{  // still is VISION_MOVING
-                shooter.setPrepareShooter();
+                shooter.setShooterToPrepare();
             }
             
         }
         if (currentState == VisionManagerState.VISION_LOCKED) {
-            shooter.setShootShooter();
+            shooter.setShooterToShoot();
+            shooter.setHoodToOn();
             if (isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
                 if(getShooterMode() == 1){
                     SetMovingShootParams();
@@ -214,22 +218,23 @@ public class VisionManager extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        SmartDashboard.putString("Debug/VisionManager/State", getVisionManagerState().name());
+        SmartDashboard.putString("Debug/VisionManager/VisionState", getVisionManagerState().name());
+        SmartDashboard.putNumber("Debug/VisionManager/ShooterMode", getShooterMode());
+        SmartDashboard.putString("Debug/VisionManager/ShooterState", shooter.getShooterState().name()); 
+        SmartDashboard.putNumber("Debug/VisionManager/ShooterSpeedRPM", shooter.getShooterSpeedRpm()); 
+        SmartDashboard.putString("Debug/VisionManager/HoodState", shooter.getHoodState().name());  
+        SmartDashboard.putNumber("Debug/VisionManager/HoodAngle", shooter.getHoodAngle());
+        SmartDashboard.putString("Debug/VisionManager/TurretState", turret.getTurretState().name());
+        SmartDashboard.putNumber("Debug/VisionManager/TurretAngle",turret.getAngleDeg());
+        SmartDashboard.putString("Debug/VisionManager/BlockerState",shooter.getBlockerState().name());
+        SmartDashboard.putString("Debug/VisionManager/HooperState",hooper.getHopperState().name());
+        SmartDashboard.putString("Debug/VisionManager/OuttakeState",hooper.getOuttakeState().name());
+        SmartDashboard.putString("Debug/VisionManager/IntakeState",intake.getWantedIntakeState().name());
+        SmartDashboard.putString("Debug/VisionManager/IntakeSolState",intake.getIntakeSolState().name());
     }
 
     public enum VisionManagerState {
-        ZERO_TURRET, VISION_LOCKED, VISION_MOVING, VISION_FINDING, STOP
-    }
-
-    public static class PeriodicIO {
-        // Inputs
-        public double position;
-        public int velocity;
-        public double voltage;
-        public double current;
-
-        // Outputs
-        public double demand;
+        ZERO_TURRET, STOP, VISION_LOCKED, VISION_MOVING, VISION_FINDING,VISION_MANUAL
     }
 
     @Override
