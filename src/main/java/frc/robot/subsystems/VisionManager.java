@@ -456,4 +456,11 @@ public class VisionManager extends SubsystemBase {
         shooter.setShooterToMannulShoot();
         shooter.setSpeed(inputShootSpeedRPM);
     }
+
+    public void doShooterEject() {
+        startVisionMannul();
+        shooter.setSpeed(Constants.SHOOTER_EJECT_SPEED);
+        shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
+        shooter.setFiring(true);
+    }
 }

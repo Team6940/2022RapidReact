@@ -123,7 +123,7 @@ public class Robot extends TimedRobot {
         Hopper.getInstance().resetBeamBreakOpenTime();
       }
       //shooter.setFeederChecksDisabled(false);
-      //doShooterEject();
+      VisionManager.getInstance().doShooterEject();
     } else {
       // Not trying to do anything else with shooter will stop all action with it
       //shooter.setFeederChecksDisabled(false);

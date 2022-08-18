@@ -133,9 +133,12 @@ public final class Constants {
     public static final double HOPPER_OUTTAKING_SPEED = 0.3;
 
         
-    public static final double BEAM_BREAK_EJECT_TIME = 0.75;
-    public static final double MIN_AUTO_EJECT_TIME = 0.5;
+    public static final double BEAM_BREAK_EJECT_TIME = 0.75;  //TODO
+    public static final double MIN_AUTO_EJECT_TIME = 0.5;   //TODO
     
+    // for eject ball para when more than 3 balls or OpponentBall
+    public static final int SHOOTER_EJECT_SPEED = 750;  //TODO
+    public static final double HOOD_EJECT_ANGLE = 53;  //TODO
 
     //Robot Tracker
     public static final double DRIVE_VELOCITY_MEASUREMENT_LATENCY = 0.0025;
