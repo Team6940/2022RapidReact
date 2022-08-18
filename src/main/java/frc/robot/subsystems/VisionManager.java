@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.lib.team503.util.Util;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -206,7 +207,11 @@ public class VisionManager extends SubsystemBase {
                 if(getShooterMode() == 1){
                     SetMovingShootParams();
                     //shootOnMoveOrbit();//Orbit's shotOnMove
-                    desiredAngle = turret.getAngleDeg()  /*+ getMoveOffset()*/;  //TODO
+                    if (Robot.isSimulation()) {
+                        desiredAngle = turret.getAngleDeg();
+                    }
+                    
+                    desiredAngle = turret.getAngleDeg() + (Robot.isSimulation() ? 0 : getMoveOffset()); //TODO
                 }else{
                     setFixedShootParams();
                     desiredAngle = turret.getAngleDeg();
