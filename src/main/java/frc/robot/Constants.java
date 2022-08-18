@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
@@ -26,16 +27,27 @@ import java.awt.geom.Point2D;
 public final class Constants {
 
     public static final class ShooterConstants {
+        public static final double kAccelCompFactor = 0.100;
+
         private static final Point2D[] kShotTimes = new Point2D.Double[] {
-            // (ty-angle,time)
-            new Point2D.Double(105, 0.82),
-            new Point2D.Double(135, 0.82),
-            new Point2D.Double(165, 0.85),
-            new Point2D.Double(195, 0.85),
-            new Point2D.Double(250, 1.05),
+                // (ty-angle,time)
+                new Point2D.Double(105, 0.82),
+                new Point2D.Double(135, 0.82),
+                new Point2D.Double(165, 0.85),
+                new Point2D.Double(195, 0.85),
+                new Point2D.Double(250, 1.05),
         };
-    
+
         public static final LinearInterpolationTable kTimeTable = new LinearInterpolationTable(kShotTimes);
+    }
+    
+    public static final class GlobalConstants {
+        public static final double kLoopTime = 0.020;
+    }
+
+    public static final class GoalConstants {
+        public static final Translation2d kGoalLocation = new Translation2d(8.23, 4.115);
+        public static final Translation2d kWrongBallGoal = new Translation2d(5.50, 4.115);
     }
 
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
