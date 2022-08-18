@@ -11,13 +11,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.auto.actions.IntakeAction;
-import frc.robot.auto.actions.ShootAction;
-import frc.robot.auto.actions.SwervePathAction;
-import frc.robot.auto.actions.TurretAndShooterAction;
+import frc.robot.subsystems.VisionManager;
+import frc.robot.subsystems.Hopper.HopperState;
+import frc.robot.subsystems.Intake.IntakeSolState;
+import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveDriveTrain;
+import frc.robot.auto.actions.SwervePathAction;
+import frc.robot.auto.actions.ShootAction;
+import frc.robot.auto.actions.IntakeAndHopperAction;
+import frc.robot.auto.actions.TurretAction;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -46,27 +52,49 @@ public class SixBallMode extends SequentialCommandGroup {
         )
       ),
 
-      new SwervePathAction(mSixBallTrajectoryOne).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
+      new SwervePathAction(mSixBallTrajectoryOne).deadlineWith(
+        new IntakeAndHopperAction(),
+        new TurretAction()
+        ),
       new WaitCommand(0.5),
 
-      new SwervePathAction(mSixBallTrajectoryTwo).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
+      new SwervePathAction(mSixBallTrajectoryTwo).deadlineWith(
+        new IntakeAndHopperAction(),
+        new TurretAction()
+        ),
       new ShootAction().withTimeout(1),
-      //new WaitCommand(0.5),
 
-      new SwervePathAction(mSixBallTrajectoryThree).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
+      new SwervePathAction(mSixBallTrajectoryThree).deadlineWith(
+        new IntakeAndHopperAction(),
+        new TurretAction()
+        ),
       new WaitCommand(0.5),
       new ShootAction().withTimeout(1),
 
-      new SwervePathAction(mSixBallTrajectoryFour).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
-      new WaitCommand(2),
-      //new WaitCommand(0.5),
-
-      new SwervePathAction(mSixBallTrajectoryFive).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
+      new SwervePathAction(mSixBallTrajectoryFour).deadlineWith(
+        new IntakeAndHopperAction(),
+        new TurretAction()
+        ),
       new ShootAction().withTimeout(1),
 
-      new SwervePathAction(mSixBallTrajectorySix).deadlineWith(new IntakeAction(Constants.vSwitchIntake),new TurretAndShooterAction()),
+      new SwervePathAction(mSixBallTrajectoryFive).deadlineWith(
+        new IntakeAndHopperAction(),
+        new TurretAction()
+        ),
       new WaitCommand(0.5),
-      new ShootAction().withTimeout(1)
+      new ShootAction().withTimeout(1),
+
+      new SwervePathAction(mSixBallTrajectorySix).deadlineWith(
+        new IntakeAndHopperAction(),
+        new TurretAction()
+        ),
+      new WaitCommand(0.5),
+      new ShootAction().withTimeout(1),
+
+      new InstantCommand(() -> Intake.getInstance().setIntakeSolState(IntakeSolState.CLOSE)),
+      new InstantCommand(() -> Intake.getInstance().setWantedIntakeState(IntakeState.OFF)),
+      new InstantCommand(() -> Hopper.getInstance().setHopperState(HopperState.OFF))
+
     );
   }
 }
