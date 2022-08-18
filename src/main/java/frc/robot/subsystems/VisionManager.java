@@ -286,7 +286,7 @@ public class VisionManager extends SubsystemBase {
     }
 
     public void SetMovingShootParams(){
-        Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(limelight.getRobotToTargetDistance_Opt().orElse(0.0)));
+        Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(futureDist));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
                 Conversions.RPMToMPS(angleAndSpeed.y, Constants.kFlyWheelCircumference), // Shot Speed
@@ -305,7 +305,7 @@ public class VisionManager extends SubsystemBase {
 
     public boolean isShooterCanShoot(){
         boolean result = false;
-        Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(limelight.getRobotToTargetDistance_Opt().orElse(0.0)));
+        Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(futureDist));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
                 Conversions.RPMToMPS(angleAndSpeed.y, Constants.kFlyWheelCircumference), // Shot Speed   
