@@ -157,7 +157,7 @@ public final class Hopper extends SubsystemBase  {
         updateOuttakeState();
 
         if (!isBeamBroken()) {
-            lastBeamBreakOpenTime = Timer.getFPGATimestamp();
+            resetBeamBreakOpenTime();
         }
 
         // Outtake motor control
