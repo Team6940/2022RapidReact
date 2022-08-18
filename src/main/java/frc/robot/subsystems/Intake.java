@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
 
     private Intake() {
         intakeMotor = new WPI_TalonFX(Constants.IntakerPort+10); //TODO
-        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort+5); //TODO
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort); //TODO
         intakeMotor.configVoltageCompSaturation(12);
         intakeMotor.enableVoltageCompensation(true);
         intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
