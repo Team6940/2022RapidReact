@@ -28,9 +28,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SixBallMode2 extends SequentialCommandGroup {
+public class SixBallMode extends SequentialCommandGroup {
   /** Creates a new SixBallMode. */
-  public SixBallMode2(SwerveDriveTrain sSwerve) {
+  public SixBallMode(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     PathPlannerTrajectory mSixBallTrajectoryOne = PathPlanner.loadPath("SixBallBottom-1", 2, 2);

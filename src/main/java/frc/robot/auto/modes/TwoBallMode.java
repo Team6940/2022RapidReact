@@ -26,9 +26,9 @@ import frc.robot.subsystems.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoBallMode2 extends SequentialCommandGroup {
+public class TwoBallMode extends SequentialCommandGroup {
   /** Creates a new TwoBallMode. */
-  public TwoBallMode2(SwerveDriveTrain sSwerve) {
+  public TwoBallMode(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     PathPlannerTrajectory mTwoBallTrajectoryOne = PathPlanner.loadPath("TwoBall-1", 2, 2);
