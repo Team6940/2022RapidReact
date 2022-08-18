@@ -6,11 +6,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.auto.modes.FiveBallBottomMode;
-import frc.robot.auto.modes.FiveBallBottomMode2;
 import frc.robot.auto.modes.SixBallMode;
-import frc.robot.auto.modes.SixBallMode2;
 import frc.robot.auto.modes.TwoBallMode;
-import frc.robot.auto.modes.TwoBallMode2;
 import frc.robot.subsystems.SwerveDriveTrain;
 
 public class AutonomousSelector {
@@ -45,13 +42,13 @@ public class AutonomousSelector {
                 return new TwoBallMode(s_Swerve);
 
             case FIVE_BALL_BOTTOM2:
-                return new FiveBallBottomMode2(s_Swerve);      
+                return new FiveBallBottomMode(s_Swerve);      
 
             case SIX_BALL2:
-                return new SixBallMode2(s_Swerve);
+                return new SixBallMode(s_Swerve);
 
             case TWO_BALL2:
-                return new TwoBallMode2(s_Swerve);                
+                return new TwoBallMode(s_Swerve);                
 
             default:
                 System.out.println("ERROR: unexpected auto mode: " + mode);
