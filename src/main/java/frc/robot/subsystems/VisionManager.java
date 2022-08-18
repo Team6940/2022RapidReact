@@ -4,13 +4,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants.GoalConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.lib.team503.util.Util;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.lib.team1678.math.Conversions;
 import frc.robot.lib.team1690.Vector;
 import frc.robot.lib.team1690.Vector3D;
+import frc.robot.lib.team1706.FieldRelativeAccel;
+import frc.robot.lib.team1706.FieldRelativeSpeed;
+import frc.robot.lib.team1706.LinearInterpolationTable;
 import frc.robot.lib.team2910.math.Vector2;
 import frc.robot.lib.team2910.util.InterpolatingDouble;
 import frc.robot.lib.team2910.util.InterpolatingTreeMap;
@@ -26,8 +33,15 @@ public class VisionManager extends SubsystemBase {
     SwerveDriveTrain driveDrain = SwerveDriveTrain.getInstance();
     Hopper hooper = Hopper.getInstance();
     Intake intake = Intake.getInstance();
-    
+    private final Timer m_timer = new Timer();
+    private double m_wrongBallTime;
+    private double radialVelocity = 0;
+    private double tangentialVelocity = 0;
+    private double angleToGoal = 0;
+    private double futureDist = 0;
 
+    private static LinearInterpolationTable m_timeTable = ShooterConstants.kTimeTable;
+    
     static InterpolatingTreeMap<InterpolatingDouble, Vector2> SHOOTER_TUNING = new InterpolatingTreeMap<>();
     private int num = 1;
     private int shootMode = 1;//1 means table shoot ,0 means algorithm shoot
@@ -253,7 +267,8 @@ public class VisionManager extends SubsystemBase {
     @Override
     public void periodic() {
         readPeriodicInputs();
-        if(limelight.getLightMode() == 3){
+        if (limelight.getLightMode() == 3) {
+            SmartShooter();
             writePeriodicOutputs();
         }
         outputTelemetry();       
@@ -276,9 +291,9 @@ public class VisionManager extends SubsystemBase {
         mShotParams = GetMovingShotParams(
                 Conversions.RPMToMPS(angleAndSpeed.y, Constants.kFlyWheelCircumference), // Shot Speed
                 angleAndSpeed.x,                                                         // Hood Angle
-                driveDrain.getFieldRelativeTurretAngleDeg(),         // Turret target angle (The same coordinate system with swerve)
-                driveDrain.getFieldRelativeXVelocity(),              // Swerve speed in X axis (field-oriented)
-                driveDrain.getFieldRelativeYVelocity());             // Swerve speed in Y axis (field-oriented)
+                angleToGoal,         // Turret target angle (The same coordinate system with swerve)
+                driveDrain.getFieldRelativeSpeed().vx,              // Swerve speed in X axis (field-oriented)
+                driveDrain.getFieldRelativeSpeed().vy);             // Swerve speed in Y axis (field-oriented)
         targetVelocity = Conversions.MPSToRPM(mShotParams[2], Constants.kFlyWheelCircumference);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
@@ -295,9 +310,9 @@ public class VisionManager extends SubsystemBase {
         mShotParams = GetMovingShotParams(
                 Conversions.RPMToMPS(angleAndSpeed.y, Constants.kFlyWheelCircumference), // Shot Speed   
                 angleAndSpeed.x,                                                         // Hood Angle
-                driveDrain.getFieldRelativeReadyTurretAngleDeg(),    // Turret Angle (The same coordinate system with swerve)
-                driveDrain.getFieldRelativeXVelocity(),              // Swerve speed in X axis (field-oriented)
-                driveDrain.getFieldRelativeYVelocity());             // Swerve speed in Y axis (field-oriented)
+                angleToGoal,    // Turret Angle (The same coordinate system with swerve)
+                driveDrain.getFieldRelativeSpeed().vx,              // Swerve speed in X axis (field-oriented)
+                driveDrain.getFieldRelativeSpeed().vy);             // Swerve speed in Y axis (field-oriented)
         targetVelocity = Conversions.MPSToRPM(mShotParams[2],Constants.kFlyWheelCircumference);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
@@ -310,10 +325,10 @@ public class VisionManager extends SubsystemBase {
     }
 
     public Vector3D calcBallVelocity() {
-        //float vel = (float)driveDrain.getRadialVelocity();
-        //float dist = (float)limelight.getRobotToTargetDistance();
-        float vel = (float) -3.8;
-        float dist = (float) 5.0;
+        float vel = (float)radialVelocity;
+        float dist = (float)futureDist;
+        //float vel = (float) -3.8;
+        //float dist = (float) 5.0;
 
         if (vel < 0) {
             vel *= 1.09f;
@@ -355,13 +370,13 @@ public class VisionManager extends SubsystemBase {
         speed += Constants.speedCoefficients[8] * distVel;
         speed += Constants.speedCoefficients[9];
 
-        final float tangentialRobotSpeed = (float)driveDrain.getTangentialVelocity();
+        final float tangentialRobotSpeed = (float)tangentialVelocity;
         final Vector tangentialRobotVel = Vector.fromAngleAndRadius(
-                (float)driveDrain.getFieldRelativeTurretAngleRad() + (float)Math.toRadians(90),
+                (float)angleToGoal + (float)Math.toRadians(90),
                 tangentialRobotSpeed);
         final Vector3D tangentialRobotVel3D = new Vector3D(tangentialRobotVel.x, tangentialRobotVel.y, 0);
 
-        final float angleToTargetWithoutRobotVel = (float)driveDrain.getFieldRelativeTurretAngleRad();
+        final float angleToTargetWithoutRobotVel = (float)angleToGoal;
 
         final Vector3D ballVelocityWithoutYawLimit = Vector3D
                 .fromSizeYawPitch(speed, angleToTargetWithoutRobotVel, pitch)
@@ -467,5 +482,56 @@ public class VisionManager extends SubsystemBase {
         shooter.setSpeed(Constants.SHOOTER_EJECT_SPEED);
         shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
         shooter.setFiring(true);
+    }
+
+    public void SmartShooter() {
+        Translation2d drivePose = SwerveDriveTrain.getInstance().getPose().getTranslation();
+        double currentTime = m_timer.get();
+        boolean wrongBall = ColorSensor.getInstance().hasOpponentBall();
+        if (wrongBall) {
+            m_wrongBallTime = currentTime;
+        }
+        SmartDashboard.putNumber("Current Time", currentTime);
+
+        SmartDashboard.putBoolean("Wrong Ball", wrongBall);
+
+        SmartDashboard.putBoolean("Shooter Running", true);
+
+        FieldRelativeSpeed robotVel = SwerveDriveTrain.getInstance().getFieldRelativeSpeed();
+        FieldRelativeAccel robotAccel = SwerveDriveTrain.getInstance().getFieldRelativeAccel();
+
+
+
+        Translation2d target = GoalConstants.kGoalLocation;
+
+        if (currentTime <= m_wrongBallTime + 0.100) {
+            target = GoalConstants.kWrongBallGoal;
+        }
+
+        Translation2d robotToGoal = target.minus(drivePose);
+        double dist = robotToGoal.getDistance(new Translation2d());
+
+        SmartDashboard.putNumber("Calculated (in)", dist);
+
+        double fixedShotTime = m_timeTable.getOutput(dist);//TODO
+        double robotVelX = robotVel.vx + robotAccel.ax * ShooterConstants.kAccelCompFactor;
+        double robotVelY = robotVel.vy + robotAccel.ay * ShooterConstants.kAccelCompFactor;
+
+        double virtualDriveX = drivePose.getX()
+                + fixedShotTime * robotVelX;      
+        double virtualDriveY = drivePose.getY()
+                + fixedShotTime * robotVelY;
+
+        SmartDashboard.putNumber("Drive X", virtualDriveX);
+        SmartDashboard.putNumber("Drive Y", virtualDriveY);
+
+        Translation2d movingDriveLocation = new Translation2d(virtualDriveX,virtualDriveY);
+
+        Translation2d toMovingDrive = movingDriveLocation.minus(target);
+
+        futureDist = toMovingDrive.getDistance(new Translation2d());
+        angleToGoal = Math.atan2(toMovingDrive.getY(), toMovingDrive.getX());
+        radialVelocity = (robotVelY * Math.cos(angleToGoal) - (robotVelX * Math.sin(angleToGoal)));
+        tangentialVelocity = (robotVelX * Math.sin(angleToGoal) + (robotVelY * Math.cos(angleToGoal)));
     }
 }

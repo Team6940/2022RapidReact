@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.GlobalConstants;
+import frc.robot.lib.team1706.FieldRelativeAccel;
+import frc.robot.lib.team1706.FieldRelativeSpeed;
 import io.github.pseudoresonance.pixy2api.*;
 
 public class SwerveDriveTrain extends SubsystemBase {
@@ -50,6 +53,10 @@ public class SwerveDriveTrain extends SubsystemBase {
   public boolean autoPixy = false;
 
   private Field2d m_field = new Field2d();
+
+  private FieldRelativeSpeed m_fieldRelVel = new FieldRelativeSpeed();
+  private FieldRelativeSpeed m_lastFieldRelVel = new FieldRelativeSpeed();
+  private FieldRelativeAccel m_fieldRelAccel = new FieldRelativeAccel();
 
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
@@ -317,12 +324,25 @@ public class SwerveDriveTrain extends SubsystemBase {
   public double getRoll() {
     return gyro.getRoll();
   }
+
   public Rotation2d getYaw() {
-      return Rotation2d.fromDegrees(gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(gyro.getFusedHeading());
+  }
+  
+  public FieldRelativeSpeed getFieldRelativeSpeed() {
+    return m_fieldRelVel;
+  }
+
+  public FieldRelativeAccel getFieldRelativeAccel() {
+    return m_fieldRelAccel;
   }
 
   @Override
   public void periodic() {
+    m_fieldRelVel = new FieldRelativeSpeed(getChassisSpeeds(), GetGyroRotation2d());
+    m_fieldRelAccel = new FieldRelativeAccel(m_fieldRelVel, m_lastFieldRelVel, GlobalConstants.kLoopTime);
+    m_lastFieldRelVel = m_fieldRelVel;
+    
     SwerveModuleState[] moduleStates = getStates();
     // This method will be called once per scheduler run
     odometry_.update(

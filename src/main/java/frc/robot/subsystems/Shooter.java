@@ -318,18 +318,16 @@ public class Shooter extends SubsystemBase {
         return blockerState;
     }
 
-    public void BlockerWritePeriodicOutputs(){
-        if(blockerState == BlockerControlState.BALLLOCKER_ON){
+    public void BlockerWritePeriodicOutputs() {
+        if (blockerState == BlockerControlState.BALLLOCKER_ON) {
             blockerSolenoid.set(true);
-        }else{
+        } else {
             blockerSolenoid.set(false);
         }
-
     }
 
     @Override
     public void periodic() {
-
         HoodWritePeriodicOutputs();
         HoodReadPeriodicInputs();
         HoodOutputTelemetry();
@@ -337,8 +335,5 @@ public class Shooter extends SubsystemBase {
         ShooterReadPeriodicInputs();
         ShooterOutputTelemetry();
         BlockerWritePeriodicOutputs();
-
     }
-
-
 }
