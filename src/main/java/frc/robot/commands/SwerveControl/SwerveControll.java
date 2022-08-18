@@ -74,7 +74,7 @@ public class SwerveControll extends CommandBase {
       xJoyStickLimiter.calculate(tAxes.getX()),
       yJoyStickLimiter.calculate(tAxes.getY())
       ).times(Constants.kMaxSpeed);
-    rotation = rAxis * Constants.kMaxOmega;
+    rotation = omegaJoyStickLimiter.calculate(rAxis) * Constants.kMaxOmega;
 
     if(RobotContainer.m_swerve.autoPixy && PixyCamSPI.getInstance().isBallSeen()){
         yawCorrection = PixyCamSPI.getInstance().pixyFrontCorrection();
