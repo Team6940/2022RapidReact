@@ -9,6 +9,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Color;
+import frc.robot.lib.team1706.LinearInterpolationTable;
+
+import java.awt.geom.Point2D;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -21,6 +24,19 @@ import edu.wpi.first.wpilibj.util.Color;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static final class ShooterConstants {
+        private static final Point2D[] kShotTimes = new Point2D.Double[] {
+            // (ty-angle,time)
+            new Point2D.Double(105, 0.82),
+            new Point2D.Double(135, 0.82),
+            new Point2D.Double(165, 0.85),
+            new Point2D.Double(195, 0.85),
+            new Point2D.Double(250, 1.05),
+        };
+    
+        public static final LinearInterpolationTable kTimeTable = new LinearInterpolationTable(kShotTimes);
+    }
 
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
@@ -50,6 +66,9 @@ public final class Constants {
     //Conveyor constants
     public static  int TOP_BALL_IR_SENSOR = 4; //TODO
     public static int LOW_BALL_IR_SENSOR = 5; //TODO
+
+    public static int HOPPER_TOP_BALL_IR_SENSOR = 6;
+    public static int HOPPER_LOW_BALL_IR_SENSOR = 7;
 
     public static double SLOW_MUL = 5.0 / 8.0; //TODO
     public static double TOP_BELT_SPEED = 0.8; //TODO

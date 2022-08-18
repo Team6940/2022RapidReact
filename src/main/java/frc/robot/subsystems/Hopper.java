@@ -16,7 +16,7 @@ public final class Hopper extends SubsystemBase  {
     WPI_TalonFX hopperMotor;
     private double lastDetectionTime;
     private boolean disableEject = false;
-    private final ColorSensor2 colorSensor;  /* 位于球道顶部，用于识别当前将要给shooter发射的球颜色 */
+    private final ColorSensor colorSensor;  /* 位于球道顶部，用于识别当前将要给shooter发射的球颜色 */
     private boolean isBeamBreakEnabled = true;
     private final DigitalInput beamBreak;   /* 位于球道底部，用于判断intake是否已经收入一个新球进来 */
     private final DigitalInput topIRSensor; /* 位于球道顶部，用于判断是否有球在顶部*/
@@ -63,9 +63,9 @@ public final class Hopper extends SubsystemBase  {
         hopperMotor = new WPI_TalonFX(Constants.BallLoaderPort+10); //TODO
         hopperMotor.configVoltageCompSaturation(12);
         hopperMotor.enableVoltageCompensation(true);
-        topIRSensor = new DigitalInput(Constants.TOP_BALL_IR_SENSOR); //TODO
-        beamBreak =  new DigitalInput(Constants.LOW_BALL_IR_SENSOR+5);  //TODO
-        colorSensor = new ColorSensor2();
+        topIRSensor = new DigitalInput(Constants.HOPPER_TOP_BALL_IR_SENSOR); //TODO
+        beamBreak =  new DigitalInput(Constants.HOPPER_LOW_BALL_IR_SENSOR);  //TODO
+        colorSensor = ColorSensor.getInstance();  //TODO
     }
 /**
      * Uses Sendable Chooser to decide Alliance Color
@@ -136,9 +136,9 @@ public final class Hopper extends SubsystemBase  {
 
     public BallColor getBallColor() {
         BallColor currentBallColor;
-        if( colorSensor.getCurrentBall() == ColorSensor2.BallColor.BLUE_BALL){
+        if( colorSensor.getCurrentBall() == ColorSensor.BallColor.BLUE_BALL){
             currentBallColor = BallColor.BLUE;
-        }else if (colorSensor.getCurrentBall() == ColorSensor2.BallColor.RED_BALL){
+        }else if (colorSensor.getCurrentBall() == ColorSensor.BallColor.RED_BALL){
             currentBallColor = BallColor.RED;
         }else {
             currentBallColor = BallColor.NO_BALL;
