@@ -219,6 +219,9 @@
         "open": true
       },
       "Debug": {
+        "Hopper": {
+          "open": true
+        },
         "VisionManager": {
           "open": true
         },
