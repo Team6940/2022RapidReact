@@ -50,6 +50,11 @@ public final class Constants {
         public static final Translation2d kWrongBallGoal = new Translation2d(5.50, 4.115);
     }
 
+    public static final class HoodConstants {
+        public static final double kMinAngle = 0.5;//TODO
+        public static final double kMaxAngle = 38;
+    }
+
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
     // Hood constants
