@@ -56,9 +56,9 @@ public final class Constants {
     public static int HoodMotorPort = 28; //TODO
     public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
     
-    public static final double HOOD_HOME_ANGLE = 30;  //TODO
-    public static final double HOOD_MAX_ANGLE = 70; //TODO
-    public static final double HOOD_MIN_ANGLE = 20;  //TODO
+    public static final double HOOD_HOME_ANGLE = 0;  //TODO
+    public static final double HOOD_MAX_ANGLE = 30; //TODO
+    public static final double HOOD_MIN_ANGLE = 0;  //TODO
 
     // colorsendor constants
     public interface ColorConstant {
@@ -170,6 +170,10 @@ public final class Constants {
     // for eject ball para when more than 3 balls or OpponentBall
     public static final int SHOOTER_EJECT_SPEED = 750;  //TODO
     public static final double HOOD_EJECT_ANGLE = 53;  //TODO
+
+    // Blocker
+
+    public static final int  BlockerSolenoidPort = 2 ;
 
     //Robot Tracker
     public static final double DRIVE_VELOCITY_MEASUREMENT_LATENCY = 0.0025;
@@ -371,9 +375,7 @@ public final class Constants {
     public static final int PIVOTING_ARM_LATCHED_SWITCH_A_DIO_CHANNEL = 4;
     public static final int PIVOTING_ARM_LATCHED_SWITCH_B_DIO_CHANNEL = 5;
 
-    public static final int LATCH_SOLENOID_ID = 1;
     public static final int PIVOT_SOLENOID_ID = 0;
-    public static final int BRAKE_SOLENOID_ID = 2;
 
 
     public static final double CLIMBER_ENCODER_TICKS_PER_INCH = 2048 * ((68.0 / 9.0) * (32.0 / 24.0)) / (12 * (3.0 / 8.0));

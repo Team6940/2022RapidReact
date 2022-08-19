@@ -90,8 +90,8 @@ public class Shooter extends SubsystemBase {
         mHoodmotor.configMotionAcceleration(1200, 10);
         // mHoodmotor.configMotionSCurveStrength(6);
 
-        mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(kEncMin, Constants.HOOD_GEAR_RATIO), 10); //TODO
-        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(kEncMax, Constants.HOOD_GEAR_RATIO), 10); //TODO
+        mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MIN_ANGLE, Constants.HOOD_GEAR_RATIO), 10); //TODO
+        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MAX_ANGLE, Constants.HOOD_GEAR_RATIO), 10); //TODO
         mHoodmotor.configForwardSoftLimitEnable(true, 10);
         mHoodmotor.configReverseSoftLimitEnable(true, 10);
     
@@ -105,7 +105,7 @@ public class Shooter extends SubsystemBase {
     }
 
     private void configBlocker(){
-        blockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort+6); //TODO
+        blockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.BlockerSolenoidPort); //TODO
     }
 
     public ShooterControlState getShooterState() {

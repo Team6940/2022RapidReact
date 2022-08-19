@@ -22,17 +22,14 @@ public class Turret extends SubsystemBase {
 
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
-        if (RobotBase.isSimulation()) {
-            mTurretSensorSim = mTurretMotor.getSimCollection();
-        }
         // mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
         mTurretMotor.setSensorPhase(false);// TODO
         setBrakeMode(false);
 
         configurationOne();
-        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMaxSoftLimit), 10); // TODO
-        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMinSoftLimit), 10); // TODO
+        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMaxSoftLimit)+offset, 10); // TODO
+        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMinSoftLimit)+offset, 10); // TODO
         mTurretMotor.configForwardSoftLimitEnable(true, 10);
         mTurretMotor.configReverseSoftLimitEnable(true, 10);
 
@@ -118,13 +115,11 @@ public class Turret extends SubsystemBase {
     }
 
     public double encUnitsToTurretAngle(int encUnits) {
-        return Constants.kTurretStartingAngle
-                + Conversions.talonToDegrees((double) encUnits, Constants.TURRET_GEAR_RATIO);// TODO
+        return Conversions.talonToDegrees((double) encUnits, Constants.TURRET_GEAR_RATIO);// TODO
     }
 
     public int turretAngleToEncUnits(double mTurretMotorAngle) {
-        return (int) Conversions.degreesToTalon((mTurretMotorAngle - Constants.kTurretStartingAngle),
-                Constants.TURRET_GEAR_RATIO);// Todo
+        return (int) Conversions.degreesToTalon(mTurretMotorAngle ,Constants.TURRET_GEAR_RATIO);// Todo
     }
 
     public void readPeriodicInputs() {
