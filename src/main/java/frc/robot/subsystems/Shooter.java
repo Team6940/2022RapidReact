@@ -33,12 +33,10 @@ public class Shooter extends SubsystemBase {
 
     // for hood
     private WPI_TalonSRX mHoodmotor;
-    private static final double kEncMin = 0.0;//TODO
-    private static final double kEncMax = 627;//TODO
-    private int offset = 0;
+    private int offset = 0;//TODO
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();
     private double desiredHoodAngle;
-    HoodControlState hoodstate = HoodControlState.ON;
+    HoodControlState hoodstate = HoodControlState.HOME;
   
     // for blocker
     private  Solenoid blockerSolenoid;
@@ -232,7 +230,7 @@ public class Shooter extends SubsystemBase {
         if (targetAngle > Constants.HOOD_MAX_ANGLE) {
             targetAngle = Constants.HOOD_MAX_ANGLE;
         }
-        desiredHoodAngle = targetAngle;        
+        desiredHoodAngle = targetAngle;   
     }
     
     public void setHoodToStop(){
@@ -265,7 +263,8 @@ public class Shooter extends SubsystemBase {
             ;
         }
         double targetPos = Conversions.degreesToTalon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO) + offset;
-        HoodPeriodicIO.demand = (int)targetPos;
+        HoodPeriodicIO.demand = (int) targetPos;
+        setHoodAngle(desiredHoodAngle);
         mHoodmotor.set(ControlMode.MotionMagic, targetPos);
     }
 

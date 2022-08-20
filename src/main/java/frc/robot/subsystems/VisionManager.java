@@ -187,19 +187,19 @@ public class VisionManager extends SubsystemBase {
                 }
             }
             turret.setTurretAngle(desiredAngle);
-            if (isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
+            if (isVisionGoodRange(turret.getAngleDeg() )) {
                 currentState = VisionManagerState.VISION_MOVING;
             }
             shooter.setShooterToPrepare();
         } 
         if (currentState == VisionManagerState.VISION_MOVING) {
-            desiredAngle = limelight.Get_tx() + turret.getAngleDeg();
+            desiredAngle = turret.getAngleDeg()- limelight.Get_tx();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
             turret.setTurretAngle(desiredAngle);
             if (isTargetLocked()) {
                 currentState = VisionManagerState.VISION_LOCKED;
                 shooter.setShooterToShoot();
-            } else if (!isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
+            } else if (!isVisionGoodRange(turret.getAngleDeg()- limelight.Get_tx())) {
                 currentState = VisionManagerState.VISION_FINDING;
                 TurrentFindingTimes = 0;
                 if (desiredAngle > 0) {
@@ -217,14 +217,10 @@ public class VisionManager extends SubsystemBase {
         if (currentState == VisionManagerState.VISION_LOCKED) {
             shooter.setShooterToShoot();
             shooter.setHoodToOn();
-            if (isVisionGoodRange(limelight.Get_tx() + turret.getAngleDeg())) {
+            if (isVisionGoodRange(turret.getAngleDeg() - limelight.Get_tx())) {
                 if(getShooterMode() == 1){
                     SetMovingShootParams();
                     //shootOnMoveOrbit();//Orbit's shotOnMove
-                    if (Robot.isSimulation()) {
-                        desiredAngle = turret.getAngleDeg();
-                    }
-                    
                     desiredAngle = turret.getAngleDeg() + (Robot.isSimulation() ? 0 : getMoveOffset()); //TODO
                 }else{
                     setFixedShootParams();

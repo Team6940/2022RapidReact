@@ -50,6 +50,32 @@ public final class Constants {
         public static final Translation2d kWrongBallGoal = new Translation2d(5.50, 4.115);
     }
 
+    public static final class HoodConstants {
+        public static final double kMinAngle = 0.5;//TODO
+        public static final double kMaxAngle = 38;
+    }
+
+    public static final class DriveConstants{
+        public static final double kMaxAcceleration = 3.0;
+        public static final double kMaxSpeedMetersPerSecond = 3.25; // Maximum Sustainable Drivetrain Speed under Normal
+                                                                    // Conditions & Battery, Robot will not exceed this
+                                                                    // speed in closed loop control
+        public static final double kMaxAngularSpeed = Math.PI; // Maximum Angular Speed desired. NOTE: Robot can exceed this
+                                                               // but spinning fast is not particularly useful or driver
+                                                               // friendly
+        public static final double kMaxAngularAccel = Math.PI; // Maximum Angular Speed desired. NOTE: Robot can exceed this
+                                                               // but spinning fast is not particularly useful or driver
+                                                               // friendly
+    
+        public static final double kInnerDeadband = 0.10; // This value should exceed the maximum value the analog stick may
+                                                          // read when not in use (Eliminates "Stick Drift")
+        public static final double kOuterDeadband = 0.98; // This value should be lower than the analog stick X or Y reading
+                                                          // when aimed at a 45deg angle (Such that X and Y are are
+                                                          // maximized simultaneously)
+        public static final double kTranslationSlew = 1.45;
+        public static final double kRotationSlew = 3.00;
+    }
+
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
     // Hood constants

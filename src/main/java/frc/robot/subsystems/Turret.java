@@ -181,8 +181,6 @@ public class Turret extends SubsystemBase {
             writePeriodicOutputs();
         }
         readPeriodicInputs();
-        outputTelemetry();       
-
+        outputTelemetry();
     }
-    
 }

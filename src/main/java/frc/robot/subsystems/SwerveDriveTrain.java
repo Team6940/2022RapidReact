@@ -77,10 +77,10 @@ public class SwerveDriveTrain extends SubsystemBase {
     gyro = new PigeonIMU(Constants.PigeonIMUPort);
 
     // The coordinate system may be wrong 
-    swerve_modules_[0] = new SwerveModule(1, 2, true,  false, 1814, false, false);//front left
-    swerve_modules_[1] = new SwerveModule(3, 4, true, false, 3570, true,  true);//front right
-    swerve_modules_[2] = new SwerveModule(5, 6, true,  false, -370,  true, true);//back left
-    swerve_modules_[3] = new SwerveModule(7, 8, true, false, 2302,  true, true);//back right
+    swerve_modules_[0] = new SwerveModule(1, 2, false,  false, 2503, true, true);//front left
+    swerve_modules_[1] = new SwerveModule(3, 4, true, false, 3299, true, true);//front right
+    swerve_modules_[2] = new SwerveModule(5, 6, false,  false, 705,  false, false);//back left
+    swerve_modules_[3] = new SwerveModule(7, 8, true, false, 4687,  false, false);//back right
     
     ahrs = new AHRS(SPI.Port.kMXP);
 
@@ -283,7 +283,7 @@ public class SwerveDriveTrain extends SubsystemBase {
     return ((x < 0 ? -x : x) < 0.05) ? 0 : x;
   }
 
-  public double calcYawStraight(double targetAngle, double currentAngle){
+  public double calcYawStraight(double targetAngle, double currentAngle,double kP, double kD){
     //The WPILIB's version
     double headadjust = headController.calculate(currentAngle, targetAngle);
     return headadjust;

@@ -153,7 +153,7 @@ public final class Hopper extends SubsystemBase  {
 
     @Override
     public void periodic() {
-        updateAllianceColor();
+        /*updateAllianceColor();
         updateOuttakeState();
 
         if (!isBeamBroken()) {
@@ -204,7 +204,7 @@ public final class Hopper extends SubsystemBase  {
             case SLOW:
                 setHopperSpeed(Constants.HOPPER_SLOW_SPEED);
                 break;
-        }
+        }*/ //TODO
 
         outputTelemetry();
     }

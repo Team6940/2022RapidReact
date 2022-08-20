@@ -80,15 +80,11 @@ public class RobotContainer {
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
     m_visionManager = VisionManager.getInstance();
     m_turret = Turret.getInstance();  
-    //m_shooter = Shooter.getInstance();
     m_shooter = Shooter.getInstance();
-    //m_feeder = Feeder.getInstance();
     m_climber = Climber.getInstance();
-    //m_blocker = Blocker.getInstance();
     m_robotTracker = RobotTracker.getInstance();
     m_hopper = Hopper.getInstance();
     m_intake = Intake.getInstance();
-    //m_conveyor = Conveyor.getInstance();
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);

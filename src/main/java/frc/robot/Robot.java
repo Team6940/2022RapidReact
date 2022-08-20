@@ -98,7 +98,8 @@ public class Robot extends TimedRobot {
     VisionManager.getInstance().ZeroTurret();
     Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
-    VisionManager.getInstance().startVisionFinding();
+    LimelightSubsystem.getInstance().setLightMode(1);
+    //VisionManager.getInstance().startVisionFinding();
   }
 
   /** This function is called periodically during operator control. */
