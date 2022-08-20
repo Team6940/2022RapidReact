@@ -44,7 +44,7 @@ public class VisionManager extends SubsystemBase {
     
     static InterpolatingTreeMap<InterpolatingDouble, Vector2> SHOOTER_TUNING = new InterpolatingTreeMap<>();
     private int num = 1;
-    private int shootMode = 1;//1 means table shoot ,0 means algorithm shoot
+    private int shootMode = 1;//1 means interpolation table shoot ,0 means orbit shoot
     private double MoveOffset = 0;
     //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
     double targetVelocity ;
@@ -224,8 +224,8 @@ public class VisionManager extends SubsystemBase {
                     //shootOnMoveOrbit();//Orbit's shotOnMove
                     desiredAngle = turret.getTurretAngleDeg() + (Robot.isSimulation() ? 0 : getMoveOffset()); //TODO
                 }else{
-                    setFixedShootParams();
-                    desiredAngle = turret.getTurretAngleDeg();
+                    shootOnMoveOrbit();
+                    desiredAngle = turret.getTurretAngleDeg() + (Robot.isSimulation() ? 0 : getMoveOffset());
                 }
                 turret.setTurretAngle(desiredAngle);
             }else {
