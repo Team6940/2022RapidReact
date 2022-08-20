@@ -61,7 +61,7 @@ public class RobotContainer {
   public static JoystickButton PixyButton;
 
   // Operator's buttons
-  public static JoystickButton BallLoadButton;
+  public static JoystickButton HopperButton;
   public static JoystickButton BlockerButton;
   public static JoystickButton ElasticClimberButton;
   public static JoystickButton ElasticClimberStopButton;
@@ -96,7 +96,7 @@ public class RobotContainer {
     PixyButton = new JoystickButton(m_driverController, 8);
 
     // The operator's buttons
-    BallLoadButton = new JoystickButton(m_operatorController, 1);
+    HopperButton = new JoystickButton(m_operatorController, 1);
     BlockerButton = new JoystickButton(m_operatorController, 2);
     ElasticClimberButton = new JoystickButton(m_operatorController, 3);
     ElasticClimberStopButton = new JoystickButton(m_operatorController, 4);
@@ -127,9 +127,9 @@ public class RobotContainer {
     // Intake button
     IntakeButton.whenPressed(new InstantCommand(() -> Intake.getInstance().autoturnintaker()));
   
-    // Ball Lodaer button
-    BallLoadButton.whenHeld(new InstantCommand(() ->Hopper.getInstance().setHopperState(HopperState.ON)));
-    BallLoadButton.whenReleased(new InstantCommand(() -> Hopper.getInstance().setHopperState(HopperState.OFF)));
+    // Hopper button
+    HopperButton.whenHeld(new InstantCommand(() ->Hopper.getInstance().setHopperState(HopperState.ON)));
+    HopperButton.whenReleased(new InstantCommand(() -> Hopper.getInstance().setHopperState(HopperState.OFF)));
 
     // Blocker button
     BlockerButton.whenHeld(new InstantCommand(() ->Shooter.getInstance().setFiring(true)));
@@ -149,14 +149,14 @@ public class RobotContainer {
     TurretButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(3)),
-        new InstantCommand(() -> m_visionManager.startVisionFinding()),
-        new InstantCommand(() -> m_shooter.setShooterToInit()) )
+        new InstantCommand(() -> m_visionManager.startVisionFinding())
+        )
       );
     TurretButton.whenReleased(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
-        new InstantCommand(() -> m_visionManager.Stop()),
-        new InstantCommand(() -> m_shooter.setShooterToStop()) )
+        new InstantCommand(() -> m_visionManager.Stop())
+        )
       );
 
     // Reset Yaw button . Remember to protect it during the game!

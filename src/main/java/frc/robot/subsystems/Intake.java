@@ -90,14 +90,10 @@ public class Intake extends SubsystemBase {
         wantedIntakeSolState = intakeSolState;
         switch (intakeSolState) {
             case OPEN:
-                if (Timer.getFPGATimestamp() + Constants.INTAKE_OPEN_TIME < allowIntakeRunTime) {
-                    allowIntakeRunTime = Timer.getFPGATimestamp() + Constants.INTAKE_OPEN_TIME;
-                }
                 intakeSolenoid.set(true);
                 break;
             case CLOSE:
                 intakeSolenoid.set(false);
-                allowIntakeRunTime = Double.MAX_VALUE;
         }
     }
 
@@ -122,20 +118,8 @@ public class Intake extends SubsystemBase {
     private void setIntakeState(IntakeState intakeState) {
         switch (intakeState) {
             case INTAKE:
-                if (Hopper.getInstance().getOuttakeState() == OuttakeState.AUTO_EJECT) {
-                    setIntakeMotor(Constants.INTAKE_EJECTION_SPEED);
-                } else {
-                    setIntakeMotor(Constants.INTAKE_SPEED);
-                }
+                setIntakeMotor(Constants.INTAKE_SPEED);
                 break;
-
-            case EJECT:
-                setIntakeMotor(-Constants.INTAKE_SPEED);
-                break;
-            case SLOW_EJECT:
-                setIntakeMotor(-Constants.INTAKE_SPEED / 2.5);
-                break;
-
             case OFF:
                 setIntakeMotor(0);
                 break;
@@ -144,11 +128,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (Timer.getFPGATimestamp() > allowIntakeRunTime) {
-            setIntakeState(wantedIntakeState);
-        } else {
-            setIntakeState(IntakeState.OFF);
-        }
+        setIntakeState(wantedIntakeState);
         outputTelemetry();
     }
 
