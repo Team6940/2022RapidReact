@@ -8,6 +8,8 @@ package frc.robot.commands.SwerveControl;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.lib.team1706.MathUtils;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,20 +18,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwerveControll extends CommandBase {
   /** Creates a new SwerveControll. */
   double storedYaw;
+  private boolean fieldOrient = true;
   
   private double rotation;
   private Translation2d translation;
 
   //That means the joystick will reach the max range in 1/3 second
   //The may let the robot move smoothly.
-  private SlewRateLimiter xJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
-  private SlewRateLimiter yJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
-  private SlewRateLimiter omegaJoyStickLimiter = new SlewRateLimiter(Constants.joystickslewrate);
+  private final SlewRateLimiter m_slewX = new SlewRateLimiter(DriveConstants.kTranslationSlew);
+  private final SlewRateLimiter m_slewY = new SlewRateLimiter(DriveConstants.kTranslationSlew);
+  private final SlewRateLimiter m_slewRot = new SlewRateLimiter(DriveConstants.kRotationSlew);
 
   //The means reaching the max speed will take 1/3 seconds.The max Liner Speed is 4m/s. Omega is 
   private SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(Constants.linarslewrate * Constants.kMaxSpeed);
   private SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(Constants.linarslewrate * Constants.kMaxSpeed);
-  private SlewRateLimiter omegaSpeedLimiter = new SlewRateLimiter(Constants.omegaslewrate * Constants.kMaxOmega);  public SwerveControll() {
+  private SlewRateLimiter omegaSpeedLimiter = new SlewRateLimiter(Constants.omegaslewrate * Constants.kMaxOmega);
+
+  public SwerveControll() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_swerve);
   }
@@ -72,7 +77,7 @@ public class SwerveControll extends CommandBase {
     double[] axes = {tAxes.getX(), tAxes.getY(), rAxis};
 
     return axes;
-}
+  }
 
   // Called when the command is initially scheduled.
   @Override
@@ -143,10 +148,24 @@ public class SwerveControll extends CommandBase {
     /*rotation = (rAxis + yawCorrection) * Constants.kMaxOmega;*/
 
     RobotContainer.m_swerve.Drive(
-      translation,
-      -  (llastz + yawCorrection) * Constants.kMaxOmega/*rotation + yawCorrection * Constants.kMaxOmega*/,
-      true,
-      RobotContainer.m_swerve.isOpenLoop);
+        translation,
+        -(llastz + yawCorrection) * Constants.kMaxOmega/*rotation + yawCorrection * Constants.kMaxOmega*/,
+        true,
+        RobotContainer.m_swerve.isOpenLoop);
+
+    /*Translation2d translation = new Translation2d(m_slewX.calculate(
+      -inputTransform(RobotContainer.m_driverController.getLeftY()))
+      * DriveConstants.kMaxSpeedMetersPerSecond,
+      m_slewY.calculate(
+          -inputTransform(RobotContainer.m_driverController.getLeftX()))
+            * DriveConstants.kMaxSpeedMetersPerSecond);
+    
+    RobotContainer.m_swerve.Drive(translation,
+        m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()))
+            * DriveConstants.kMaxAngularSpeed,
+        fieldOrient,
+        RobotContainer.m_swerve.isOpenLoop);*/
+    
 
     //SmartDashboard.putNumber("X Controller Input", translation.getX());
     //SmartDashboard.putNumber("Y Controller Input", translation.getY());
@@ -164,5 +183,36 @@ public class SwerveControll extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  /**
+   * when this fucntion of the command is called the current fieldOrient boolean
+   * is flipped. This
+   * is fed into the drive command for the swerve drivetrain so the driver can
+   * decide to drive in
+   * a robot oreinted when they please (not recommended in most instances)
+   */
+  public void changeFieldOrient() {
+    if (fieldOrient) {
+      fieldOrient = false;
+    } else {
+      fieldOrient = true;
+    }
+  }
+
+  /**
+   * This function takes the user input from the controller analog sticks, applys
+   * a deadband and then quadratically
+   * transforms the input so that it is easier for the user to drive, this is
+   * especially important on high torque motors
+   * such as the NEOs or Falcons as it makes it more intuitive and easier to make
+   * small corrections
+   * 
+   * @param input is the input value from the controller axis, should be a value
+   *              between -1.0 and 1.0
+   * @return the transformed input value
+   */
+  private double inputTransform(double input) {
+    return MathUtils.singedSquare(MathUtils.applyDeadband(input));
   }
 }
