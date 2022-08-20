@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.lib.team1678.math.Conversions;
 import frc.robot.lib.team1678.util.CTREModuleState;
 
@@ -188,6 +189,8 @@ public class SwerveModule extends SubsystemBase {
     double percentOutput = feedforward.calculate(optimalState.speedMetersPerSecond);
 
     SmartDashboard.putNumber("Debug/Drive/PercentOut", percentOutput);
+    SmartDashboard.putNumber("XboxLeftX", RobotContainer.m_driverController.getLeftX());
+    SmartDashboard.putNumber("XboxLeftY", RobotContainer.m_driverController.getLeftY());
 
     if(isOpenLoop){
       if (drive_motor_output_enabled) {
