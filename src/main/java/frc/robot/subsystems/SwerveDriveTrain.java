@@ -220,7 +220,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public double getFieldRelativeTurretAngleDeg(){
-    return Turret.getInstance().getAngleDeg() + LimelightSubsystem.getInstance().Get_tx() + GetHeading_Deg();
+    return Turret.getInstance().getTurretAngleDeg() + LimelightSubsystem.getInstance().Get_tx() + GetHeading_Deg();
   }
 
   public double getFieldRelativeTurretAngleRad(){
@@ -228,7 +228,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public double getFieldRelativeReadyTurretAngleDeg(){
-    return Turret.getInstance().getAngleDeg() + GetHeading_Deg();
+    return Turret.getInstance().getTurretAngleDeg() + GetHeading_Deg();
   }
 
   public double GetHeading_Rad(){

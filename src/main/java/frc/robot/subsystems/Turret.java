@@ -28,8 +28,8 @@ public class Turret extends SubsystemBase {
         setBrakeMode(false);
 
         configurationOne();
-        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMaxSoftLimit)+offset, 10); // TODO
-        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMinSoftLimit)+offset, 10); // TODO
+        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMaxSoftLimitAngle)+offset, 10); // TODO
+        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMinSoftLimitAngle)+offset, 10); // TODO
         mTurretMotor.configForwardSoftLimitEnable(true, 10);
         mTurretMotor.configReverseSoftLimitEnable(true, 10);
 
@@ -67,7 +67,7 @@ public class Turret extends SubsystemBase {
         return currentState;
     }
 
-    public void ZeroTurret() {
+    public void HomeTurret() {
         currentState = TurretControlState.HOME;
     }
     public void setTurretState(TurretControlState state) {
@@ -86,7 +86,7 @@ public class Turret extends SubsystemBase {
         currentState = on ? TurretControlState.ON : TurretControlState.STOP;
     }
 
-    public double getAngleDeg() {
+    public double getTurretAngleDeg() {
         double rawTurretAngle = 0;
         if (RobotBase.isSimulation()){
             rawTurretAngle = encUnitsToTurretAngle((int)periodicIO.position - offset);
@@ -100,15 +100,15 @@ public class Turret extends SubsystemBase {
     }
 
     public double getAngleRad(){
-        return Math.toRadians(getAngleDeg());
+        return Math.toRadians(getTurretAngleDeg());
     }
 
 
     public void setTurretAngle(double angle) {
-        if (angle <= Constants.TurretMinSoftLimit) {
-            desiredTurretAngle = Constants.TurretMinSoftLimit;
-        }else if (angle >= Constants.TurretMaxSoftLimit) {
-            desiredTurretAngle = Constants.TurretMaxSoftLimit;
+        if (angle <= Constants.TurretMinSoftLimitAngle) {
+            desiredTurretAngle = Constants.TurretMinSoftLimitAngle;
+        }else if (angle >= Constants.TurretMaxSoftLimitAngle) {
+            desiredTurretAngle = Constants.TurretMaxSoftLimitAngle;
         }else{
             desiredTurretAngle = angle;
         }
@@ -138,9 +138,8 @@ public class Turret extends SubsystemBase {
             desiredTurretAngle = Constants.kTurretStartingAngle;   //TODO  what is home angle?
         } 
         if (currentState == TurretControlState.STOP) {
-            desiredTurretAngle = getAngleDeg();
+            desiredTurretAngle = getTurretAngleDeg();
         } 
-
         if (currentState == TurretControlState.ON) {
             ;
         }
@@ -177,9 +176,7 @@ public class Turret extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(LimelightSubsystem.getInstance().getLightMode() == 3){
-            writePeriodicOutputs();
-        }
+        writePeriodicOutputs();
         readPeriodicInputs();
         outputTelemetry();
     }

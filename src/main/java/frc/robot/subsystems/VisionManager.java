@@ -25,7 +25,7 @@ import frc.robot.lib.team2910.util.InterpolatingTreeMap;
 public class VisionManager extends SubsystemBase {
     private static int direction = 0;
     private static VisionManager instance = null;
-    private VisionManagerState currentState = VisionManagerState.ZERO_TURRET;
+    private VisionManagerState currentState = VisionManagerState.VISION_HOME;
     private int TurrentFindingTimes = 0;
     Turret turret = Turret.getInstance();
     Shooter shooter= Shooter.getInstance();
@@ -90,7 +90,7 @@ public class VisionManager extends SubsystemBase {
     }
 
     public void ZeroTurret() {
-        currentState = VisionManagerState.ZERO_TURRET;
+        currentState = VisionManagerState.VISION_HOME;
     }
 
     public void startVisionMoving() {
@@ -119,7 +119,7 @@ public class VisionManager extends SubsystemBase {
     }
 
     public boolean isVisionGoodRange(double angle) {
-        return (valueIsRange(angle, Constants.TurretMinSoftLimit, Constants.TurretMaxSoftLimit)
+        return (valueIsRange(angle, Constants.TurretMinSoftLimitAngle, Constants.TurretMaxSoftLimitAngle)
                 && limelight.isTargetVisible());
     }
 
@@ -159,53 +159,54 @@ public class VisionManager extends SubsystemBase {
             ;
         }
 
-        if (currentState == VisionManagerState.ZERO_TURRET) {
-            turret.ZeroTurret();
+        if (currentState == VisionManagerState.VISION_HOME) {
+            turret.HomeTurret();
             shooter.setShooterToStop();
             shooter.setFiring(false);
         } 
         if (currentState == VisionManagerState.STOP) {
-            turret.setTurretAngle(turret.getAngleDeg());
+            turret.setTurretAngle(turret.getTurretAngleDeg());
             shooter.setShooterToStop();
             shooter.setFiring(false);
         } 
         if ((currentState == VisionManagerState.VISION_FINDING)
-              && ((TurrentFindingTimes % 5) == 0 )){ //TODO  TurrentFindingTimes will bei delete
+              && ((TurrentFindingTimes % 5) == 0 )){ //TODO  TurrentFindingTimes will be deleted
             shooter.setFiring(false);
-            desiredAngle = turret.getAngleDeg();
+            desiredAngle = turret.getTurretAngleDeg();
             if (direction == 0) {
                 desiredAngle -= Constants.kTurretStep;
-                desiredAngle = Math.max(desiredAngle, Constants.TurretMinSoftLimit);
-                if (desiredAngle <= Constants.TurretMinSoftLimit) {
+                desiredAngle = Math.max(desiredAngle, Constants.TurretMinSoftLimitAngle);
+                if (desiredAngle <= Constants.TurretMinSoftLimitAngle) {
                     direction = 1;
                 }
             } else {
                 desiredAngle += Constants.kTurretStep;
-                desiredAngle = Math.min(desiredAngle, Constants.TurretMaxSoftLimit);
-                if (desiredAngle >= Constants.TurretMaxSoftLimit) {
+                desiredAngle = Math.min(desiredAngle, Constants.TurretMaxSoftLimitAngle);
+                if (desiredAngle >= Constants.TurretMaxSoftLimitAngle) {
                     direction = 0;
                 }
             }
             turret.setTurretAngle(desiredAngle);
-            if (isVisionGoodRange(turret.getAngleDeg() )) {
+            if (isVisionGoodRange(turret.getTurretAngleDeg()- limelight.Get_tx() )) {
                 currentState = VisionManagerState.VISION_MOVING;
             }
             shooter.setShooterToPrepare();
         } 
         if (currentState == VisionManagerState.VISION_MOVING) {
-            desiredAngle = turret.getAngleDeg()- limelight.Get_tx();
+            desiredAngle = turret.getTurretAngleDeg()- limelight.Get_tx();
             desiredAngle = Util.boundAngleNeg180to180Degrees(desiredAngle);
             turret.setTurretAngle(desiredAngle);
             if (isTargetLocked()) {
                 currentState = VisionManagerState.VISION_LOCKED;
                 shooter.setShooterToShoot();
-            } else if (!isVisionGoodRange(turret.getAngleDeg()- limelight.Get_tx())) {
+            } else if (!isVisionGoodRange(turret.getTurretAngleDeg()- limelight.Get_tx())) {
                 currentState = VisionManagerState.VISION_FINDING;
                 TurrentFindingTimes = 0;
-                if (desiredAngle > 0) {
-                    direction = 0;
-                } else {
+                double angle = turret.getTurretAngleDeg();
+                if (angle > 0) {
                     direction = 1;
+                } else {
+                    direction = 0;
                 }
                 shooter.setShooterToPrepare();
             }
@@ -217,23 +218,24 @@ public class VisionManager extends SubsystemBase {
         if (currentState == VisionManagerState.VISION_LOCKED) {
             shooter.setShooterToShoot();
             shooter.setHoodToOn();
-            if (isVisionGoodRange(turret.getAngleDeg() - limelight.Get_tx())) {
+            if (isVisionGoodRange(turret.getTurretAngleDeg() - limelight.Get_tx())) {
                 if(getShooterMode() == 1){
                     SetMovingShootParams();
                     //shootOnMoveOrbit();//Orbit's shotOnMove
-                    desiredAngle = turret.getAngleDeg() + (Robot.isSimulation() ? 0 : getMoveOffset()); //TODO
+                    desiredAngle = turret.getTurretAngleDeg() + (Robot.isSimulation() ? 0 : getMoveOffset()); //TODO
                 }else{
                     setFixedShootParams();
-                    desiredAngle = turret.getAngleDeg();
+                    desiredAngle = turret.getTurretAngleDeg();
                 }
                 turret.setTurretAngle(desiredAngle);
             }else {
                 currentState = VisionManagerState.VISION_FINDING;
                 TurrentFindingTimes = 0;
-                if (desiredAngle < 0) {
-                    direction = 0;
-                } else {
+                double angle = turret.getTurretAngleDeg();
+                if (angle < 0) {
                     direction = 1;
+                } else {
+                    direction = 0;
                 }
             }
         }
@@ -248,16 +250,15 @@ public class VisionManager extends SubsystemBase {
         SmartDashboard.putString("Debug/VisionManager/HoodState", shooter.getHoodState().name());  
         SmartDashboard.putNumber("Debug/VisionManager/HoodAngle", shooter.getHoodAngle());
         SmartDashboard.putString("Debug/VisionManager/TurretState", turret.getTurretState().name());
-        SmartDashboard.putNumber("Debug/VisionManager/TurretAngle",turret.getAngleDeg());
+        SmartDashboard.putNumber("Debug/VisionManager/TurretAngle",turret.getTurretAngleDeg());
         SmartDashboard.putString("Debug/VisionManager/BlockerState",shooter.getBlockerState().name());
         SmartDashboard.putString("Debug/VisionManager/HooperState",hooper.getHopperState().name());
-        SmartDashboard.putString("Debug/VisionManager/OuttakeState",hooper.getOuttakeState().name());
         SmartDashboard.putString("Debug/VisionManager/IntakeState",intake.getWantedIntakeState().name());
         SmartDashboard.putString("Debug/VisionManager/IntakeSolState",intake.getIntakeSolState().name());
     }
 
     public enum VisionManagerState {
-        ZERO_TURRET, STOP, VISION_LOCKED, VISION_MOVING, VISION_FINDING,VISION_MANUAL
+        VISION_HOME, STOP, VISION_LOCKED, VISION_MOVING, VISION_FINDING,VISION_MANUAL
     }
 
     @Override
@@ -278,7 +279,7 @@ public class VisionManager extends SubsystemBase {
     public void setFixedShootParams(){
         double  speed = Conversions.MPSToRPM( getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE),
                                      Constants.kFlyWheelCircumference);
-        shooter.setSpeed(speed);
+        shooter.setShooterSpeed(speed);
     }
 
     public void SetMovingShootParams(){
@@ -294,8 +295,8 @@ public class VisionManager extends SubsystemBase {
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - driveDrain.GetHeading_Deg());
-        MoveOffset = targetTurretAngle - turret.getAngleDeg();
-        shooter.setSpeed(targetVelocity);
+        MoveOffset = targetTurretAngle - turret.getTurretAngleDeg();
+        shooter.setShooterSpeed(targetVelocity);
         shooter.setHoodAngle(targetHoodAngle);
     }
 
@@ -314,7 +315,7 @@ public class VisionManager extends SubsystemBase {
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - driveDrain.GetHeading_Deg());
         result = (Math.abs(targetVelocity - shooter.getShooterSpeedRpm()) < 50)  //TODO  min error 
-                 &&( Math.abs(targetTurretAngle - turret.getAngleDeg()) < 1.0)   //TODO  min error 
+                 &&( Math.abs(targetTurretAngle - turret.getTurretAngleDeg()) < 1.0)   //TODO  min error 
                  &&( Math.abs(targetHoodAngle - shooter.getHoodAngle()) < 1.0)   //TODO  min error 
                 ; 
         return result;
@@ -391,8 +392,8 @@ public class VisionManager extends SubsystemBase {
         targetHoodAngle = Math.toDegrees(ballVelocity.getPitch());
         targetTurretAngle = Util
                 .boundAngleNeg180to180Degrees(ballVelocity.getYaw() - driveDrain.GetHeading_Deg());
-        MoveOffset = targetTurretAngle - turret.getAngleDeg();
-        shooter.setSpeed(targetVelocity);
+        MoveOffset = targetTurretAngle - turret.getTurretAngleDeg();
+        shooter.setShooterSpeed(targetVelocity);
         shooter.setHoodAngle(targetHoodAngle);
     }
 
@@ -467,15 +468,14 @@ public class VisionManager extends SubsystemBase {
         double inputHoodAngle = 0;
         inputShootSpeedRPM = readShooterSpeedFromShuffleBoard();
         inputHoodAngle = readHoodAngleFromShuffleBoard();
-        startVisionMannul();
         shooter.setHoodAngle(inputHoodAngle);
+        shooter.setShooterSpeed(inputShootSpeedRPM);
         shooter.setShooterToMannulShoot();
-        shooter.setSpeed(inputShootSpeedRPM);
     }
 
     public void doShooterEject() {
         startVisionMannul();
-        shooter.setSpeed(Constants.SHOOTER_EJECT_SPEED);
+        shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
         shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
         shooter.setFiring(true);
     }

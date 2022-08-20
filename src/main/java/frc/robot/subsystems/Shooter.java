@@ -126,31 +126,30 @@ public class Shooter extends SubsystemBase {
 
     public void ShooterWritePeriodicOutputs() {
         if(shootState == ShooterControlState.STOP) {
-            mShooter.set(ControlMode.PercentOutput, 0);
-            setHoodToStop();
-        }
-        if(shootState == ShooterControlState.INIT) {
-            mShooter.set(ControlMode.PercentOutput, 0);
+            desiredShooterSpeed = 0;
+            //setHoodToStop();
         }
         if(shootState == ShooterControlState.PREPARE_SHOOT){
-            double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
-            ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-            mShooter.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+            desiredShooterSpeed = Constants.kFlywheelIdleVelocity;
         }
+
+        if(shootState == ShooterControlState.MANNUL_SHOOT){
+            ;   
+        }
+        double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
+        ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
+        mShooter.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+        
         if(shootState == ShooterControlState.SHOOT){
-            double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
-            ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-            mShooter.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-            if(VisionManager.getInstance().isShooterCanShoot()){  
+            if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
                 setFiring(true);
             }
         }
 
-        if(shootState == ShooterControlState.MANNUL_SHOOT){
-            double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
-            ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-            mShooter.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);       
-        }
+
+
+  
+
     }
 
     public synchronized double getShooterSpeedRpm() {
@@ -167,15 +166,11 @@ public class Shooter extends SubsystemBase {
     }
     public void setShooterToPrepare(){
         shootState = ShooterControlState.PREPARE_SHOOT;
-        setSpeed(Constants.kFlywheelIdleVelocity);
+        setShooterSpeed(Constants.kFlywheelIdleVelocity);
     }
 
     public void setShooterToStop(){
         shootState = ShooterControlState.STOP;
-    }
-
-    public void setShooterToInit(){
-        shootState = ShooterControlState.INIT;
     }
 
     public void setShooterToMannulShoot(){
@@ -183,7 +178,7 @@ public class Shooter extends SubsystemBase {
     }
     
     public enum ShooterControlState {
-        STOP, INIT,PREPARE_SHOOT, SHOOT,MANNUL_SHOOT
+        STOP, PREPARE_SHOOT, SHOOT,MANNUL_SHOOT
     }
 
     public class ShooterPeriodicIO {
@@ -205,7 +200,7 @@ public class Shooter extends SubsystemBase {
      *
      * @param shooterSpeedRPM Desired Speed in RPM.
      */
-    public void setSpeed(double shooterSpeedRPM) {
+    public void setShooterSpeed(double shooterSpeedRPM) {
         this.desiredShooterSpeed = shooterSpeedRPM;
         if (desiredShooterSpeed == 0) {
             shootState = ShooterControlState.STOP;
@@ -264,7 +259,6 @@ public class Shooter extends SubsystemBase {
         }
         double targetPos = Conversions.degreesToTalon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO) + offset;
         HoodPeriodicIO.demand = (int) targetPos;
-        setHoodAngle(desiredHoodAngle);
         mHoodmotor.set(ControlMode.MotionMagic, targetPos);
     }
 

@@ -158,28 +158,6 @@ public final class Constants {
     public static final double INTAKE_SPEED = 1.0;  //TODO
     public static final double INTAKE_EJECTION_SPEED = -0.5; //TODO
 
-    // Outtake
-    /**
-     * Outtake will run for this time (Sec) after color sensor trigger
-     */
-    public static final double OUTTAKE_RUN_PERIOD = 50 / 1000.0d;
-    /**
-     * Outtake's speed when automatically ejecting balls
-     */
-    public static final double OUTTAKE_AUTO_EJECTION_SPEED = 0.2;
-
-    /**
-     * Outtake's speed when manually ejecting balls
-     */
-    public static final double OUTTAKE_MANUAL_EJECTION_SPEED = 1;
-
-    /**
-     * Outtake's speed when intaking balls
-     */
-    public static final double OUTTAKE_SPEED = -1;
-
-
-
     // hopper port
     public static final double HOPPER_SPEED = 1.0;
     public static final double HOPPER_SLOW_SPEED = HOPPER_SPEED / 2;
@@ -224,8 +202,8 @@ public final class Constants {
     public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
     public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
-    public static final double TurretMaxSoftLimit = 100; // 度数 //TODO
-    public static final double TurretMinSoftLimit = -193; // TODO
+    public static final double TurretMaxSoftLimitAngle = 100; // 度数 //TODO
+    public static final double TurretMinSoftLimitAngle = -193; // TODO
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
