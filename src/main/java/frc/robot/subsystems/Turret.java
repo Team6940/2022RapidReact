@@ -16,7 +16,7 @@ public class Turret extends SubsystemBase {
     WPI_TalonSRX mTurretMotor;
     TalonSRXSimCollection mTurretSensorSim;
     PeriodicIO periodicIO = new PeriodicIO();
-    private int offset = 1080; // TODO
+    private int offset = 675; 
     private TurretControlState currentState = TurretControlState.STOP;
     private double desiredTurretAngle = 0;
 
@@ -24,7 +24,7 @@ public class Turret extends SubsystemBase {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
         // mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
-        mTurretMotor.setSensorPhase(false);// TODO
+        mTurretMotor.setSensorPhase(false);
         setBrakeMode(false);
 
         configurationOne();
@@ -47,13 +47,13 @@ public class Turret extends SubsystemBase {
     }
 
     private void configurationOne() {
-        mTurretMotor.config_kP(0, 3.66, 10);// TODO
+        mTurretMotor.config_kP(0, 0.5, 10);// TODO
         mTurretMotor.config_kI(0, 0, 10);
-        mTurretMotor.config_kD(0, 10.0, 10);// TODO
+        mTurretMotor.config_kD(0, 5, 10);// TODO
         mTurretMotor.config_kF(0, 0.00, 10);
         mTurretMotor.config_IntegralZone(0, 0, 10);
-        mTurretMotor.configMotionCruiseVelocity(600, 10);
-        mTurretMotor.configMotionAcceleration(1200, 10);
+        //mTurretMotor.configMotionCruiseVelocity(600, 10);
+        //mTurretMotor.configMotionAcceleration(1200, 10);
         mTurretMotor.configVoltageCompSaturation(12);
         mTurretMotor.enableVoltageCompensation(true);
         // mTurretMotor.configMotionSCurveStrength(6);
@@ -145,7 +145,8 @@ public class Turret extends SubsystemBase {
         }
 
         periodicIO.demand = turretAngleToEncUnits(desiredTurretAngle) + offset;
-        mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+        //mTurretMotor.set(ControlMode.MotionMagic, periodicIO.demand);
+        mTurretMotor.set(ControlMode.Position, periodicIO.demand);
     }
 
     public void outputTelemetry() {

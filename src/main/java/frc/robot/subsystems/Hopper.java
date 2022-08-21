@@ -121,7 +121,7 @@ public final class Hopper extends SubsystemBase  {
 
     public void outputTelemetry(){
         SmartDashboard.putNumber("Debug/Hopper/Motor Output", hopperMotor.getMotorOutputPercent());
-        SmartDashboard.putBoolean("Debug/Hopper/isWrongBall", colorSensor.isWrongBall());
+        //SmartDashboard.putBoolean("Debug/Hopper/isWrongBall", colorSensor.isWrongBall());
         SmartDashboard.putString("Debug/Hopper/State", hopperState.toString());
         SmartDashboard.putBoolean("Debug/Hopper/Is Beam Broken", isBeamBroken());
         SmartDashboard.putNumber("Debug/Hopper/Last Beam Break Open Time", getLastBeamBreakOpenTime());

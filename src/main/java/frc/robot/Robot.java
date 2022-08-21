@@ -68,7 +68,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    ColorSensor.getInstance().getTargetBallUpdate();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -94,7 +93,6 @@ public class Robot extends TimedRobot {
 
     RobotContainer.m_swerve.ZeroHeading();
     RobotContainer.m_swerve.whetherstoreyaw = false;
-    ColorSensor.getInstance().getTargetBallUpdate();
     VisionManager.getInstance().ZeroTurret();
     Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();

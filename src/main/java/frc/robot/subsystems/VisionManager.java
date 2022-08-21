@@ -33,7 +33,7 @@ public class VisionManager extends SubsystemBase {
     SwerveDriveTrain driveDrain = SwerveDriveTrain.getInstance();
     Hopper hooper = Hopper.getInstance();
     Intake intake = Intake.getInstance();
-    ColorSensor2 colorsensor = ColorSensor2.getInstance();
+    ColorSensor colorsensor = ColorSensor.getInstance();
     
     private final Timer m_timer = new Timer();
     private double m_wrongBallTime;

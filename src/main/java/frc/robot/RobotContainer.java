@@ -10,6 +10,7 @@ import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
@@ -48,6 +49,7 @@ public class RobotContainer {
   public static RobotTracker m_robotTracker;
   public static Hopper m_hopper;
   public static Intake m_intake;
+  public static ColorSensor m_colorsensor;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -82,6 +84,7 @@ public class RobotContainer {
     m_shooter = Shooter.getInstance();
     m_climber = Climber.getInstance();
     m_robotTracker = RobotTracker.getInstance();
+    m_colorsensor = ColorSensor.getInstance();
     m_hopper = Hopper.getInstance();
     m_intake = Intake.getInstance();
 

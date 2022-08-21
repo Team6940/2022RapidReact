@@ -180,7 +180,7 @@ public final class Constants {
     public static final double omegaslewrate = 3;
 
     // Turret Constants
-    public static final int turretID = 22; //TODO
+    public static final int turretID = 9; //TODO
     public static final int kTurretMaxSpeed = 400; //TODO
     public static final int kTurretStartingAngle = 0; //TODO
     public static final int kTurretAngleTolerance = 0; //TODO
@@ -188,8 +188,8 @@ public final class Constants {
     public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
     public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
-    public static final double TurretMaxSoftLimitAngle = 100; // 度数 //TODO
-    public static final double TurretMinSoftLimitAngle = -193; // TODO
+    public static final double TurretMaxSoftLimitAngle = 180; // 度数 //TODO
+    public static final double TurretMinSoftLimitAngle = -180; // TODO
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
