@@ -33,6 +33,8 @@ public class VisionManager extends SubsystemBase {
     SwerveDriveTrain driveDrain = SwerveDriveTrain.getInstance();
     Hopper hooper = Hopper.getInstance();
     Intake intake = Intake.getInstance();
+    ColorSensor2 colorsensor = ColorSensor2.getInstance();
+    
     private final Timer m_timer = new Timer();
     private double m_wrongBallTime;
     private double radialVelocity = 0;
@@ -483,7 +485,7 @@ public class VisionManager extends SubsystemBase {
     public void SmartShooter() {
         Translation2d drivePose = SwerveDriveTrain.getInstance().getPose().getTranslation();
         double currentTime = m_timer.get();
-        boolean wrongBall = ColorSensor.getInstance().hasOpponentBall();
+        boolean wrongBall = colorsensor.isWrongBall();
         if (wrongBall) {
             m_wrongBallTime = currentTime;
         }
