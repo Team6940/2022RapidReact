@@ -1,10 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import frc.robot.subsystems.Intake.IntakeSolState;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.lib.team3476.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,14 +33,6 @@ public final class Hopper extends SubsystemBase  {
     }
     HopperState hopperState = HopperState.OFF;
 
-    public enum BallColor {
-        RED,
-        BLUE,
-        NO_BALL
-    }
-
-    BallColor opposingAllianceColor = BallColor.BLUE;
-    BallColor friendlyAllianceColor = BallColor.RED;
 
     private Hopper() {
         //super(Constants.HOPPER_PERIOD, 5);
@@ -54,32 +43,6 @@ public final class Hopper extends SubsystemBase  {
         beamBreak =  new DigitalInput(Constants.HOPPER_LOW_BALL_IR_SENSOR);  //TODO
         colorSensor = ColorSensor.getInstance();  //TODO
     }
-/**
-     * Uses Sendable Chooser to decide Alliance Color
-     */
-    private void updateAllianceColor() {
-        if( DriverStation.getAlliance() == Alliance.Blue){
-            opposingAllianceColor = BallColor.RED;
-            friendlyAllianceColor = BallColor.BLUE;
-        } else {
-            opposingAllianceColor = BallColor.BLUE;
-            friendlyAllianceColor = BallColor.RED;
-        }
-    }
-
-
-    public BallColor getBallColor() {
-        BallColor currentBallColor;
-        if( colorSensor.getCurrentBall() == ColorSensor.BallColor.BLUE_BALL){
-            currentBallColor = BallColor.BLUE;
-        }else if (colorSensor.getCurrentBall() == ColorSensor.BallColor.RED_BALL){
-            currentBallColor = BallColor.RED;
-        }else {
-            currentBallColor = BallColor.NO_BALL;
-        }
-        return currentBallColor;
-    }
-
 
     public double getLastBeamBreakOpenTime() {
         return lastBeamBreakOpenTime;
@@ -87,8 +50,7 @@ public final class Hopper extends SubsystemBase  {
 
     @Override
     public void periodic() {
-        updateAllianceColor();
-
+        
         if (!isBeamBroken()) {
             resetBeamBreakOpenTime();
         }
@@ -159,7 +121,7 @@ public final class Hopper extends SubsystemBase  {
 
     public void outputTelemetry(){
         SmartDashboard.putNumber("Debug/Hopper/Motor Output", hopperMotor.getMotorOutputPercent());
-        SmartDashboard.putString("Debug/Hopper/Current Ball Color", getBallColor().toString());
+        SmartDashboard.putBoolean("Debug/Hopper/isWrongBall", colorSensor.isWrongBall());
         SmartDashboard.putString("Debug/Hopper/State", hopperState.toString());
         SmartDashboard.putBoolean("Debug/Hopper/Is Beam Broken", isBeamBroken());
         SmartDashboard.putNumber("Debug/Hopper/Last Beam Break Open Time", getLastBeamBreakOpenTime());

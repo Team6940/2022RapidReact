@@ -86,20 +86,6 @@ public final class Constants {
     public static final double HOOD_MAX_ANGLE = 30; //TODO
     public static final double HOOD_MIN_ANGLE = 0;  //TODO
 
-    // colorsendor constants
-    public interface ColorConstant {
-
-        boolean DEBUG_MODE = true;
-        boolean ENABLED  = true;
-        boolean AUTO = false;
-        double  TARGET_BIAS  =  1.5;//TODO
-        // How long it takes to accept / reject balls
-        double DEBOUNCE_TIME = 1.0 / 6.0; //TODO
-        public interface BallRGB {
-            Color RED = new Color(0.42, 0.39, 0.19);
-            Color BLUE = new Color(0.22, 0.43, 0.35);
-        }
-    }
 
     //Conveyor constants
     public static  int TOP_BALL_IR_SENSOR = 4; //TODO
@@ -466,5 +452,13 @@ public final class Constants {
      * How long only one of the sensor switches can be closed for before the climb will pause
      */
     public static final double MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME = 0.1;
+
+
+    /* new coorSensor */
+    public static final class ColorConstants{
+        public static final Color kBlueTarget = new Color(0.215, 0.434, 0.350);
+        public static final Color kRedTarget = new Color(0.335, 0.421, 0.242);
+        public static final Color kNoTarget = new Color(0.256, 0.457, 0.287);
+      }
     
 }
