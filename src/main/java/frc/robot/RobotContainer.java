@@ -10,6 +10,7 @@ import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
@@ -48,6 +49,7 @@ public class RobotContainer {
   public static RobotTracker m_robotTracker;
   public static Hopper m_hopper;
   public static Intake m_intake;
+  public static ColorSensor m_colorsensor;
 
   private final AutonomousSelector autonomousSelector;
 
@@ -58,7 +60,6 @@ public class RobotContainer {
   public static JoystickButton controlclosedlooptypeButton;
   public static JoystickButton IntakeButton;
   public static JoystickButton resetOdometryButton;
-  public static JoystickButton PixyButton;
 
   // Operator's buttons
   public static JoystickButton HopperButton;
@@ -67,7 +68,7 @@ public class RobotContainer {
   public static JoystickButton ElasticClimberStopButton;
   public static JoystickButton StraightClimberButton;
   public static JoystickButton ShooterSwitchModeButton;
-  public static JoystickButton TurretButton;
+  public static JoystickButton DontShootButton;
   public static JoystickButton ShootParaButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -83,6 +84,7 @@ public class RobotContainer {
     m_shooter = Shooter.getInstance();
     m_climber = Climber.getInstance();
     m_robotTracker = RobotTracker.getInstance();
+    m_colorsensor = ColorSensor.getInstance();
     m_hopper = Hopper.getInstance();
     m_intake = Intake.getInstance();
 
@@ -93,7 +95,6 @@ public class RobotContainer {
     IntakeButton = new JoystickButton(m_driverController, 7);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
-    PixyButton = new JoystickButton(m_driverController, 8);
 
     // The operator's buttons
     HopperButton = new JoystickButton(m_operatorController, 1);
@@ -102,7 +103,7 @@ public class RobotContainer {
     ElasticClimberStopButton = new JoystickButton(m_operatorController, 4);
     StraightClimberButton = new JoystickButton(m_operatorController, 5);
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
-    TurretButton = new JoystickButton(m_operatorController, 7);
+    DontShootButton = new JoystickButton(m_operatorController, 7);
     ShootParaButton = new JoystickButton(m_operatorController, 8);
 
 
@@ -146,25 +147,22 @@ public class RobotContainer {
     ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_visionManager.autoSwitchShooterMode()));
 
     // Turret button
-    TurretButton.whenHeld(
-      new SequentialCommandGroup(
-        new InstantCommand(() -> m_limelight.setLightMode(3)),
-        new InstantCommand(() -> m_visionManager.startVisionFinding())
-        )
-      );
-    TurretButton.whenReleased(
+    DontShootButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
         new InstantCommand(() -> m_visionManager.Stop())
+        )
+      );
+    DontShootButton.whenReleased(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> m_limelight.setLightMode(3)),
+        new InstantCommand(() -> m_visionManager.startVisionFinding())
         )
       );
 
     // Reset Yaw button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
     resetyawButton.whenReleased(new InstantCommand(() -> m_swerve.WhetherStoreYaw()));
-
-    PixyButton.whenHeld(new InstantCommand(() -> m_swerve.turnOnPixy()));
-    PixyButton.whenReleased(new InstantCommand(() -> m_swerve.turnOffPixy()));
 
     resetOdometryButton.whenPressed(new InstantCommand(() -> m_swerve.resetOdometry()));
 

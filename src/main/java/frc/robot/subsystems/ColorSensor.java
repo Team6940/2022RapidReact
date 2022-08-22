@@ -66,6 +66,7 @@ public class ColorSensor extends SubsystemBase {
     }
 
     public boolean isWrongBall() {
+        if(m_match == null) return false;
         boolean prox = m_colorSensor.getProximity() >= 80;
         boolean red = m_match.color == ColorConstants.kRedTarget;
         boolean blue = m_match.color ==ColorConstants.kBlueTarget;
