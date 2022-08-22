@@ -159,7 +159,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   };
 
   public void setSWERVE_MODULE_STATE_FORWARD(){
-    SetModuleStates(SWERVE_MODULE_STATE_FORWARD); //TOD
+    //SetModuleStates(SWERVE_MODULE_STATE_FORWARD); //TODO
   }
 
   public void setHOLD_MODULE_STATES(){
@@ -350,6 +350,10 @@ public class SwerveDriveTrain extends SubsystemBase {
       moduleStates);
 
     m_field.setRobotPose(getPose());
+    SmartDashboard.putNumber("GetSpeed0", swerve_modules_[0].GetSpeed());
+    SmartDashboard.putNumber("GetSpeed1", swerve_modules_[1].GetSpeed());
+    SmartDashboard.putNumber("GetSpeed2", swerve_modules_[2].GetSpeed());
+    SmartDashboard.putNumber("GetSpeed3", swerve_modules_[3].GetSpeed());
 
     SmartDashboard.putNumber("Debug/Drive/x meters", getPose().getX());
     SmartDashboard.putNumber("Debug/Drive/y meters", getPose().getY());
