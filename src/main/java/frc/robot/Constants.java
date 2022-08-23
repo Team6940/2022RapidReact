@@ -29,13 +29,53 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final double kAccelCompFactor = 0.100;
 
+        public static final double kHangarRPM = 1200;
+        
+        private static final Point2D[] kHoodPoints = new Point2D.Double[] {
+            // (ty-angle,distance)
+            new Point2D.Double(25, 0.0),
+            new Point2D.Double(35, 0.0),
+            new Point2D.Double(75, 10.0), //
+            new Point2D.Double(90, 15.5), //
+            new Point2D.Double(105, 18.4), //
+            new Point2D.Double(120, 23.0), //
+            new Point2D.Double(135, 26.5), //
+            new Point2D.Double(150, 29.0), //
+            new Point2D.Double(165, 30.5), //
+            new Point2D.Double(180, 32.0), //
+            new Point2D.Double(195, 36.0), //
+            new Point2D.Double(210, 37.0), //
+            new Point2D.Double(225, 38.0)//
+        };
+        public static final LinearInterpolationTable kHoodTable = new LinearInterpolationTable(kHoodPoints);
+    
+        private static final Point2D[] kRPMPoints = new Point2D.Double[] {
+            // (ty-angle,distance)
+            new Point2D.Double(25, 1500),
+            new Point2D.Double(35, 1500),
+            new Point2D.Double(75, 2340), //
+            new Point2D.Double(90, 2450), //
+            new Point2D.Double(105, 2505), //
+            new Point2D.Double(120, 2610), //
+            new Point2D.Double(135, 2710), //
+            new Point2D.Double(150, 2815), //
+            new Point2D.Double(165, 2890), //
+            new Point2D.Double(180, 3040), //
+            new Point2D.Double(195, 3185), //
+            new Point2D.Double(210, 3315), //
+            new Point2D.Double(225, 3500), //
+            new Point2D.Double(240, 3700),
+            new Point2D.Double(270, 4000),
+        };        
+        public static final LinearInterpolationTable kRPMTable = new LinearInterpolationTable(kRPMPoints);
+
         private static final Point2D[] kShotTimes = new Point2D.Double[] {
-                // (ty-angle,time)
-                new Point2D.Double(105, 0.82),
-                new Point2D.Double(135, 0.82),
-                new Point2D.Double(165, 0.85),
-                new Point2D.Double(195, 0.85),
-                new Point2D.Double(250, 1.05),
+        // (ty-angle,time)
+        new Point2D.Double(105, 0.77),
+        new Point2D.Double(135, 0.82),
+        new Point2D.Double(165, 0.85),
+        new Point2D.Double(195, 0.87),
+        new Point2D.Double(240, 1.03)
         };
 
         public static final LinearInterpolationTable kTimeTable = new LinearInterpolationTable(kShotTimes);
@@ -48,6 +88,7 @@ public final class Constants {
     public static final class GoalConstants {
         public static final Translation2d kGoalLocation = new Translation2d(8.23, 4.115);
         public static final Translation2d kWrongBallGoal = new Translation2d(5.50, 4.115);
+        public static final Translation2d kHangerLocation = new Translation2d(2.00, 6.00);
     }
 
     public static final class HoodConstants {
@@ -190,6 +231,8 @@ public final class Constants {
     public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
     public static final double TurretMaxSoftLimitAngle = 180; // 度数 //TODO
     public static final double TurretMinSoftLimitAngle = -180; // TODO
+    public static final double kTolerance = 2 * 2.0; // allowable angle error in degrees for the PIDSubsystem to
+    // report atSetpoint() to true
 
     //LED Constants
     public static final int LED_PORT = 5;  /*LEDs PWM port */  //TODO
@@ -199,6 +242,8 @@ public final class Constants {
     public static final double kHorizAngleCorrection = 2.5;   // + is left
     public static final double LL_MOUNT_HEIGHT = 0.933;  /* limelight 固定height */  //TODO
     public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
+    public static final double kTrackTolerance = 1.146; // Allowable Limelight angle(degree) error in radians //TODO
+
 
     // Shooter Constants
     public static final double SHOOTER_LAUNCH_ANGLE = 90-Math.toDegrees(0.35); //SHOOTER固定角度  //TODO

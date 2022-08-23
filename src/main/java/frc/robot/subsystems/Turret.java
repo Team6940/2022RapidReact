@@ -10,15 +10,22 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.lib.team1678.math.Conversions;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.lib.team1706.MathUtils;
+
+
 
 public class Turret extends SubsystemBase {
     private static Turret instance = null;
     WPI_TalonSRX mTurretMotor;
     TalonSRXSimCollection mTurretSensorSim;
     PeriodicIO periodicIO = new PeriodicIO();
-    private int offset = 675; 
+    private int offset = 675;
     private TurretControlState currentState = TurretControlState.STOP;
     private double desiredTurretAngle = 0;
+    private boolean m_trackTarget = false;
+    LimelightSubsystem limelight = LimelightSubsystem.getInstance();
 
     public Turret() {
         mTurretMotor = new WPI_TalonSRX(Constants.turretID);
@@ -103,7 +110,7 @@ public class Turret extends SubsystemBase {
         return Math.toRadians(getTurretAngleDeg());
     }
 
-
+    // here angle is  degrees
     public void setTurretAngle(double angle) {
         if (angle <= Constants.TurretMinSoftLimitAngle) {
             desiredTurretAngle = Constants.TurretMinSoftLimitAngle;
@@ -181,4 +188,53 @@ public class Turret extends SubsystemBase {
         readPeriodicInputs();
         outputTelemetry();
     }
+
+    //here angel is radian
+    public double getMeasurement() {
+        return getAngleRad();
+    }
+    
+    public void aimAtGoal(Pose2d robotPose, Translation2d goal, boolean aimAtVision) {
+        Translation2d robotToGoal = goal.minus(robotPose.getTranslation());
+        double angle = Math.atan2(robotToGoal.getY(), robotToGoal.getX());
+        angle = Math.PI + angle - robotPose.getRotation().getRadians();
+    
+        angle = MathUtils.toUnitCircAngle(angle);
+    
+        if (m_trackTarget) {
+            limelight.setLightMode(3);
+        } else {
+            limelight.setLightMode(1);
+        }
+    
+        SmartDashboard.putNumber("Turret Set Angle", angle);
+    
+        if (aimAtVision && limelight.isTargetVisible()) {
+          angle = getMeasurement() - Math.toRadians(limelight.Get_tx());
+        }
+    
+        setTurretAngle(Math.toDegrees(angle));
+    }
+    
+    /**
+       * Function to set the track target boolean to either true or false
+       * 
+       * @param track is true when Limelight tracking is desired
+    */
+    public void trackTarget(boolean track) {
+        m_trackTarget = track;
+    }
+    
+    public boolean visionAligned() {
+        if (limelight.isTargetVisible() && Math.abs(limelight.Get_tx()) < Constants.kTrackTolerance) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    
+    public boolean atDesiredAngle() {
+        return Math.abs(desiredTurretAngle - Math.toDegrees(getMeasurement())) <= Constants.kTolerance;
+    }
+    
 }
