@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.lib.team1706.LinearInterpolationTable;
+import java.awt.geom.Point2D;
 
 public class LimelightSubsystem extends SubsystemBase {
 
@@ -30,6 +32,25 @@ public class LimelightSubsystem extends SubsystemBase {
   public double simTv = constTv ;
   public int simuTxStop = 0;
   public OptionalDouble distancetoTarget = OptionalDouble.empty();
+
+  private static Point2D[] points = new Point2D.Double[] {
+    // (ty-angle,distance)
+    new Point2D.Double(-24.0, 290.0), // 242
+    new Point2D.Double(-20.0, 238.0), // 196
+    new Point2D.Double(-17.5, 207.0), // 163
+    new Point2D.Double(-15.0, 186.0), // 141
+    new Point2D.Double(-12.5, 169.0), // 121
+    new Point2D.Double(-10.0, 154.0), // 107
+    new Point2D.Double(-5.0, 134.0), // 96
+    new Point2D.Double(0.0, 116.0), // 85
+    new Point2D.Double(5.0, 104.0), // 77
+    new Point2D.Double(10.0, 92.0),
+    new Point2D.Double(15.0, 83.0),
+    new Point2D.Double(20.0, 75.0)
+    //
+};
+private static LinearInterpolationTable distTable = new LinearInterpolationTable(points);
+
   
   public LimelightSubsystem() {
     m_limTable = NetworkTableInstance.getDefault().getTable("limelight");
@@ -150,6 +171,20 @@ public class LimelightSubsystem extends SubsystemBase {
     simTy = constTy;
     simTv = constTv ;
     simuTxStop = 0;
+  }
+
+  /**
+     * Uses tuned interpolation table to report distance
+     *
+     * @return the distance to the target in inches
+  */
+  public double getDistance() {  //TODO
+      final double tx = Math.toRadians(Get_tx())*180.0/Math.PI;
+      final double tyAdj = (Math.toRadians(Get_ty()) -0.0084125*tx*tx)/(0.000267*tx*tx+1.0); //New geometric correction function
+      final double distance = distTable.getOutput(tyAdj);
+      SmartDashboard.putNumber("Limelight ty", Get_ty());
+      // SmartDashboard.putNumber("LimelightDistance", distance);
+      return distance;
   }
 
 }
