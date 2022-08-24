@@ -82,7 +82,7 @@ public class RunShooter extends CommandBase {
 
         SmartDashboard.putBoolean("Shooter Running", true);
         Translation2d robotToGoal = target.minus(m_drive.getPose().getTranslation());
-        double dist = robotToGoal.getDistance(new Translation2d()) * 39.37;
+        double dist = robotToGoal.getDistance(new Translation2d());
         SmartDashboard.putNumber("Calculated (in)", dist);
         if (limelight.isTargetVisible() && useVision) {
             dist = limelight.getDistance();

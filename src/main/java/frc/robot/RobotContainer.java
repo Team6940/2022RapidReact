@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.TurretedShooter.SmartShooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,7 +51,8 @@ public class RobotContainer {
   public static Hopper m_hopper;
   public static Intake m_intake;
   public static ColorSensor m_colorsensor;
-
+  private final SmartShooter  m_moveShoot;
+  public final int autoShootMode = 1;
   private final AutonomousSelector autonomousSelector;
 
   // Swerve Driver's buttons
@@ -87,6 +89,8 @@ public class RobotContainer {
     m_colorsensor = ColorSensor.getInstance();
     m_hopper = Hopper.getInstance();
     m_intake = Intake.getInstance();
+
+    m_moveShoot = new SmartShooter(m_shooter, m_turret, m_swerve, true, m_colorsensor, m_driverController);
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
@@ -182,4 +186,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
       return autonomousSelector.getCommand(m_swerve);
   }
+
+  public void runTeleInitCommand() {
+    if (getAutonomousCommand() != null) {
+      getAutonomousCommand().cancel();
+    }
+    m_moveShoot.schedule();
+    //new SmartFeed(m_turret, m_highElevator, m_lowElevator, m_robotDrive, m_shooter, m_hood, m_colorSensor).withTimeout(2.0).schedule();
+  }
+
 }

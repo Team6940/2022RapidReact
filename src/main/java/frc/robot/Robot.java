@@ -97,6 +97,9 @@ public class Robot extends TimedRobot {
     Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     LimelightSubsystem.getInstance().setLightMode(1);
+    if(m_robotContainer.autoShootMode == 2){
+      m_robotContainer.runTeleInitCommand();
+    }
     //VisionManager.getInstance().startVisionFinding();
   }
 
