@@ -35,18 +35,18 @@ public class LimelightSubsystem extends SubsystemBase {
 
   private static Point2D[] points = new Point2D.Double[] {
     // (ty-angle,distance)
-    new Point2D.Double(-24.0, 290.0), // 242
-    new Point2D.Double(-20.0, 238.0), // 196
-    new Point2D.Double(-17.5, 207.0), // 163
-    new Point2D.Double(-15.0, 186.0), // 141
-    new Point2D.Double(-12.5, 169.0), // 121
-    new Point2D.Double(-10.0, 154.0), // 107
-    new Point2D.Double(-5.0, 134.0), // 96
-    new Point2D.Double(0.0, 116.0), // 85
-    new Point2D.Double(5.0, 104.0), // 77
-    new Point2D.Double(10.0, 92.0),
-    new Point2D.Double(15.0, 83.0),
-    new Point2D.Double(20.0, 75.0)
+    new Point2D.Double(-24.0, 7.366/*290.0*/), // 242
+    new Point2D.Double(-20.0, 6.045/*238.0*/), // 196
+    new Point2D.Double(-17.5, 5.258/*207.0*/), // 163
+    new Point2D.Double(-15.0, 4.724/*186.0*/), // 141
+    new Point2D.Double(-12.5, 4.293/*169.0*/), // 121
+    new Point2D.Double(-10.0, 3.912/*154.0*/), // 107
+    new Point2D.Double(-5.0, 3.404/*134.0*/), // 96
+    new Point2D.Double(0.0, 2.946/*116.0*/), // 85
+    new Point2D.Double(5.0, 2.642/*104.0*/), // 77
+    new Point2D.Double(10.0, 2.337/*92.0*/),
+    new Point2D.Double(15.0, 2.108/*83.0*/),
+    new Point2D.Double(20.0, 1.905/*75.0*/)
     //
 };
 private static LinearInterpolationTable distTable = new LinearInterpolationTable(points);
@@ -179,8 +179,8 @@ private static LinearInterpolationTable distTable = new LinearInterpolationTable
      * @return the distance to the target in inches
   */
   public double getDistance() {  //TODO
-      final double tx = Math.toRadians(Get_tx())*180.0/Math.PI;
-      final double tyAdj = (Math.toRadians(Get_ty()) -0.0084125*tx*tx)/(0.000267*tx*tx+1.0); //New geometric correction function
+      final double tx = Get_tx();
+      final double tyAdj = (Get_ty() -0.0084125*tx*tx)/(0.000267*tx*tx+1.0); //New geometric correction function
       final double distance = distTable.getOutput(tyAdj);
       SmartDashboard.putNumber("Limelight ty", Get_ty());
       // SmartDashboard.putNumber("LimelightDistance", distance);

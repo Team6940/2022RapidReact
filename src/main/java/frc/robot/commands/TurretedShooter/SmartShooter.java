@@ -88,7 +88,7 @@ public class SmartShooter extends CommandBase {
         }
 
         Translation2d robotToGoal = target.minus(m_drive.getPose().getTranslation());
-        double dist = robotToGoal.getDistance(new Translation2d()) * 39.37;
+        double dist = robotToGoal.getDistance(new Translation2d()) ;  //TODO
 
         SmartDashboard.putNumber("Calculated (in)", dist);
 
@@ -113,7 +113,7 @@ public class SmartShooter extends CommandBase {
 
             Translation2d toTestGoal = testGoalLocation.minus(m_drive.getPose().getTranslation());
 
-            double newShotTime = m_timeTable.getOutput(toTestGoal.getDistance(new Translation2d()) * 39.37);
+            double newShotTime = m_timeTable.getOutput(toTestGoal.getDistance(new Translation2d()));
 
             if(Math.abs(newShotTime-shotTime) <= 0.04){
                 i=4;
@@ -129,7 +129,7 @@ public class SmartShooter extends CommandBase {
 
         }
 
-        double newDist = movingGoalLocation.minus(m_drive.getPose().getTranslation()).getDistance(new Translation2d()) * 39.37;
+        double newDist = movingGoalLocation.minus(m_drive.getPose().getTranslation()).getDistance(new Translation2d());
 
         SmartDashboard.putNumber("NewDist", newDist);
 

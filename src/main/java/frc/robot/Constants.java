@@ -33,49 +33,49 @@ public final class Constants {
         
         private static final Point2D[] kHoodPoints = new Point2D.Double[] {
             // (ty-angle,distance)
-            new Point2D.Double(25, 0.0),
-            new Point2D.Double(35, 0.0),
-            new Point2D.Double(75, 10.0), //
-            new Point2D.Double(90, 15.5), //
-            new Point2D.Double(105, 18.4), //
-            new Point2D.Double(120, 23.0), //
-            new Point2D.Double(135, 26.5), //
-            new Point2D.Double(150, 29.0), //
-            new Point2D.Double(165, 30.5), //
-            new Point2D.Double(180, 32.0), //
-            new Point2D.Double(195, 36.0), //
-            new Point2D.Double(210, 37.0), //
-            new Point2D.Double(225, 38.0)//
+            new Point2D.Double(0.635/*25*/, 0.0),
+            new Point2D.Double(0.889/*35*/, 0.0),
+            new Point2D.Double(1.905/*75*/, 10.0), //
+            new Point2D.Double(2.286/*90*/, 15.5), //
+            new Point2D.Double(2.667/*105*/, 18.4), //
+            new Point2D.Double(3.048/*120*/, 23.0), //
+            new Point2D.Double(3.429/*135*/, 26.5), //
+            new Point2D.Double(3.810/*150*/, 29.0), //
+            new Point2D.Double(4.191/*165*/, 30.5), //
+            new Point2D.Double(4.572/*180*/, 32.0), //
+            new Point2D.Double(4.953/*195*/, 36.0), //
+            new Point2D.Double(5.334/*210*/, 37.0), //
+            new Point2D.Double(5.715/*225*/, 38.0)//
         };
         public static final LinearInterpolationTable kHoodTable = new LinearInterpolationTable(kHoodPoints);
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (ty-angle,distance)
-            new Point2D.Double(25, 1500),
-            new Point2D.Double(35, 1500),
-            new Point2D.Double(75, 2340), //
-            new Point2D.Double(90, 2450), //
-            new Point2D.Double(105, 2505), //
-            new Point2D.Double(120, 2610), //
-            new Point2D.Double(135, 2710), //
-            new Point2D.Double(150, 2815), //
-            new Point2D.Double(165, 2890), //
-            new Point2D.Double(180, 3040), //
-            new Point2D.Double(195, 3185), //
-            new Point2D.Double(210, 3315), //
-            new Point2D.Double(225, 3500), //
-            new Point2D.Double(240, 3700),
-            new Point2D.Double(270, 4000),
+            new Point2D.Double(0.635/*25*/, 1500),
+            new Point2D.Double(0.889/*35*/, 1500),
+            new Point2D.Double(1.905/*75*/, 2340), //
+            new Point2D.Double(2.286/*90*/, 2450), //
+            new Point2D.Double(2.667/*105*/, 2505), //
+            new Point2D.Double(3.048/*120*/, 2610), //
+            new Point2D.Double(3.429/*135*/, 2710), //
+            new Point2D.Double(3.810/*150*/, 2815), //
+            new Point2D.Double(4.191/*165*/, 2890), //
+            new Point2D.Double(4.572/*180*/, 3040), //
+            new Point2D.Double(4.953/*195*/, 3185), //
+            new Point2D.Double(5.334/*210*/, 3315), //
+            new Point2D.Double(5.715/*225*/, 3500), //
+            new Point2D.Double(6.096/*240*/, 3700),
+            new Point2D.Double(6.858/*270*/, 4000),
         };        
         public static final LinearInterpolationTable kRPMTable = new LinearInterpolationTable(kRPMPoints);
 
         private static final Point2D[] kShotTimes = new Point2D.Double[] {
         // (ty-angle,time)
-        new Point2D.Double(105, 0.77),
-        new Point2D.Double(135, 0.82),
-        new Point2D.Double(165, 0.85),
-        new Point2D.Double(195, 0.87),
-        new Point2D.Double(240, 1.03)
+        new Point2D.Double(2.667/*105*/, 0.77),
+        new Point2D.Double(3.429/*135*/, 0.82),
+        new Point2D.Double(4.191/*165*/, 0.85),
+        new Point2D.Double(4.953/*195*/, 0.87),
+        new Point2D.Double(6.096/*240*/, 1.03)
         };
 
         public static final LinearInterpolationTable kTimeTable = new LinearInterpolationTable(kShotTimes);
