@@ -145,9 +145,9 @@ public class SmartShooter extends CommandBase {
         }
 
         if (currentTime > 0.250 && limelight.isTargetVisible()) {
-            double dL = limelight.getDistance() * 0.0254;
+            double dL = limelight.getDistance();
             double tR = m_drive.GetGyroRotation2d().getRadians();
-            double tT = m_turret.getMeasurement() - Math.PI;
+            double tT = m_turret.getMeasurement() - Math.PI; //TODO
             double tL = -1.0 * Math.toRadians(limelight.Get_tx());
 
             Pose2d pose = calcPoseFromVision(dL, tR, tT, tL, GoalConstants.kGoalLocation);
