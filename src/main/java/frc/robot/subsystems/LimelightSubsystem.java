@@ -176,7 +176,7 @@ private static LinearInterpolationTable distTable = new LinearInterpolationTable
   /**
      * Uses tuned interpolation table to report distance
      *
-     * @return the distance to the target in inches
+     * @return the distance to the target in meters
   */
   public double getDistance() {  //TODO
       final double tx = Get_tx();

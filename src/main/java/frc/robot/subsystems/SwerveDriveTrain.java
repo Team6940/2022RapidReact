@@ -243,8 +243,11 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public void ZeroHeading(){
     whetherstoreyaw = true;
+    // ahrs version
     ahrs.reset();
     //ResetOdometry(new Pose2d());
+    //Pigeon version
+    //zeroGyro();
   }
 
   public void WhetherStoreYaw(){
@@ -272,7 +275,11 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public Rotation2d GetGyroRotation2d(){
     // An offset will be needed if the robot doesn't face downfield
+    // AHRS version
     return ahrs.getRotation2d();
+
+    //Pigeon Version
+    //return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
 
   public double GetYaw(){

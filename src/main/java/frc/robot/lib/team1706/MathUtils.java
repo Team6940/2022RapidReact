@@ -28,7 +28,7 @@ public class MathUtils {
    * @param input is the number to perform the transform on
    * @return the transformed input value
    */
-  public static double singedSquare(double input) {
+  public static double signedSquare(double input) {
     return Math.signum(input) * Math.pow(input, 2);
   }
 

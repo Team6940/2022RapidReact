@@ -213,6 +213,6 @@ public class SwerveControll extends CommandBase {
    * @return the transformed input value
    */
   private double inputTransform(double input) {
-    return MathUtils.singedSquare(MathUtils.applyDeadband(input));
+    return MathUtils.signedSquare(MathUtils.applyDeadband(input));
   }
 }
