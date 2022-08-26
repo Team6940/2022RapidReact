@@ -161,7 +161,7 @@ public class SwerveControll extends CommandBase {
             * DriveConstants.kMaxSpeedMetersPerSecond);
     
     RobotContainer.m_swerve.Drive(translation,
-        m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()))
+        m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()) - yawCorrection)//TODO Maybe add here
             * DriveConstants.kMaxAngularSpeed,
         fieldOrient,
         RobotContainer.m_swerve.isOpenLoop);
