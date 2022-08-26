@@ -35,33 +35,33 @@ public class ClimberNew extends SubsystemBase {
     climberMotorRght = new WPI_TalonFX(Constants.rghtClimberMotorPort);
     climberMotorRght.follow(climberMotorLeft);
 
-    climberMotorLeft.config_kF(0, Constants.CLIMBER_MOTOR_KF);
+    /*climberMotorLeft.config_kF(0, Constants.CLIMBER_MOTOR_KF);
     climberMotorLeft.config_kP(0, Constants.CLIMBER_MOTOR_KP);//TODO
     climberMotorLeft.config_kI(0, Constants.CLIMBER_MOTOR_KI);
     climberMotorLeft.config_kD(0, Constants.CLIMBER_MOTOR_KD);
     climberMotorLeft.config_IntegralZone(0, Constants.CLIMBER_MOTOR_IZONE);
     climberMotorLeft.configPeakOutputForward(Constants.CLIMBER_MOTOR_MAX_OUTPUT);
     climberMotorLeft.configPeakOutputReverse(-Constants.CLIMBER_MOTOR_MAX_OUTPUT);
-    climberMotorLeft.setNeutralMode(NeutralMode.Brake);
+    climberMotorLeft.setNeutralMode(NeutralMode.Brake);*/
 
-    climberMotorRght.config_kF(0, Constants.CLIMBER_MOTOR_KF);
+    /*climberMotorRght.config_kF(0, Constants.CLIMBER_MOTOR_KF);
     climberMotorRght.config_kP(0, Constants.CLIMBER_MOTOR_KP);//TODO
     climberMotorRght.config_kI(0, Constants.CLIMBER_MOTOR_KI);
     climberMotorRght.config_kD(0, Constants.CLIMBER_MOTOR_KD);
     climberMotorRght.config_IntegralZone(0, Constants.CLIMBER_MOTOR_IZONE);
     climberMotorRght.configPeakOutputForward(Constants.CLIMBER_MOTOR_MAX_OUTPUT);
     climberMotorRght.configPeakOutputReverse(-Constants.CLIMBER_MOTOR_MAX_OUTPUT);
-    climberMotorRght.setNeutralMode(NeutralMode.Brake);
+    climberMotorRght.setNeutralMode(NeutralMode.Brake);*/
 
-    climberMotorLeft.configMotionAcceleration(1200);
-    climberMotorLeft.configMotionCruiseVelocity(1200);//TODO
+    /*climberMotorLeft.configMotionAcceleration(1200);
+    climberMotorLeft.configMotionCruiseVelocity(1200);*/
 
     pivotSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.PIVOT_SOLENOID_ID);
 
-    climberMotorLeft.setInverted(true);
-    climberMotorRght.setInverted(true);
+    climberMotorLeft.setInverted(false);
+    climberMotorRght.setInverted(false);
 
-    climberMotorLeft.setSelectedSensorPosition(0);//TODO ???
+    //climberMotorLeft.setSelectedSensorPosition(0);//TODO ???
   }
 
   public void outputTelemetry(){
@@ -105,17 +105,17 @@ public class ClimberNew extends SubsystemBase {
     return wantedClimberState ;
   }
 
-  private void setClimberMotor(double position) {
-    climberMotorLeft.set(ControlMode.MotionMagic, position);
+  private void setClimberMotor(double speed) {
+    climberMotorLeft.set(ControlMode.PercentOutput, speed);
   }
 
   private void setClimberState(ClimberState climberState) {
       switch (climberState) {
           case PUSH:
-              setClimberMotor(Constants.MAX_CLIMBER_EXTENSION);//TODO
+              setClimberMotor(0.1);//TODO
               break;
           case PULL:
-              setClimberMotor(0);
+              setClimberMotor(-0.1);
               break;
       }
   }

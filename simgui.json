@@ -44,6 +44,7 @@
       "/LiveWindow/BallLoader": "Subsystem",
       "/LiveWindow/Blocker": "Subsystem",
       "/LiveWindow/Climber": "Subsystem",
+      "/LiveWindow/ClimberNew": "Subsystem",
       "/LiveWindow/ClimberOld": "Subsystem",
       "/LiveWindow/ColorSensor": "Subsystem",
       "/LiveWindow/ColorSensor2": "Subsystem",
@@ -163,6 +164,12 @@
       "/LiveWindow/Ungrouped/PIDController[93]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [11]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [12]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [13]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [15]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [1]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [20]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [21]": "Motor Controller",
@@ -176,12 +183,14 @@
       "/LiveWindow/Ungrouped/Talon FX [3]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [5]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [7]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [20]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [22]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [28]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [2]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [4]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [6]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon SRX [8]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon SRX [9]": "Motor Controller",
       "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
       "/LiveWindow/VisionManager": "Subsystem",
       "/Shuffleboard/Auto settings/autoMode": "String Chooser",
@@ -219,6 +228,9 @@
         "open": true
       },
       "Debug": {
+        "Climber": {
+          "open": true
+        },
         "Hopper": {
           "open": true
         },
