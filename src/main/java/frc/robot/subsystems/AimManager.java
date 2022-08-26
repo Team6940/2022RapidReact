@@ -11,7 +11,9 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.lib.team1706.LinearInterpolationTable;
 import frc.robot.subsystems.Hopper.HopperState;
 import frc.robot.Constants.ShooterConstants;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class AimManager extends SubsystemBase {
     private static AimManager instance = null;
@@ -27,6 +29,11 @@ public class AimManager extends SubsystemBase {
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
     double hoodAngle  = 0;
     double shooterRPM = 0;
+    private ShuffleboardTab shooterParaTab = Shuffleboard.getTab("Shoot Parameter");
+    private NetworkTableEntry InputShooterSpeed =
+        shooterParaTab.add("Shooter Speed", 1).getEntry();
+    private NetworkTableEntry inputHoodAngle =
+        shooterParaTab.add("Hood Angle", 1).getEntry();    
     
       /** Creates a new AutoAim. */
     // Constants such as camera and target height stored. Change per robot and goal!
@@ -218,4 +225,30 @@ public class AimManager extends SubsystemBase {
 
         return (isShooterReady && isHoodReady);
     }
+
+    public void doShooterEject() {
+        shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
+        shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
+        shooter.setFiring(true);
+    }
+
+    public double readShooterSpeedFromShuffleBoard(){
+        SmartDashboard.putNumber("Debug/Shooter/Shooter Speed", InputShooterSpeed.getDouble(1.0));
+        return InputShooterSpeed.getDouble(1.0);
+    }
+
+    public double readHoodAngleFromShuffleBoard(){
+        SmartDashboard.putNumber("Debug/Shooter/Hood Angle", inputHoodAngle.getDouble(20.0));
+        return inputHoodAngle.getDouble(20.0);
+    }
+    public void DebugShootParameter(){
+        double inputShootSpeedRPM = 0;
+        double inputHoodAngle = 0;
+        inputShootSpeedRPM = readShooterSpeedFromShuffleBoard();
+        inputHoodAngle = readHoodAngleFromShuffleBoard();
+        shooter.setHoodAngle(inputHoodAngle);
+        shooter.setShooterSpeed(inputShootSpeedRPM);
+        shooter.setShooterToMannulShoot();
+    }
+
 }
