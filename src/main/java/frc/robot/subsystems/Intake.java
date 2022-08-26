@@ -78,7 +78,6 @@ public class Intake extends SubsystemBase {
     }
 
     // Intake States
-
     public enum IntakeSolState {
         OPEN, CLOSE
     }
@@ -146,7 +145,5 @@ public class Intake extends SubsystemBase {
             Hopper.getInstance().setHopperState(HopperState.OFF);
         }
         cnt++;
-
     }
-    
 }
