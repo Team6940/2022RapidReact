@@ -152,7 +152,8 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
         
         if(shootState == ShooterControlState.SHOOT){
-            if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
+            //if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
+            if(AimManager.getInstance().CanShot()){
                 setFiring(true);
             }
         }

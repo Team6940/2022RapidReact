@@ -41,6 +41,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/AimManager": "Subsystem",
       "/LiveWindow/BallLoader": "Subsystem",
       "/LiveWindow/Blocker": "Subsystem",
       "/LiveWindow/Climber": "Subsystem",

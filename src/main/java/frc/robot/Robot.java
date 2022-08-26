@@ -106,13 +106,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(LimelightSubsystem.getInstance().getLightMode() == 3){
+    /*if(LimelightSubsystem.getInstance().getLightMode() == 3){
       if(VisionManager.getInstance().isStop()){
         VisionManager.getInstance().startVisionFinding();
       }
     }else{
       VisionManager.getInstance().Stop();
-    }
+    }*/
     //
     //
     double btime = Hopper.getInstance().getLastBeamBreakOpenTime();
