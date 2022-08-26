@@ -120,7 +120,7 @@ public final class Constants {
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
     // Hood constants
-    public static int HoodMotorPort = 28; //TODO
+    public static int HoodMotorPort = 20; //14
     public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
     
     public static final double HOOD_HOME_ANGLE = 0;  //TODO
@@ -145,8 +145,8 @@ public final class Constants {
     public static double BlockerMotorSpeed = 0.4;
 
     // Climber
-    public static int leftClimberMotorPort = 25; // TODO
-    public static int rghtClimberMotorPort = 26; //TODO
+    public static int leftClimberMotorPort = 15; // TODO
+    public static int rghtClimberMotorPort = 16; //TODO
     public static int ClimberSolenoidPort = 0; //TODO
 
     public static double kClimberEncoderReductionRatio =  1.0 / 12.0 ;  //TODO
@@ -173,20 +173,20 @@ public final class Constants {
     public static double FixedBackwardDistanceEncUnitTwo = -2048;
 
     // Ball Loader port
-    public static int BallLoaderPort = 24; //TODO
+    public static int BallLoaderPort = 10; //TODO
     public static double BallLoadSpeed = 0.3;  //TODO
     public static double BallLoadSpeedSlow = 0.1; //TODO
 
     // Intaker port
-    public static final int IntakerPort = 23; //TODO
-    public static final int IntakerSolenoidPort = 1; //TODO
+    public static final int IntakerPort = 13; //TODO
+    public static final int IntakerSolenoidPort = 2; //TODO
     public static final boolean vSwitchIntake = false;
     public static final double INTAKE_OPEN_TIME = 0.0;
-    public static final double INTAKE_SPEED = 1.0;  //TODO
+    public static final double INTAKE_SPEED = 0.3;  //TODO
     public static final double INTAKE_EJECTION_SPEED = -0.5; //TODO
 
     // hopper port
-    public static final double HOPPER_SPEED = 1.0;
+    public static final double HOPPER_SPEED = 0.3;
     public static final double HOPPER_SLOW_SPEED = HOPPER_SPEED / 2;
     /**
      * Slower speed for the hopper when outtaking to prevent the cargo from exiting the hopper way to fast (and getting launched
@@ -204,7 +204,7 @@ public final class Constants {
 
     // Blocker
 
-    public static final int  BlockerSolenoidPort = 2 ;
+    public static final int  BlockerSolenoidPort = 1 ;
 
     //Robot Tracker
     public static final double DRIVE_VELOCITY_MEASUREMENT_LATENCY = 0.0025;
@@ -213,7 +213,7 @@ public final class Constants {
 
 
     // Pigeon Port
-    public static final int PigeonIMUPort = 16;
+    public static final int PigeonIMUPort = 17;
 
     // Swerve Control Constants
     public static final double joystickslewrate = 3;
@@ -248,8 +248,8 @@ public final class Constants {
     // Shooter Constants
     public static final double SHOOTER_LAUNCH_ANGLE = 90-Math.toDegrees(0.35); //SHOOTER固定角度  //TODO
     public static final double SHOOTER_MOUNT_HEIGHT = 0.83;  //SHOOTER高度  //TODO
-    public static final int SHOOT_L_MASTER_ID = 20;  //TODO
-    public static final int SHOOT_R_MASTER_ID = 21;  //TODO
+    public static final int SHOOT_L_MASTER_ID = 11;  //TODO
+    public static final int SHOOT_R_MASTER_ID = 12;  //TODO
     public static final double SHOOTER_KS = 0 / 12;
     public static final double SHOOTER_KV = 0 / 12;
     public static final double SHOOTER_KA = 0 / 12;
@@ -310,7 +310,8 @@ public final class Constants {
 
     public static double kDriveMotorReductionRatio = 1.0 / (29/15*60/15); //29/15*60/15
     public static double kPivotMotorReductionRatio = 1.0 / (56/6*60/10); //56/6*60/10
-    public static double kDriveEncoderReductionRatio =  1.0 / (29/15*60/15);
+    public static double kDriveEncoderReductionRatio = 1.0 / (29 / 15 * 60 / 15);
+    public static double kDriveEncoderReductionRatioTest = (29 / 15 * 60 / 15);
     public static double kPivotEncoderReductionRatio = -1.0 / 1.0;
 
     public static final double FALCON_TICS_PER_ROTATION = 2048.0;
@@ -410,7 +411,7 @@ public final class Constants {
     public static final int PIVOTING_ARM_LATCHED_SWITCH_A_DIO_CHANNEL = 4;
     public static final int PIVOTING_ARM_LATCHED_SWITCH_B_DIO_CHANNEL = 5;
 
-    public static final int PIVOT_SOLENOID_ID = 0;
+    public static final int PIVOT_SOLENOID_ID = 3;
 
 
     public static final double CLIMBER_ENCODER_TICKS_PER_INCH = 2048 * ((68.0 / 9.0) * (32.0 / 24.0)) / (12 * (3.0 / 8.0));

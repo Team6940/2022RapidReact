@@ -30,18 +30,18 @@ public class Intake extends SubsystemBase {
     }
 
     private Intake() {
-        intakeMotor = new WPI_TalonFX(Constants.IntakerPort+10); //TODO
+        intakeMotor = new WPI_TalonFX(Constants.IntakerPort); //TODO
         intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort); //TODO
         intakeMotor.configVoltageCompSaturation(12);
         intakeMotor.enableVoltageCompensation(true);
-        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
-        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 101); // Default is 10ms
-        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 103); // Default is 50ms
-        intakeMotor.setControlFramePeriod(ControlFrame.Control_3_General, 23);
-        intakeMotor.setControlFramePeriod(ControlFrame.Control_4_Advanced, 29);
-        intakeMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 547);
-        intakeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 70, 0), 1000);
-        intakeMotor.configOpenloopRamp(0.2, 1000);
+        //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
+        //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 101); // Default is 10ms
+        //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 103); // Default is 50ms
+        //intakeMotor.setControlFramePeriod(ControlFrame.Control_3_General, 23);
+        //intakeMotor.setControlFramePeriod(ControlFrame.Control_4_Advanced, 29);
+        //intakeMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 547);
+        //intakeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 70, 0), 1000);
+        //intakeMotor.configOpenloopRamp(0.2, 1000);
     }
 
     public void selfTest() {
@@ -78,7 +78,6 @@ public class Intake extends SubsystemBase {
     }
 
     // Intake States
-
     public enum IntakeSolState {
         OPEN, CLOSE
     }
@@ -146,7 +145,5 @@ public class Intake extends SubsystemBase {
             Hopper.getInstance().setHopperState(HopperState.OFF);
         }
         cnt++;
-
     }
-    
 }

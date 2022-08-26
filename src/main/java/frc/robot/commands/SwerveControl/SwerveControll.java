@@ -112,11 +112,11 @@ public class SwerveControll extends CommandBase {
       -  (llastz + yawCorrection) * Constants.kMaxOmega, //Add Drive straight mode
       true);*/
     
-    SmartDashboard.putNumber("yaw", yaw);
-    SmartDashboard.putNumber("storedyaw", storedYaw);
-    SmartDashboard.putNumber("llastz", llastz);
-    SmartDashboard.putNumber("yawcorrection", yawCorrection);
-    SmartDashboard.putBoolean("WhetherStroeYaw", RobotContainer.m_swerve.whetherstoreyaw);
+    //SmartDashboard.putNumber("yaw", yaw);
+    //SmartDashboard.putNumber("storedyaw", storedYaw);
+    //SmartDashboard.putNumber("llastz", llastz);
+    //SmartDashboard.putNumber("yawcorrection", yawCorrection);
+    //SmartDashboard.putBoolean("WhetherStroeYaw", RobotContainer.m_swerve.whetherstoreyaw);
 
     //Try to optimize the input
     double yAxis;
@@ -147,13 +147,13 @@ public class SwerveControll extends CommandBase {
 
     /*rotation = (rAxis + yawCorrection) * Constants.kMaxOmega;*/
 
-    RobotContainer.m_swerve.Drive(
+    /*RobotContainer.m_swerve.Drive(
         translation,
-        -(llastz + yawCorrection) * Constants.kMaxOmega/*rotation + yawCorrection * Constants.kMaxOmega*/,
+        -(llastz + yawCorrection) * Constants.kMaxOmega,
         true,
-        RobotContainer.m_swerve.isOpenLoop);
+        RobotContainer.m_swerve.isOpenLoop);*/
 
-    /*Translation2d translation = new Translation2d(m_slewX.calculate(
+    Translation2d translation = new Translation2d(m_slewX.calculate(
       -inputTransform(RobotContainer.m_driverController.getLeftY()))
       * DriveConstants.kMaxSpeedMetersPerSecond,
       m_slewY.calculate(
@@ -161,17 +161,21 @@ public class SwerveControll extends CommandBase {
             * DriveConstants.kMaxSpeedMetersPerSecond);
     
     RobotContainer.m_swerve.Drive(translation,
-        m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()))
+        m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()) - yawCorrection)//TODO Maybe add here
             * DriveConstants.kMaxAngularSpeed,
         fieldOrient,
-        RobotContainer.m_swerve.isOpenLoop);*/
+        RobotContainer.m_swerve.isOpenLoop);
     
 
     //SmartDashboard.putNumber("X Controller Input", translation.getX());
     //SmartDashboard.putNumber("Y Controller Input", translation.getY());
     //SmartDashboard.putNumber("Rot Controller Input", rotation);
-    SmartDashboard.putNumber("storedYaw", storedYaw);
-    SmartDashboard.putNumber("origin_yaw", yaw);
+    SmartDashboard.putNumber("Translation X", translation.getX());
+    SmartDashboard.putNumber("Translation Y", translation.getY());
+    SmartDashboard.putNumber("rotation", m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()))
+        * DriveConstants.kMaxAngularSpeed);
+    //SmartDashboard.putNumber("storedYaw", storedYaw);
+    //SmartDashboard.putNumber("origin_yaw", yaw);
 
   }
 

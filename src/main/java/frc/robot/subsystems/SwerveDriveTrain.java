@@ -58,6 +58,9 @@ public class SwerveDriveTrain extends SubsystemBase {
   private FieldRelativeSpeed m_lastFieldRelVel = new FieldRelativeSpeed();
   private FieldRelativeAccel m_fieldRelAccel = new FieldRelativeAccel();
 
+  private double gyroRollVelocity = 0;
+  private double lastGyroRoll = 0;
+
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
         new Translation2d( Constants.kLength / 2,  Constants.kWidth / 2),//front left
@@ -244,10 +247,10 @@ public class SwerveDriveTrain extends SubsystemBase {
   public void ZeroHeading(){
     whetherstoreyaw = true;
     // ahrs version
-    ahrs.reset();
+    //ahrs.reset();
     //ResetOdometry(new Pose2d());
     //Pigeon version
-    //zeroGyro();
+    zeroGyro();
   }
 
   public void WhetherStoreYaw(){
@@ -276,10 +279,10 @@ public class SwerveDriveTrain extends SubsystemBase {
   public Rotation2d GetGyroRotation2d(){
     // An offset will be needed if the robot doesn't face downfield
     // AHRS version
-    return ahrs.getRotation2d();
+    //return ahrs.getRotation2d();
 
     //Pigeon Version
-    //return Rotation2d.fromDegrees(gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(gyro.getFusedHeading());
   }
 
   public double GetYaw(){
@@ -342,6 +345,11 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public FieldRelativeAccel getFieldRelativeAccel() {
     return m_fieldRelAccel;
+  }
+
+  public void getGyroRollVelocity() {
+    gyroRollVelocity = (getRoll() - lastGyroRoll) / GlobalConstants.kLoopTime;
+    lastGyroRoll = getRoll();
   }
 
   @Override

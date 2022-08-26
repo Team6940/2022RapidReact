@@ -36,7 +36,7 @@ public final class Hopper extends SubsystemBase  {
 
     private Hopper() {
         //super(Constants.HOPPER_PERIOD, 5);
-        hopperMotor = new WPI_TalonFX(Constants.BallLoaderPort+10); //TODO
+        hopperMotor = new WPI_TalonFX(Constants.BallLoaderPort); //TODO
         hopperMotor.configVoltageCompSaturation(12);
         hopperMotor.enableVoltageCompensation(true);
         topIRSensor = new DigitalInput(Constants.HOPPER_TOP_BALL_IR_SENSOR); //TODO

@@ -10,6 +10,7 @@ import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ClimberNew;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
@@ -47,6 +48,7 @@ public class RobotContainer {
   //public static Shooter m_shooter;
   public static Shooter m_shooter;
   public static Climber m_climber;
+  public static ClimberNew m_climberNew;
   public static RobotTracker m_robotTracker;
   public static Hopper m_hopper;
   public static Intake m_intake;
@@ -84,7 +86,8 @@ public class RobotContainer {
     m_visionManager = VisionManager.getInstance();
     m_turret = Turret.getInstance();  
     m_shooter = Shooter.getInstance();
-    m_climber = Climber.getInstance();
+    //m_climber = Climber.getInstance();
+    m_climberNew = ClimberNew.getInstance();
     m_robotTracker = RobotTracker.getInstance();
     m_colorsensor = ColorSensor.getInstance();
     m_hopper = Hopper.getInstance();
@@ -94,9 +97,9 @@ public class RobotContainer {
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
-    resetyawButton = new JoystickButton(m_driverController, 3);
+    resetyawButton = new JoystickButton(m_driverController, 7);
     resetOdometryButton = new JoystickButton(m_driverController, 1);
-    IntakeButton = new JoystickButton(m_driverController, 7);
+    IntakeButton = new JoystickButton(m_driverController, 3);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
 
@@ -144,8 +147,10 @@ public class RobotContainer {
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
     //ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
     //StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
-    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autoStartClimb()));
-    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
+    //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autoStartClimb()));
+    //ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
+    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimber()));
+    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimberSol()));
 
     // Shooter button
     ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_visionManager.autoSwitchShooterMode()));
