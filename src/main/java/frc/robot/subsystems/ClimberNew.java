@@ -91,7 +91,7 @@ public class ClimberNew extends SubsystemBase {
   }
   
   public enum ClimberState {
-    PUSH, PULL
+    PUSH, PULL, STOP
   }
 
   private ClimberState wantedClimberState = ClimberState.PULL;
@@ -114,6 +114,9 @@ public class ClimberNew extends SubsystemBase {
           case PUSH:
               setClimberMotor(0.1);//TODO
               break;
+          case STOP:
+              setClimberMotor(0);
+              break;
           case PULL:
               setClimberMotor(-0.1);
               break;
@@ -123,9 +126,11 @@ public class ClimberNew extends SubsystemBase {
   private int cnt = 0;
   public void autoturnclimber()
   {
-    if (cnt % 2 == 0) {
+    if (cnt % 3 == 0) {
       setWantedClimberState(ClimberState.PUSH);
-    } else {
+    } else if (cnt % 3 == 1) {
+      setWantedClimberState(ClimberState.STOP);
+    }else {
       setWantedClimberState(ClimberState.PULL);
     }
     cnt++;
