@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import javax.lang.model.util.ElementScanner6;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -118,7 +120,7 @@ public class ClimberNew extends SubsystemBase {
               setClimberMotor(0);
               break;
           case PULL:
-              setClimberMotor(-0.1);
+              setClimberMotor(-0.3);
               break;
       }
   }
@@ -126,11 +128,13 @@ public class ClimberNew extends SubsystemBase {
   private int cnt = 0;
   public void autoturnclimber()
   {
-    if (cnt % 3 == 0) {
-      setWantedClimberState(ClimberState.PUSH);
-    } else if (cnt % 3 == 1) {
+    if (cnt % 4 == 0) {
       setWantedClimberState(ClimberState.STOP);
-    }else {
+    } else if (cnt % 4 == 1) {
+      setWantedClimberState(ClimberState.PUSH);
+    }else if(cnt % 4 == 2){
+      setWantedClimberState(ClimberState.STOP);
+    }else{
       setWantedClimberState(ClimberState.PULL);
     }
     cnt++;
