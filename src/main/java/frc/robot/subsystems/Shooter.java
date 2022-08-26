@@ -20,7 +20,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 
 public class Shooter extends SubsystemBase {
     private static Shooter instance = null;
-    private static WPI_TalonFX mShooter;
+    private static WPI_TalonFX mShooterLeft;
+    private static WPI_TalonFX mShooterRght;
     private final ShooterPeriodicIO ShooterPeriodicIO = new ShooterPeriodicIO();
     ShooterControlState shootState = ShooterControlState.STOP;
     //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
@@ -63,12 +64,22 @@ public class Shooter extends SubsystemBase {
         lMasterConfig.slot0.kF = 0;
         lMasterConfig.peakOutputForward = 1.0;
         lMasterConfig.peakOutputReverse = 0.0;
-        mShooter = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
-        mShooter.configAllSettings(lMasterConfig);
-        mShooter.setNeutralMode(NeutralMode.Coast);
-        mShooter.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        mShooter.configVoltageCompSaturation(12);
-        mShooter.enableVoltageCompensation(true);
+        mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
+        mShooterLeft.setInverted(false);//TODO
+        mShooterLeft.configAllSettings(lMasterConfig);
+        mShooterLeft.setNeutralMode(NeutralMode.Coast);
+        mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        mShooterLeft.configVoltageCompSaturation(12);
+        mShooterLeft.enableVoltageCompensation(true);
+
+        mShooterRght = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
+        mShooterRght.setInverted(true);//TODO
+        mShooterRght.follow(mShooterLeft);
+        mShooterRght.configAllSettings(lMasterConfig);
+        mShooterRght.setNeutralMode(NeutralMode.Coast);
+        mShooterRght.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        mShooterRght.configVoltageCompSaturation(12);
+        mShooterRght.enableVoltageCompensation(true); 
     }
 
     private void configHood(){
@@ -118,9 +129,9 @@ public class Shooter extends SubsystemBase {
         ShooterPeriodicIO.timestamp = Timer.getFPGATimestamp();
             
         ShooterPeriodicIO.flywheel_velocity = getShooterSpeedRpm();
-        ShooterPeriodicIO.flywheel_voltage = mShooter.getMotorOutputVoltage();
-        ShooterPeriodicIO.flywheel_current = mShooter.getSupplyCurrent();
-        ShooterPeriodicIO.flywheel_temperature = mShooter.getTemperature();
+        ShooterPeriodicIO.flywheel_voltage = mShooterLeft.getMotorOutputVoltage();
+        ShooterPeriodicIO.flywheel_current = mShooterLeft.getSupplyCurrent();
+        ShooterPeriodicIO.flywheel_temperature = mShooterLeft.getTemperature();
 
     }
 
@@ -138,7 +149,7 @@ public class Shooter extends SubsystemBase {
         }
         double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
         ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-        mShooter.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
         
         if(shootState == ShooterControlState.SHOOT){
             if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
@@ -156,7 +167,7 @@ public class Shooter extends SubsystemBase {
         if (RobotBase.isSimulation()) {
             return Conversions.falconToRPM(ShooterPeriodicIO.flywheel_demand, Constants.kFlyWheelEncoderReductionRatio);
         }else{
-            return Conversions.falconToRPM(mShooter.getSelectedSensorVelocity(), Constants.kFlyWheelEncoderReductionRatio);
+            return Conversions.falconToRPM(mShooterLeft.getSelectedSensorVelocity(), Constants.kFlyWheelEncoderReductionRatio);
         }
 
     }

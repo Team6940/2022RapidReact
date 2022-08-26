@@ -14,6 +14,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
@@ -188,9 +191,8 @@ public class SwerveModule extends SubsystemBase {
 
     double percentOutput = feedforward.calculate(optimalState.speedMetersPerSecond);
 
+    SmartDashboard.putNumber("OptimalSpeed", optimalState.speedMetersPerSecond);
     SmartDashboard.putNumber("Debug/Drive/PercentOut", percentOutput);
-    SmartDashboard.putNumber("XboxLeftX", RobotContainer.m_driverController.getLeftX());
-    SmartDashboard.putNumber("XboxLeftY", RobotContainer.m_driverController.getLeftY());
 
     if(isOpenLoop){
       if (drive_motor_output_enabled) {
@@ -300,7 +302,9 @@ public class SwerveModule extends SubsystemBase {
         drive_motor_.getSelectedSensorVelocity() * drive_motor_inverted / 0.1 /
         Constants.kDriveEncoderResolution *
         Constants.kDriveEncoderReductionRatio *
-        Constants.kWheelDiameter / 2;
+            Constants.kWheelDiameter / 2;
+    //return Conversions.falconToMPS(drive_motor_.getSelectedSensorVelocity(), Constants.kWheelDiameter * Math.PI,
+    //    Constants.kDriveEncoderReductionRatioTest);
   }
 
   @Override

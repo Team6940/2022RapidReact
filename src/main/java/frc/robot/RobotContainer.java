@@ -94,9 +94,9 @@ public class RobotContainer {
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
-    resetyawButton = new JoystickButton(m_driverController, 3);
+    resetyawButton = new JoystickButton(m_driverController, 7);
     resetOdometryButton = new JoystickButton(m_driverController, 1);
-    IntakeButton = new JoystickButton(m_driverController, 7);
+    IntakeButton = new JoystickButton(m_driverController, 3);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
 
