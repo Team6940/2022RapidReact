@@ -153,15 +153,10 @@ public class Shooter extends SubsystemBase {
         
         if(shootState == ShooterControlState.SHOOT){
             //if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
-            if(AimManager.getInstance().CanShot()){
+            /*if(AimManager.getInstance().CanShot()){
                 setFiring(true);
-            }
+            }*/
         }
-
-
-
-  
-
     }
 
     public synchronized double getShooterSpeedRpm() {
@@ -178,7 +173,6 @@ public class Shooter extends SubsystemBase {
     }
     public void setShooterToPrepare(){
         shootState = ShooterControlState.PREPARE_SHOOT;
-        setShooterSpeed(Constants.kFlywheelIdleVelocity);
     }
 
     public void setShooterToStop(){
@@ -216,7 +210,9 @@ public class Shooter extends SubsystemBase {
         this.desiredShooterSpeed = shooterSpeedRPM;
         if (desiredShooterSpeed == 0) {
             shootState = ShooterControlState.STOP;
-        } 
+        }else{
+            shootState = ShooterControlState.SHOOT;
+        }
     }
 
     // for hood
@@ -238,6 +234,7 @@ public class Shooter extends SubsystemBase {
             targetAngle = Constants.HOOD_MAX_ANGLE;
         }
         desiredHoodAngle = targetAngle;   
+        hoodstate = HoodControlState.ON;
     }
     
     public void setHoodToStop(){

@@ -5,15 +5,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
+
+import javax.lang.model.util.ElementScanner6;
+
 import org.photonvision.PhotonUtils;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.lib.team1706.LinearInterpolationTable;
 import frc.robot.subsystems.Hopper.HopperState;
+import frc.robot.subsystems.Shooter.ShooterControlState;
 import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Timer;
 
 public class AimManager extends SubsystemBase {
     private static AimManager instance = null;
@@ -29,6 +34,13 @@ public class AimManager extends SubsystemBase {
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
     double hoodAngle  = 0;
     double shooterRPM = 0;
+    boolean hasBallShooting = false;
+    double shotBallTime = 0;
+    double shotWrongBallTime = 0;
+    boolean hasWrongBallShooting = false;
+    AimManagerState saveShootStat = AimManagerState.STOP;
+    private final Timer m_timer = new Timer();
+
     private ShuffleboardTab shooterParaTab = Shuffleboard.getTab("Shoot Parameter");
     private NetworkTableEntry InputShooterSpeed =
         shooterParaTab.add("Shooter Speed", 1).getEntry();
@@ -105,12 +117,31 @@ public class AimManager extends SubsystemBase {
     }
 
     public void writePeriodicOutputs() {
+        double currentTime = m_timer.get();
+        boolean wrongBall = colorsensor.isWrongBall();
+        boolean topHasBall = true; //TODO  must add top ball sensor
+        saveShootStat = currentState;
+
+        if(topHasBall && wrongBall && !hasBallShooting){
+            saveShootStat = currentState;
+            currentState = AimManagerState.AIM_WRONGBALL;
+            shotWrongBallTime = currentTime;
+            hasWrongBallShooting = true;
+            doShooterEject();
+        }else if (hasWrongBallShooting && currentTime < shotWrongBallTime + Constants.kShootOneBallTime) {
+            doShooterEject();
+        }else {
+            hasWrongBallShooting = false;
+            shotWrongBallTime = Double.NEGATIVE_INFINITY;
+            currentState = saveShootStat;
+        }
+
         if (currentState == AimManagerState.STOP) {
             //shooter.setShooterToStop();
             //shooter.setFiring(false);
         } 
         if (currentState == AimManagerState.AIM_MOVING) {
-            shooter.setShooterToPrepare();
+            //shooter.setShooterToPrepare();
             DoAutoAim();
             if (isTargetLocked()) {
                 currentState = AimManagerState.AIM_LOCKED;
@@ -119,13 +150,33 @@ public class AimManager extends SubsystemBase {
         if (currentState == AimManagerState.AIM_LOCKED) {
             if (isTargetLocked()) {
                 double dist = limelight.getRobotToTargetDistance();  //TODO
+                shooterRPM = m_rpmTable.getOutput(dist);
+                hoodAngle = m_hoodTable.getOutput(dist);
                 //double dist = limelight.getDistance();
-                shooter.setShooterSpeed(m_rpmTable.getOutput(dist));
-                hooper.setHopperState(HopperState.ON);
-                shooter.setHoodToOn();
-                shooter.setHoodAngle(m_hoodTable.getOutput(dist));
-                shooter.setShooterToShoot();
-
+                //shooter.setShooterToShoot();
+                shooter.setShooterSpeed(shooterRPM);
+                //shooter.setHoodToOn();
+                //double curspeed = shooter.getShooterSpeedRpm();
+                shooter.setHoodAngle(hoodAngle);
+                if(topHasBall && CanShot() && !hasBallShooting){
+                    shotBallTime = currentTime;
+                    hasBallShooting = true;
+                    hooper.setHopperState(HopperState.ON);
+                    shooter.setFiring(true);
+                }else if (hasBallShooting && currentTime >= shotBallTime + Constants.kShootOneBallTime
+                            && topHasBall) {   
+                    hasBallShooting = false; 
+                    hooper.setHopperState(HopperState.ON);
+                    shooter.setFiring(true);//TODO how to support continious shoot!
+                }else if(hasBallShooting){
+                    hooper.setHopperState(HopperState.ON);
+                    shooter.setFiring(true);                    
+                }
+                else{
+                    hasBallShooting = false;
+                    hooper.setHopperState(HopperState.OFF);
+                    shooter.setFiring(false);//TODO how to support continious shoot! 
+                }
             }
             else{
                 currentState = AimManagerState.AIM_MOVING;
@@ -146,7 +197,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public enum AimManagerState {
-        STOP, AIM_LOCKED, AIM_MOVING
+        STOP, AIM_LOCKED, AIM_MOVING, AIM_WRONGBALL
     }
 
     @Override
@@ -229,6 +280,7 @@ public class AimManager extends SubsystemBase {
     public void doShooterEject() {
         shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
         shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
+        hooper.setHopperState(HopperState.ON);
         shooter.setFiring(true);
     }
 
