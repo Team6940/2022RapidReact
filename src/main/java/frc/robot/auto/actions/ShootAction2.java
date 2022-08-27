@@ -22,13 +22,14 @@ public class ShootAction2 extends CommandBase {
   @Override
   public void initialize() {
     aimManager.startAimMoving();
+    shooter.setShooterToPrepare();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if(aimManager.CanShot()){
-      shooter.setFiring(true);
+      //shooter.setFiring(true);
     }
   }
 
