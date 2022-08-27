@@ -196,8 +196,12 @@ public class SwerveModule extends SubsystemBase {
 
     if(isOpenLoop){
       if (drive_motor_output_enabled) {
-        drive_motor_.set(ControlMode.PercentOutput,
-          drive_motor_inverted * percentOutput);
+        //drive_motor_.set(ControlMode.PercentOutput,
+        //    drive_motor_inverted * percentOutput);
+          
+        drive_motor_.set(ControlMode.Velocity, //TODO: Test combining FeedForward and velocity closed loop
+            drive_motor_inverted * driveOutput, DemandType.ArbitraryFeedForward,
+            drive_motor_inverted * percentOutput);
       }
     }
     else{
