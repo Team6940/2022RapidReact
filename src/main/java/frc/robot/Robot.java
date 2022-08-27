@@ -7,13 +7,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.AimManager;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.LedSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.PixyCamSPI;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.VisionManager;
+//import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Hopper;
 import frc.robot.lib.team3476.Timer;
@@ -93,7 +94,7 @@ public class Robot extends TimedRobot {
 
     RobotContainer.m_swerve.ZeroHeading();
     RobotContainer.m_swerve.whetherstoreyaw = false;
-    VisionManager.getInstance().ZeroTurret();
+    //VisionManager.getInstance().ZeroTurret();
     Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     LimelightSubsystem.getInstance().setLightMode(1);
@@ -106,13 +107,13 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(LimelightSubsystem.getInstance().getLightMode() == 3){
+    /*if(LimelightSubsystem.getInstance().getLightMode() == 3){
       if(VisionManager.getInstance().isStop()){
         VisionManager.getInstance().startVisionFinding();
       }
     }else{
       VisionManager.getInstance().Stop();
-    }
+    }*/
     //
     //
     double btime = Hopper.getInstance().getLastBeamBreakOpenTime();
@@ -125,7 +126,7 @@ public class Robot extends TimedRobot {
         Hopper.getInstance().resetBeamBreakOpenTime();
       }
       //shooter.setFeederChecksDisabled(false);
-      VisionManager.getInstance().doShooterEject();
+      AimManager.getInstance().doShooterEject();
     } else {
       // Not trying to do anything else with shooter will stop all action with it
       //shooter.setFeederChecksDisabled(false);

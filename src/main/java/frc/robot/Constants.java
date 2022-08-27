@@ -94,6 +94,7 @@ public final class Constants {
     public static final class HoodConstants {
         public static final double kMinAngle = 0.5;//TODO
         public static final double kMaxAngle = 38;
+        public static final double kHoodTolerance = 1.0 ; //TODO degrees
     }
 
     public static final class DriveConstants{
@@ -258,7 +259,7 @@ public final class Constants {
     public static double kFlyWheelEncoderReductionRatio =  60.0 / 32.0 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
-    public static double kShooterTolerance = 0.01; //meters/s //TODO
+    public static double kShooterTolerance = 50; //RPM //TODO
     public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
 
     public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,

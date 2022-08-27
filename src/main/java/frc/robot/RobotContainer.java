@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
+import frc.robot.subsystems.AimManager;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ClimberNew;
 import frc.robot.subsystems.ColorSensor;
@@ -19,7 +20,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.RobotTracker;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDriveTrain;
-import frc.robot.subsystems.VisionManager;
+//import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +44,8 @@ public class RobotContainer {
 
   public static LedSubsystem m_leds;
   public static LimelightSubsystem m_limelight;
-  public static VisionManager m_visionManager;
+  //public static VisionManager m_visionManager;
+  public static AimManager m_aimManager;
   public static Turret m_turret;
   //public static Shooter m_shooter;
   public static Shooter m_shooter;
@@ -54,7 +56,7 @@ public class RobotContainer {
   public static Intake m_intake;
   public static ColorSensor m_colorsensor;
   private final SmartShooter  m_moveShoot;
-  public final int autoShootMode = 1;
+  public static int autoShootMode = 1;
   private final AutonomousSelector autonomousSelector;
 
   // Swerve Driver's buttons
@@ -83,7 +85,8 @@ public class RobotContainer {
     m_limelight = LimelightSubsystem.getInstance();
     m_leds = LedSubsystem.getInstance();
     m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
-    m_visionManager = VisionManager.getInstance();
+    //m_visionManager = VisionManager.getInstance();
+    m_aimManager = AimManager.getInstance();
     m_turret = Turret.getInstance();  
     m_shooter = Shooter.getInstance();
     //m_climber = Climber.getInstance();
@@ -130,8 +133,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Limelight button
-    limelightButton.whenHeld(new AutoAim());
-
+    //limelightButton.whenHeld(new AutoAim());
+    limelightButton.whenHeld(new InstantCommand(() -> AimManager.getInstance().startAimMoving()));
+    limelightButton.whenReleased(new InstantCommand(() -> AimManager.getInstance().Stop()));
     // Intake button
     IntakeButton.whenPressed(new InstantCommand(() -> Intake.getInstance().autoturnintaker()));
   
@@ -153,9 +157,10 @@ public class RobotContainer {
     ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimberSol()));
 
     // Shooter button
-    ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_visionManager.autoSwitchShooterMode()));
+    //ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_visionManager.autoSwitchShooterMode()));
 
     // Turret button
+    /*
     DontShootButton.whenHeld(
       new SequentialCommandGroup(
         new InstantCommand(() -> m_limelight.setLightMode(1)),
@@ -167,7 +172,7 @@ public class RobotContainer {
         new InstantCommand(() -> m_limelight.setLightMode(3)),
         new InstantCommand(() -> m_visionManager.startVisionFinding())
         )
-      );
+      );*/
 
     // Reset Yaw button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
@@ -179,7 +184,7 @@ public class RobotContainer {
     controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
 
     // ShootPara debug Button 
-    ShootParaButton.whenPressed(new InstantCommand(() -> VisionManager.getInstance().DebugShootParameter()));
+    ShootParaButton.whenPressed(new InstantCommand(() -> AimManager.getInstance().DebugShootParameter()));
     
   }
 
