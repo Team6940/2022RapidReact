@@ -35,33 +35,34 @@ public class ClimberNew extends SubsystemBase {
 
     climberMotorLeft = new WPI_TalonFX(Constants.leftClimberMotorPort);
     climberMotorRght = new WPI_TalonFX(Constants.rghtClimberMotorPort);
-    climberMotorRght.follow(climberMotorLeft);
 
-    /*climberMotorLeft.config_kF(0, Constants.CLIMBER_MOTOR_KF);
+    climberMotorLeft.config_kF(0, Constants.CLIMBER_MOTOR_KF);
     climberMotorLeft.config_kP(0, Constants.CLIMBER_MOTOR_KP);//TODO
     climberMotorLeft.config_kI(0, Constants.CLIMBER_MOTOR_KI);
     climberMotorLeft.config_kD(0, Constants.CLIMBER_MOTOR_KD);
     climberMotorLeft.config_IntegralZone(0, Constants.CLIMBER_MOTOR_IZONE);
     climberMotorLeft.configPeakOutputForward(Constants.CLIMBER_MOTOR_MAX_OUTPUT);
     climberMotorLeft.configPeakOutputReverse(-Constants.CLIMBER_MOTOR_MAX_OUTPUT);
-    climberMotorLeft.setNeutralMode(NeutralMode.Brake);*/
+    climberMotorLeft.setNeutralMode(NeutralMode.Brake);
 
-    /*climberMotorRght.config_kF(0, Constants.CLIMBER_MOTOR_KF);
+    climberMotorRght.config_kF(0, Constants.CLIMBER_MOTOR_KF);
     climberMotorRght.config_kP(0, Constants.CLIMBER_MOTOR_KP);//TODO
     climberMotorRght.config_kI(0, Constants.CLIMBER_MOTOR_KI);
     climberMotorRght.config_kD(0, Constants.CLIMBER_MOTOR_KD);
     climberMotorRght.config_IntegralZone(0, Constants.CLIMBER_MOTOR_IZONE);
     climberMotorRght.configPeakOutputForward(Constants.CLIMBER_MOTOR_MAX_OUTPUT);
     climberMotorRght.configPeakOutputReverse(-Constants.CLIMBER_MOTOR_MAX_OUTPUT);
-    climberMotorRght.setNeutralMode(NeutralMode.Brake);*/
+    climberMotorRght.setNeutralMode(NeutralMode.Brake);
 
-    /*climberMotorLeft.configMotionAcceleration(1200);
-    climberMotorLeft.configMotionCruiseVelocity(1200);*/
+    climberMotorLeft.configMotionAcceleration(8000);
+    climberMotorLeft.configMotionCruiseVelocity(10000);
+    climberMotorRght.configMotionAcceleration(8000);
+    climberMotorRght.configMotionCruiseVelocity(10000);
 
     pivotSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.PIVOT_SOLENOID_ID);
 
     climberMotorLeft.setInverted(false);
-    climberMotorRght.setInverted(false);
+    climberMotorRght.setInverted(true);
 
     //climberMotorLeft.setSelectedSensorPosition(0);//TODO ???
   }
@@ -93,10 +94,10 @@ public class ClimberNew extends SubsystemBase {
   }
   
   public enum ClimberState {
-    PUSH, PULL, STOP
+    PUSH, PULL, INIT
   }
 
-  private ClimberState wantedClimberState = ClimberState.PULL;
+  private ClimberState wantedClimberState = ClimberState.INIT;
 
   // this a extern func for other command call.
   public synchronized void setWantedClimberState(ClimberState climberState) {
@@ -107,33 +108,36 @@ public class ClimberNew extends SubsystemBase {
     return wantedClimberState ;
   }
 
-  private void setClimberMotor(double speed) {
-    climberMotorLeft.set(ControlMode.PercentOutput, speed);
+  private void setClimberLeftMotor(double position) {
+    climberMotorLeft.set(ControlMode.MotionMagic, position);
+  }
+
+  private void setClimberRghtMotor(double position) {
+    climberMotorRght.set(ControlMode.MotionMagic, position);
   }
 
   private void setClimberState(ClimberState climberState) {
       switch (climberState) {
           case PUSH:
-              setClimberMotor(0.1);//TODO
-              break;
-          case STOP:
-              setClimberMotor(0);
-              break;
+            setClimberLeftMotor(150000);//TODO
+            setClimberRghtMotor(150000);
+            break;
           case PULL:
-              setClimberMotor(-0.3);
-              break;
+            setClimberLeftMotor(30000);
+            setClimberRghtMotor(30000); 
+            break;
+          case INIT:
+            setClimberLeftMotor(0);
+            setClimberRghtMotor(0);
+            break;
       }
   }
 
   private int cnt = 0;
   public void autoturnclimber()
   {
-    if (cnt % 4 == 0) {
-      setWantedClimberState(ClimberState.STOP);
-    } else if (cnt % 4 == 1) {
+    if (cnt % 2 == 0) {
       setWantedClimberState(ClimberState.PUSH);
-    }else if(cnt % 4 == 2){
-      setWantedClimberState(ClimberState.STOP);
     }else{
       setWantedClimberState(ClimberState.PULL);
     }

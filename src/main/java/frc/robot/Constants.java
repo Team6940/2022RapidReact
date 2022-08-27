@@ -97,7 +97,7 @@ public final class Constants {
         public static final double kHoodTolerance = 1.0 ; //TODO degrees
     }
 
-    public static final class DriveConstants{
+    public static final class DriveConstants {
         public static final double kMaxAcceleration = 3.0;
         public static final double kMaxSpeedMetersPerSecond = 3.25; // Maximum Sustainable Drivetrain Speed under Normal
                                                                     // Conditions & Battery, Robot will not exceed this
@@ -108,7 +108,7 @@ public final class Constants {
         public static final double kMaxAngularAccel = Math.PI; // Maximum Angular Speed desired. NOTE: Robot can exceed this
                                                                // but spinning fast is not particularly useful or driver
                                                                // friendly
-    
+
         public static final double kInnerDeadband = 0.10; // This value should exceed the maximum value the analog stick may
                                                           // read when not in use (Eliminates "Stick Drift")
         public static final double kOuterDeadband = 0.98; // This value should be lower than the analog stick X or Y reading
@@ -116,6 +116,12 @@ public final class Constants {
                                                           // maximized simultaneously)
         public static final double kTranslationSlew = 1.45;
         public static final double kRotationSlew = 3.00;
+    }
+    
+    public static final class BlockerConstants {
+        public static final int kBlockerID = 9;//TODO
+        public static final double kFireSpeed = 0.8;
+        public static final double kStopSpeed = 0;
     }
 
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
@@ -294,11 +300,11 @@ public final class Constants {
      * 车子在行驶过程中基本不抖动，底盘PID大部分情况下是正常的。
      * 
      */
-    public static double kDriveMotorkP = 0.025; // 5e-2 0.05   0.025
-    public static double kDriveMotorkI = 0.0016; //5e-4 0.005  0.0016
-    public static double kDriveMotorkD = 2.5; //   5e-0 5 1.5  2.5
-    public static double kDriveMotorkF = 0;//   0.045       0.06
-    public static double kDriveMotorIZone = 240;// 90          240
+    public static double kDriveMotorkP = 0.01; // 5e-2 0.05   0.025
+    public static double kDriveMotorkI = 0; //5e-4 0.005  0.0016
+    public static double kDriveMotorkD = 1; //   5e-0 5 1.5  2.5
+    public static double kDriveMotorkF = 0.05;//   0.045       0.06
+    public static double kDriveMotorIZone = 0;// 90          240
 
     public static double kPivotMotorkP = 3;//3
     public static double kPivotMotorkI = 0;
@@ -360,9 +366,9 @@ public final class Constants {
         public static final double angleGearRatio = 56/6*60/10; 
 
         /* Drive Motor Characterization Values */
-        public static final double driveKS = (0.58052 / 12); //divide by 12 to convert from volts to percent output for CTRE
-        public static final double driveKV = (2.7609 / 12);
-        public static final double driveKA = (0.21531 / 12);
+        public static final double driveKS = (0.69552 / 12); //divide by 12 to convert from volts to percent output for CTRE
+        public static final double driveKV = (2.8378 / 12);
+        public static final double driveKA = (0.44473 / 12);
     }
 
     public static final class AutoConstants {
@@ -398,7 +404,7 @@ public final class Constants {
     public static final double CLIMBER_MOTOR_KP = 0.2;
     public static final double CLIMBER_MOTOR_KI = 0.0;
     public static final double CLIMBER_MOTOR_KD = 0.0;
-    public static final double CLIMBER_MOTOR_IZONE = 10;
+    public static final double CLIMBER_MOTOR_IZONE = 0;
     public static final double CLIMBER_MOTOR_MAX_IACCUMULATOR = 0.1;
     public static final double CLIMBER_MOTOR_MAX_OUTPUT = 1;
 

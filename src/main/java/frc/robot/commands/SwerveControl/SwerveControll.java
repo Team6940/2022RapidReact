@@ -97,14 +97,14 @@ public class SwerveControll extends CommandBase {
 
     //storedYaw = yaw; //This may be a bug!
 
-    if(llastz != 0){
+    /*if(llastz != 0){
       storedYaw = yaw;
     }
     else{
       if(Math.abs(llastx) > 0|| Math.abs(llasty) > 0){
         yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw, 0.01, 0);
       }
-    }
+    }*/
 
     /*RobotContainer.m_swerve.Drive(
       - RobotContainer.m_swerve.deadband(llastx) * Constants.kMaxSpeed, 
@@ -115,8 +115,8 @@ public class SwerveControll extends CommandBase {
     //SmartDashboard.putNumber("yaw", yaw);
     //SmartDashboard.putNumber("storedyaw", storedYaw);
     //SmartDashboard.putNumber("llastz", llastz);
-    //SmartDashboard.putNumber("yawcorrection", yawCorrection);
-    //SmartDashboard.putBoolean("WhetherStroeYaw", RobotContainer.m_swerve.whetherstoreyaw);
+    SmartDashboard.putNumber("yawcorrection", yawCorrection);
+    SmartDashboard.putBoolean("WhetherStroeYaw", RobotContainer.m_swerve.whetherstoreyaw);
 
     //Try to optimize the input
     double yAxis;
@@ -137,14 +137,6 @@ public class SwerveControll extends CommandBase {
     translation = new Translation2d(tAxes.getX(), tAxes.getY()).times(Constants.kMaxSpeed);
     rotation = rAxis * Constants.kMaxOmega;
 
-    if(RobotContainer.m_swerve.whetherstoreyaw || rotation != 0){
-      storedYaw = yaw;
-    }else{
-      if(Math.abs(tAxes.getX()) > 0|| Math.abs(tAxes.getY()) > 0){
-        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw, 0.006, 0);
-      }
-    }
-
     /*rotation = (rAxis + yawCorrection) * Constants.kMaxOmega;*/
 
     /*RobotContainer.m_swerve.Drive(
@@ -153,15 +145,32 @@ public class SwerveControll extends CommandBase {
         true,
         RobotContainer.m_swerve.isOpenLoop);*/
 
+    double translationX = -inputTransform(RobotContainer.m_driverController.getLeftY());
+    double translationY = -inputTransform(RobotContainer.m_driverController.getLeftX());
+    double rotationNew = -inputTransform(RobotContainer.m_driverController.getRightX());
+
     Translation2d translation = new Translation2d(m_slewX.calculate(
-      -inputTransform(RobotContainer.m_driverController.getLeftY()))
-      * DriveConstants.kMaxSpeedMetersPerSecond,
-      m_slewY.calculate(
-          -inputTransform(RobotContainer.m_driverController.getLeftX()))
-            * DriveConstants.kMaxSpeedMetersPerSecond);
+      translationX) * DriveConstants.kMaxSpeedMetersPerSecond,
+      m_slewY.calculate(translationY) * DriveConstants.kMaxSpeedMetersPerSecond);
+
+    /*if(RobotContainer.m_swerve.whetherstoreyaw || llastz != 0){
+      storedYaw = yaw;
+    }else{
+      if(Math.abs(llastx) > 0|| Math.abs(llasty) > 0){
+        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw, 0.01, 0);
+      }
+    }*/
+
+    if(RobotContainer.m_swerve.whetherstoreyaw || rotation != 0){
+      storedYaw = yaw;
+    }else{
+      if(Math.abs(tAxes.getX()) > 0|| Math.abs(tAxes.getY()) > 0){
+        yawCorrection = RobotContainer.m_swerve.calcYawStraight(storedYaw, yaw, 0.01, 0);
+      }
+    }
     
     RobotContainer.m_swerve.Drive(translation,
-        m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()) - yawCorrection)//TODO Maybe add here
+        m_slewRot.calculate(rotationNew)//TODO Maybe add here
             * DriveConstants.kMaxAngularSpeed,
         fieldOrient,
         RobotContainer.m_swerve.isOpenLoop);
@@ -170,10 +179,6 @@ public class SwerveControll extends CommandBase {
     //SmartDashboard.putNumber("X Controller Input", translation.getX());
     //SmartDashboard.putNumber("Y Controller Input", translation.getY());
     //SmartDashboard.putNumber("Rot Controller Input", rotation);
-    SmartDashboard.putNumber("Translation X", translation.getX());
-    SmartDashboard.putNumber("Translation Y", translation.getY());
-    SmartDashboard.putNumber("rotation", m_slewRot.calculate(-inputTransform(RobotContainer.m_driverController.getRightX()))
-        * DriveConstants.kMaxAngularSpeed);
     //SmartDashboard.putNumber("storedYaw", storedYaw);
     //SmartDashboard.putNumber("origin_yaw", yaw);
 

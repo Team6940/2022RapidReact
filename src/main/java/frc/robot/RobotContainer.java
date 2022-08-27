@@ -102,14 +102,14 @@ public class RobotContainer {
     limelightButton = new JoystickButton(m_driverController, 6);
     resetyawButton = new JoystickButton(m_driverController, 7);
     resetOdometryButton = new JoystickButton(m_driverController, 1);
-    IntakeButton = new JoystickButton(m_driverController, 3);
+    IntakeButton = new JoystickButton(m_operatorController, 3);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
 
     // The operator's buttons
     HopperButton = new JoystickButton(m_operatorController, 1);
     BlockerButton = new JoystickButton(m_operatorController, 2);
-    ElasticClimberButton = new JoystickButton(m_operatorController, 3);
+    ElasticClimberButton = new JoystickButton(m_driverController, 3);
     ElasticClimberStopButton = new JoystickButton(m_operatorController, 4);
     StraightClimberButton = new JoystickButton(m_operatorController, 5);
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
