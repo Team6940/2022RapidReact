@@ -298,7 +298,6 @@ public class AimManager extends SubsystemBase {
     
           // Goal-Centric
           RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, true);//Use feedback control when auto aiming.
-    
     }
 
     public boolean CanShot(){
@@ -401,7 +400,10 @@ public class AimManager extends SubsystemBase {
 
         AimTab.addBoolean("hasWrongBallShooting",() ->this.isHasWrongBallShooting())
             .withPosition(1, 1)
-            .withSize(1, 1);          
+                .withSize(1, 1);
+        AimTab.addNumber("rotation PID controller", () -> limelight.Get_tx())
+            .withPosition(1,3)
+                .withSize(1, 1);        
         autoAimRangeEntry = AimTab.add("autoAim range", 0.0)
             .withPosition(1, 2)
             .withSize(1, 1)
