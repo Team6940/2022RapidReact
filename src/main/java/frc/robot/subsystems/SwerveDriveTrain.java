@@ -24,6 +24,8 @@ import frc.robot.Constants.GlobalConstants;
 import frc.robot.lib.team1706.FieldRelativeAccel;
 import frc.robot.lib.team1706.FieldRelativeSpeed;
 import io.github.pseudoresonance.pixy2api.*;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class SwerveDriveTrain extends SubsystemBase {
 
@@ -61,6 +63,9 @@ public class SwerveDriveTrain extends SubsystemBase {
   private double gyroRollVelocity = 0;
   private double lastGyroRoll = 0;
 
+  ShuffleboardTab swerveDriveTab = Shuffleboard.getTab("Swerve");
+  boolean enanbleTelemetry = false;
+
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
         new Translation2d( Constants.kLength / 2,  Constants.kWidth / 2),//front left
@@ -77,6 +82,8 @@ public class SwerveDriveTrain extends SubsystemBase {
   );
 
   public SwerveDriveTrain() {
+
+    addShuffleboardDebug();
     gyro = new PigeonIMU(Constants.PigeonIMUPort);
 
     // The coordinate system may be wrong 
@@ -365,14 +372,53 @@ public class SwerveDriveTrain extends SubsystemBase {
       moduleStates);
 
     m_field.setRobotPose(getPose());
-    SmartDashboard.putNumber("GetSpeed0", swerve_modules_[0].GetSpeed());
-    SmartDashboard.putNumber("GetSpeed1", swerve_modules_[1].GetSpeed());
-    SmartDashboard.putNumber("GetSpeed2", swerve_modules_[2].GetSpeed());
-    SmartDashboard.putNumber("GetSpeed3", swerve_modules_[3].GetSpeed());
+    if(enanbleTelemetry){
+      SmartDashboard.putNumber("GetSpeed0", swerve_modules_[0].GetSpeed());
+      SmartDashboard.putNumber("GetSpeed1", swerve_modules_[1].GetSpeed());
+      SmartDashboard.putNumber("GetSpeed2", swerve_modules_[2].GetSpeed());
+      SmartDashboard.putNumber("GetSpeed3", swerve_modules_[3].GetSpeed());
 
-    SmartDashboard.putNumber("Debug/Drive/x meters", getPose().getX());
-    SmartDashboard.putNumber("Debug/Drive/y meters", getPose().getY());
-    SmartDashboard.putNumber("Debug/Drive/rot radians", getPose().getRotation().getDegrees());
-    SmartDashboard.putBoolean("Debug/Drive/isOpenloop", isOpenLoop);
+      SmartDashboard.putNumber("Debug/Drive/x meters", getPose().getX());
+      SmartDashboard.putNumber("Debug/Drive/y meters", getPose().getY());
+      SmartDashboard.putNumber("Debug/Drive/rot radians", getPose().getRotation().getDegrees());
+      SmartDashboard.putBoolean("Debug/Drive/isOpenloop", isOpenLoop);
+    }
   }
+
+  private boolean IsOpenLoopMode(){
+    return isOpenLoop;
+  }
+
+
+  private void addShuffleboardDebug(){
+    swerveDriveTab.addNumber("GetSpeed0", () ->this.swerve_modules_[0].GetSpeed())
+    .withPosition(0, 0)
+    .withSize(1, 1);
+    swerveDriveTab.addNumber("GetSpeed1", () ->this.swerve_modules_[1].GetSpeed())
+    .withPosition(0, 1)
+    .withSize(1, 1);
+    swerveDriveTab.addNumber("GetSpeed2", () ->this.swerve_modules_[2].GetSpeed())
+    .withPosition(0, 2)
+    .withSize(1, 1);
+    swerveDriveTab.addNumber("GetSpeed3", () ->this.swerve_modules_[3].GetSpeed())
+    .withPosition(0, 3)
+    .withSize(1, 1);    
+
+    swerveDriveTab.addNumber("x meters", () ->this.getPose().getX())
+    .withPosition(1, 0)
+    .withSize(1, 1);    
+
+    swerveDriveTab.addNumber("y meters", () ->this.getPose().getY())
+    .withPosition(1, 1)
+    .withSize(1, 1);    
+
+    swerveDriveTab.addNumber("rot radians", () ->this.getPose().getRotation().getDegrees())
+    .withPosition(1, 2)
+    .withSize(1, 1);  
+
+    swerveDriveTab.addBoolean("isOpenloop", () ->this.isOpenLoop)
+    .withPosition(1, 3)
+    .withSize(1, 1);    
+  }
+
 }

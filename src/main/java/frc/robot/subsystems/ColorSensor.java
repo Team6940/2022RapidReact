@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ColorConstants;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class ColorSensor extends SubsystemBase {
     private static ColorSensor instance = null;
@@ -20,8 +22,11 @@ public class ColorSensor extends SubsystemBase {
 
     private ColorMatchResult m_match;
     private int testMode1 = 0;
-
+    ShuffleboardTab colorSensorTab = Shuffleboard.getTab("ColorSensor");
+    boolean enanbleTelemetry = false;
+  
     public ColorSensor() {
+        addShuffleboardDebug();
         m_colorMatcher.addColorMatch(ColorConstants.kBlueTarget);
         m_colorMatcher.addColorMatch(ColorConstants.kRedTarget);
         m_colorMatcher.addColorMatch(ColorConstants.kNoTarget);
@@ -51,18 +56,20 @@ public class ColorSensor extends SubsystemBase {
          * Open Smart Dashboard or Shuffleboard to see the color detected by the
          * sensor.
          */
-        SmartDashboard.putNumber("Debug/colorSensor/Red", detectedColor.red);
-        SmartDashboard.putNumber("Debug/colorSensor/Green", detectedColor.green);
-        SmartDashboard.putNumber("Debug/colorSensor/Blue", detectedColor.blue);
-        SmartDashboard.putNumber("Debug/colorSensor/Confidence", m_match.confidence);
-        SmartDashboard.putNumber("Debug/colorSensor/Prox", m_colorSensor.getProximity());
-
-        if (m_match.color == ColorConstants.kRedTarget) {
-            SmartDashboard.putString("Debug/colorSensor/Detected Color", "Red");
-        } else if (m_match.color == ColorConstants.kBlueTarget) {
-            SmartDashboard.putString("Debug/colorSensor/Detected Color", "Blue");
-        } else if (m_match.color == ColorConstants.kNoTarget) {
-            SmartDashboard.putString("Debug/colorSensor/Detected Color", "Neither");
+        if(enanbleTelemetry){
+            SmartDashboard.putNumber("Debug/colorSensor/Red", detectedColor.red);
+            SmartDashboard.putNumber("Debug/colorSensor/Green", detectedColor.green);
+            SmartDashboard.putNumber("Debug/colorSensor/Blue", detectedColor.blue);
+            SmartDashboard.putNumber("Debug/colorSensor/Confidence", m_match.confidence);
+            SmartDashboard.putNumber("Debug/colorSensor/Prox", m_colorSensor.getProximity());
+    
+            if (m_match.color == ColorConstants.kRedTarget) {
+                SmartDashboard.putString("Debug/colorSensor/Detected Color", "Red");
+            } else if (m_match.color == ColorConstants.kBlueTarget) {
+                SmartDashboard.putString("Debug/colorSensor/Detected Color", "Blue");
+            } else if (m_match.color == ColorConstants.kNoTarget) {
+                SmartDashboard.putString("Debug/colorSensor/Detected Color", "Neither");
+            }            
         }
 
     }
@@ -88,4 +95,49 @@ public class ColorSensor extends SubsystemBase {
     public void DotestMode(){
         testMode1 = (testMode1 == 0) ? 1:0;
     }
+
+    private String getDetectedColorString(){
+        if(m_match == null) return "null";
+
+        if (m_match.color == ColorConstants.kRedTarget) {
+           return "Red";
+        } else if (m_match.color == ColorConstants.kBlueTarget) {
+            return "Blue";
+        } else if (m_match.color == ColorConstants.kNoTarget) {
+            return "Neither";
+        }
+        return "null";
+
+    }
+
+    private double getConfidence(){
+        if(m_match == null) return 0;
+        return m_match.confidence;
+
+    }
+
+    private void addShuffleboardDebug(){
+        colorSensorTab.addNumber("Red", () ->this.m_colorSensor.getColor().red)
+        .withPosition(0, 0)
+        .withSize(1, 1);
+        colorSensorTab.addNumber("Green", () ->this.m_colorSensor.getColor().green)
+        .withPosition(0, 1)
+        .withSize(1, 1);
+        colorSensorTab.addNumber("Blue", () ->this.m_colorSensor.getColor().blue)
+        .withPosition(0, 2)
+        .withSize(1, 1);  
+        colorSensorTab.addNumber("Confidence", () ->this.getConfidence())
+        .withPosition(0, 3)
+        .withSize(1, 1);    
+    
+        colorSensorTab.addNumber("Prox", () ->this.m_colorSensor.getProximity())
+        .withPosition(1, 0)
+        .withSize(1, 1);    
+    
+        colorSensorTab.addString("Detected Color", () ->this.getDetectedColorString())
+        .withPosition(1, 1)
+        .withSize(1, 1);    
+      }
+    
+
 }
