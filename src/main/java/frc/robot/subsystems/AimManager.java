@@ -297,7 +297,7 @@ public class AimManager extends SubsystemBase {
           //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
     
           // Goal-Centric
-          RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, false);//Use feedback control when auto aiming.
+          RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, true);//Use feedback control when auto aiming.
     
     }
 

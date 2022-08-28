@@ -169,9 +169,9 @@ public class SwerveControll extends CommandBase {
       }
     }
     
-    RobotContainer.m_swerve.Drive(translation,
-        m_slewRot.calculate(rotationNew)//TODO Maybe add here
-            * DriveConstants.kMaxAngularSpeed,
+    RobotContainer.m_swerve.Drive(
+        translation,
+        m_slewRot.calculate(rotationNew) * DriveConstants.kMaxAngularSpeed,
         fieldOrient,
         RobotContainer.m_swerve.isOpenLoop);
     
