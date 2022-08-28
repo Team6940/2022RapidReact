@@ -9,10 +9,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.Constants.BlockerConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team1678.math.Conversions;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -40,7 +39,7 @@ public class Shooter extends SubsystemBase {
     HoodControlState hoodstate = HoodControlState.HOME;
   
     // for blocker
-    private  Solenoid blockerSolenoid;
+    private WPI_TalonFX blockerMotor;
 
     public Shooter() {
         configShooter();
@@ -114,7 +113,7 @@ public class Shooter extends SubsystemBase {
     }
 
     private void configBlocker(){
-        blockerSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.BlockerSolenoidPort); //TODO
+        blockerMotor = new WPI_TalonFX(BlockerConstants.kBlockerID);
     }
 
     public ShooterControlState getShooterState() {
@@ -322,9 +321,9 @@ public class Shooter extends SubsystemBase {
 
     public void BlockerWritePeriodicOutputs() {
         if (blockerState == BlockerControlState.BALLLOCKER_ON) {
-            blockerSolenoid.set(true);
+            blockerMotor.set(BlockerConstants.kFireSpeed);
         } else {
-            blockerSolenoid.set(false);
+            blockerMotor.set(BlockerConstants.kStopSpeed);
         }
     }
 
