@@ -33,6 +33,7 @@ public class Shooter extends SubsystemBase {
 
     // for hood
     private WPI_TalonSRX mHoodmotor;
+    private WPI_TalonFX mHoodmotor2;
     private int offset = 0;//TODO
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();
     private double desiredHoodAngle;
@@ -83,6 +84,7 @@ public class Shooter extends SubsystemBase {
 
     private void configHood(){
         mHoodmotor = new WPI_TalonSRX(Constants.HoodMotorPort);
+        mHoodmotor2 = new WPI_TalonFX(Constants.HoodMotorPort + 5);
 
         mHoodmotor.setInverted(false);
         mHoodmotor.setSensorPhase(false);//TODO
@@ -108,7 +110,19 @@ public class Shooter extends SubsystemBase {
     
         mHoodmotor.configPeakOutputForward(0.50, 10);//TODO
         mHoodmotor.configPeakOutputReverse(-0.50, 10);//TODO
-    
+
+        mHoodmotor2.config_kF(0, 0);
+        mHoodmotor2.config_kP(0, 0);//TODO
+        mHoodmotor2.config_kI(0, 0);
+        mHoodmotor2.config_kD(0, 0);
+        mHoodmotor2.config_IntegralZone(0, 0);
+        mHoodmotor2.configPeakOutputForward(1);
+        mHoodmotor2.configPeakOutputReverse(-1);
+        mHoodmotor2.setNeutralMode(NeutralMode.Brake);
+        mHoodmotor2.configMotionAcceleration(3000);
+        mHoodmotor2.configMotionCruiseVelocity(3000);
+
+        mHoodmotor2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
         mHoodmotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
     }
 
@@ -146,9 +160,10 @@ public class Shooter extends SubsystemBase {
         if(shootState == ShooterControlState.MANNUL_SHOOT){
             ;   
         }
-        double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
+        //double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
         ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+        //mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         
         if(shootState == ShooterControlState.SHOOT){
             //if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
@@ -266,8 +281,10 @@ public class Shooter extends SubsystemBase {
             ;
         }
         double targetPos = Conversions.degreesToTalon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO) + offset;
+        //double targetPosFalcon = Conversions.degreesToFalcon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO);
         HoodPeriodicIO.demand = (int) targetPos;
         mHoodmotor.set(ControlMode.MotionMagic, targetPos);
+        //mHoodmotor2.set(ControlMode.MotionMagic, targetPosFalcon);
     }
 
     public void HoodOutputTelemetry(){
