@@ -110,7 +110,6 @@ public class RobotContainer {
     BlockerButton = new JoystickButton(m_operatorController, 2);
     ElasticClimberButton = new JoystickButton(m_operatorController, 3);
     ElasticClimberStopButton = new JoystickButton(m_operatorController, 4);
-    StraightClimberButton = new JoystickButton(m_operatorController, 5);
     StraightClimberButton = new JoystickButton(m_operatorController, 8);
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
     DontShootButton = new JoystickButton(m_operatorController, 7);
