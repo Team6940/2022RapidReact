@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private double hoodEjectUntilTime = 0;
+  //private double hoodEjectUntilTime = 0;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -107,34 +107,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    /*if(LimelightSubsystem.getInstance().getLightMode() == 3){
-      if(VisionManager.getInstance().isStop()){
-        VisionManager.getInstance().startVisionFinding();
-      }
-    }else{
-      VisionManager.getInstance().Stop();
-    }*/
-    //
-    //
-    double btime = Hopper.getInstance().getLastBeamBreakOpenTime();
-    if ((btime != 0 && (Timer.getFPGATimestamp() - btime > Constants.BEAM_BREAK_EJECT_TIME))
-        || Timer.getFPGATimestamp() < hoodEjectUntilTime) {
-      // Eject a ball if the there has been a 3rd ball detected in the hopper for a certain amount of time
-      if (Timer.getFPGATimestamp() - btime > Constants.BEAM_BREAK_EJECT_TIME
-          && !(Timer.getFPGATimestamp() < hoodEjectUntilTime)) {
-        hoodEjectUntilTime = Timer.getFPGATimestamp() + Constants.MIN_AUTO_EJECT_TIME;
-        Hopper.getInstance().resetBeamBreakOpenTime();
-      }
-      //shooter.setFeederChecksDisabled(false);
-      AimManager.getInstance().doShooterEject();
-    } else {
-      // Not trying to do anything else with shooter will stop all action with it
-      //shooter.setFeederChecksDisabled(false);
-      //shooter.setFiring(false);
-      //shooter.setSpeed(0);
-    }
 
-    
   }
 
   @Override

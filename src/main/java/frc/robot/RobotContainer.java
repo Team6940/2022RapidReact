@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.TurretedShooter.SmartShooter;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,7 +55,6 @@ public class RobotContainer {
   public static Hopper m_hopper;
   public static Intake m_intake;
   public static ColorSensor m_colorsensor;
-  private final SmartShooter  m_moveShoot;
   public static int autoShootMode = 1;
   private final AutonomousSelector autonomousSelector;
 
@@ -76,6 +75,8 @@ public class RobotContainer {
   public static JoystickButton ShooterSwitchModeButton;
   public static JoystickButton DontShootButton;
   public static JoystickButton ShootParaButton;
+  public static JoystickButton testHasBallButton;
+  public static JoystickButton testWrongBallButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -96,8 +97,6 @@ public class RobotContainer {
     m_hopper = Hopper.getInstance();
     m_intake = Intake.getInstance();
 
-    m_moveShoot = new SmartShooter(m_shooter, m_turret, m_swerve, true, m_colorsensor, m_driverController);
-
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
     resetyawButton = new JoystickButton(m_driverController, 7);
@@ -115,7 +114,10 @@ public class RobotContainer {
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
     DontShootButton = new JoystickButton(m_operatorController, 7);
     ShootParaButton = new JoystickButton(m_operatorController, 8);
-
+    if (RobotBase.isSimulation()){    
+      testHasBallButton = new JoystickButton(m_operatorController, 9);
+      testWrongBallButton  = new JoystickButton(m_operatorController, 10);
+    }
 
     m_swerve.setDefaultCommand(new SwerveControll());
 
@@ -134,18 +136,25 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Limelight button
     //limelightButton.whenHeld(new AutoAim());
-    limelightButton.whenHeld(new InstantCommand(() -> AimManager.getInstance().startAimMoving()));
-    limelightButton.whenReleased(new InstantCommand(() -> AimManager.getInstance().Stop()));
+    //limelightButton.whenHeld(new InstantCommand(() -> m_aimManager.startAimMoving()));
+    //limelightButton.whenReleased(new InstantCommand(() -> m_aimManager.Stop()));
+    limelightButton.whenPressed(new InstantCommand(() -> m_aimManager.switchAimMode()));
     // Intake button
-    IntakeButton.whenPressed(new InstantCommand(() -> Intake.getInstance().autoturnintaker()));
+    IntakeButton.whenPressed(new InstantCommand(() -> m_intake.autoturnintaker()));
   
     // Hopper button
-    HopperButton.whenHeld(new InstantCommand(() ->Hopper.getInstance().setHopperState(HopperState.ON)));
-    HopperButton.whenReleased(new InstantCommand(() -> Hopper.getInstance().setHopperState(HopperState.OFF)));
+    HopperButton.whenHeld(new InstantCommand(() ->m_hopper.setHopperState(HopperState.ON)));
+    HopperButton.whenReleased(new InstantCommand(() -> m_hopper.setHopperState(HopperState.OFF)));
+
+    // simulation test Button
+    if (RobotBase.isSimulation()){    
+      testHasBallButton.whenPressed(new InstantCommand(() -> m_hopper.DotestMode()));
+      testWrongBallButton.whenPressed(new InstantCommand(() -> m_colorsensor.DotestMode()));
+    }
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() ->Shooter.getInstance().setFiring(true)));
-    BlockerButton.whenReleased(new InstantCommand(() -> Shooter.getInstance().setFiring(false)));
+    BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
+    BlockerButton.whenReleased(new InstantCommand(() -> m_shooter.setFiring(false)));
 
     // Climber button
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
@@ -184,7 +193,7 @@ public class RobotContainer {
     controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
 
     // ShootPara debug Button 
-    ShootParaButton.whenPressed(new InstantCommand(() -> AimManager.getInstance().DebugShootParameter()));
+    ShootParaButton.whenPressed(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
     
   }
 
