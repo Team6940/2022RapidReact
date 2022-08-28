@@ -32,7 +32,7 @@ public final class Constants {
         public static final double kHangarRPM = 1200;
         
         private static final Point2D[] kHoodPoints = new Point2D.Double[] {
-            // (ty-angle,distance)
+            // (distance, ty-angle)
             new Point2D.Double(0.635/*25*/, 0.0),
             new Point2D.Double(0.889/*35*/, 0.0),
             new Point2D.Double(1.905/*75*/, 10.0), //
@@ -50,7 +50,7 @@ public final class Constants {
         public static final LinearInterpolationTable kHoodTable = new LinearInterpolationTable(kHoodPoints);
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
-            // (ty-angle,distance)
+            // (distance, shooterSpeedRPM)
             new Point2D.Double(0.635/*25*/, 1500),
             new Point2D.Double(0.889/*35*/, 1500),
             new Point2D.Double(1.905/*75*/, 2340), //
@@ -181,7 +181,7 @@ public final class Constants {
 
     // Intaker port
     public static final int IntakerPort = 13; //TODO
-    public static final int IntakerSolenoidPort = 2; //TODO
+    public static final int IntakerSolenoidPort = 0; //TODO
     public static final boolean vSwitchIntake = false;
     public static final double INTAKE_OPEN_TIME = 0.0;
     public static final double INTAKE_SPEED = 0.3;  //TODO
@@ -242,7 +242,7 @@ public final class Constants {
 
     // Limelight Constants
     public static final double kHorizAngleCorrection = 2.5;   // + is left
-    public static final double LL_MOUNT_HEIGHT = 0.933;  /* limelight 固定height */  //TODO
+    public static final double LL_MOUNT_HEIGHT = 0.84;  /* limelight 固定height */  //TODO
     public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
     public static final double kTrackTolerance = 1.146; // Allowable Limelight angle(degree) error in radians //TODO
 

@@ -57,14 +57,14 @@ public class Shooter extends SubsystemBase {
     private void configShooter() {
         TalonFXConfiguration lMasterConfig = new TalonFXConfiguration();
 
-        lMasterConfig.slot0.kP = 1.5;//TODO
+        lMasterConfig.slot0.kP = 0.04;//TODO
         lMasterConfig.slot0.kI = 0;
         lMasterConfig.slot0.kD = 0;
-        lMasterConfig.slot0.kF = 0;
-        lMasterConfig.peakOutputForward = 1.0;
+        lMasterConfig.slot0.kF = 0.4;
+        lMasterConfig.peakOutputForward = 0.8;
         lMasterConfig.peakOutputReverse = 0.0;
         mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
-        mShooterLeft.setInverted(false);//TODO
+        mShooterLeft.setInverted(true);//TODO
         mShooterLeft.configAllSettings(lMasterConfig);
         mShooterLeft.setNeutralMode(NeutralMode.Coast);
         mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -72,7 +72,7 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.enableVoltageCompensation(true);
 
         mShooterRght = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
-        mShooterRght.setInverted(true);//TODO
+        mShooterRght.setInverted(false);//TODO
         mShooterRght.follow(mShooterLeft);
         mShooterRght.configAllSettings(lMasterConfig);
         mShooterRght.setNeutralMode(NeutralMode.Coast);
