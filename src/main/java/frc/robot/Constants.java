@@ -128,13 +128,8 @@ public final class Constants {
     public static final double HOOD_MAX_ANGLE = 30; //TODO
     public static final double HOOD_MIN_ANGLE = 0;  //TODO
 
-
-    //Conveyor constants
-    public static  int TOP_BALL_IR_SENSOR = 4; //TODO
-    public static int LOW_BALL_IR_SENSOR = 5; //TODO
-
-    public static int HOPPER_TOP_BALL_IR_SENSOR = 6;
-    public static int HOPPER_LOW_BALL_IR_SENSOR = 7;
+    public static int HOPPER_TOP_BALL_IR_SENSOR = 0;
+    public static int HOPPER_LOW_BALL_IR_SENSOR = 1;
 
     public static double SLOW_MUL = 5.0 / 8.0; //TODO
     public static double TOP_BELT_SPEED = 0.8; //TODO

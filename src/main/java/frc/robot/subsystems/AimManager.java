@@ -34,9 +34,11 @@ public class AimManager extends SubsystemBase {
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
     double hoodAngle  = 0;
     double shooterRPM = 0;
+    boolean wrongBall = false ;
+    boolean topHasBall = false; 
     boolean hasBallShooting = false;
-    double shotBallTime = 0;
-    double shotWrongBallTime = 0;
+    double shotBallTime = Double.NEGATIVE_INFINITY;
+    double shotWrongBallTime = Double.NEGATIVE_INFINITY;
     boolean hasWrongBallShooting = false;
     AimManagerState saveShootStat = AimManagerState.STOP;
     private final Timer m_timer = new Timer();
@@ -70,7 +72,8 @@ public class AimManager extends SubsystemBase {
     
 
     public AimManager() {
-        ;
+        m_timer.reset();
+        m_timer.start();
     }
 
     public static AimManager getInstance() {
@@ -118,11 +121,11 @@ public class AimManager extends SubsystemBase {
 
     public void writePeriodicOutputs() {
         double currentTime = m_timer.get();
-        boolean wrongBall = colorsensor.isWrongBall();
-        boolean topHasBall = true; //TODO  must add top ball sensor
-        saveShootStat = currentState;
+        wrongBall = colorsensor.isWrongBall();
+        topHasBall = hooper.isHasTopBall(); //TODO  must add top ball sensor
+        //saveShootStat = currentState;
 
-        if(topHasBall && wrongBall && !hasBallShooting){
+        if(topHasBall && wrongBall && !hasWrongBallShooting){
             saveShootStat = currentState;
             currentState = AimManagerState.AIM_WRONGBALL;
             shotWrongBallTime = currentTime;
@@ -130,20 +133,29 @@ public class AimManager extends SubsystemBase {
             doShooterEject();
         }else if (hasWrongBallShooting && currentTime < shotWrongBallTime + Constants.kShootOneBallTime) {
             doShooterEject();
-        }else {
+        }else if(hasWrongBallShooting){
+            hasWrongBallShooting = false;
+            shotWrongBallTime = Double.NEGATIVE_INFINITY;       
+            currentState = saveShootStat;
+            shooter.setFiring(false);
+        }
+        else {
             hasWrongBallShooting = false;
             shotWrongBallTime = Double.NEGATIVE_INFINITY;
-            currentState = saveShootStat;
         }
 
         if (currentState == AimManagerState.STOP) {
+            hasBallShooting = false; 
+            shotBallTime = Double.NEGATIVE_INFINITY;
             //shooter.setShooterToStop();
-            //shooter.setFiring(false);
+            shooter.setFiring(false);
         } 
         if (currentState == AimManagerState.AIM_MOVING) {
             //shooter.setShooterToPrepare();
             DoAutoAim();
             if (isTargetLocked()) {
+                hasBallShooting = false; 
+                shotBallTime = Double.NEGATIVE_INFINITY;
                 currentState = AimManagerState.AIM_LOCKED;
             } 
         }
@@ -163,18 +175,18 @@ public class AimManager extends SubsystemBase {
                     hasBallShooting = true;
                     hooper.setHopperState(HopperState.ON);
                     shooter.setFiring(true);
-                }else if (hasBallShooting && currentTime >= shotBallTime + Constants.kShootOneBallTime
-                            && topHasBall) {   
-                    hasBallShooting = false; 
-                    hooper.setHopperState(HopperState.ON);
-                    shooter.setFiring(true);//TODO how to support continious shoot!
-                }else if(hasBallShooting){
+                }else if(hasBallShooting && currentTime < shotBallTime + Constants.kShootOneBallTime){
                     hooper.setHopperState(HopperState.ON);
                     shooter.setFiring(true);                    
-                }
-                else{
+                }else if (hasBallShooting && topHasBall) {   
+                    hasBallShooting = false; 
+                    shotBallTime = Double.NEGATIVE_INFINITY;
+                    hooper.setHopperState(HopperState.ON);
+                    shooter.setFiring(true);//TODO how to support continious shoot!
+                }else{
                     hasBallShooting = false;
-                    hooper.setHopperState(HopperState.OFF);
+                    shotBallTime = Double.NEGATIVE_INFINITY;
+                    //hooper.setHopperState(HopperState.OFF);
                     shooter.setFiring(false);//TODO how to support continious shoot! 
                 }
             }
@@ -187,6 +199,10 @@ public class AimManager extends SubsystemBase {
     public void outputTelemetry() {
         SmartDashboard.putString("Debug/AimManager/AimState", getAimManagerState().name());
         SmartDashboard.putString("Debug/AimManager/ShooterState", shooter.getShooterState().name()); 
+        SmartDashboard.putBoolean("Debug/AimManager/hasBallShooting", hasBallShooting); 
+        SmartDashboard.putBoolean("Debug/AimManager/topHasBall", topHasBall);        
+        SmartDashboard.putBoolean("Debug/AimManager/wrongBall",wrongBall); 
+        SmartDashboard.putBoolean("Debug/AimManager/hasWrongBallShooting",hasWrongBallShooting); 
         SmartDashboard.putNumber("Debug/AimManager/ShooterSpeedRPM", shooter.getShooterSpeedRpm()); 
         SmartDashboard.putString("Debug/AimManager/HoodState", shooter.getHoodState().name());  
         SmartDashboard.putNumber("Debug/AimManager/HoodAngle", shooter.getHoodAngle());
@@ -301,6 +317,10 @@ public class AimManager extends SubsystemBase {
         shooter.setHoodAngle(inputHoodAngle);
         shooter.setShooterSpeed(inputShootSpeedRPM);
         shooter.setShooterToMannulShoot();
+    }
+
+    public void switchAimMode(){
+        currentState = (currentState == AimManagerState.STOP) ? AimManagerState.AIM_MOVING:AimManagerState.STOP;
     }
 
 }

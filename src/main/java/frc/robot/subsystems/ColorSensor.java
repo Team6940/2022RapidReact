@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ColorConstants;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class ColorSensor extends SubsystemBase {
     private static ColorSensor instance = null;
@@ -18,6 +19,7 @@ public class ColorSensor extends SubsystemBase {
     private final ColorMatch m_colorMatcher = new ColorMatch();
 
     private ColorMatchResult m_match;
+    private int testMode1 = 0;
 
     public ColorSensor() {
         m_colorMatcher.addColorMatch(ColorConstants.kBlueTarget);
@@ -49,23 +51,27 @@ public class ColorSensor extends SubsystemBase {
          * Open Smart Dashboard or Shuffleboard to see the color detected by the
          * sensor.
          */
-        SmartDashboard.putNumber("Red", detectedColor.red);
-        SmartDashboard.putNumber("Green", detectedColor.green);
-        SmartDashboard.putNumber("Blue", detectedColor.blue);
-        SmartDashboard.putNumber("Confidence", m_match.confidence);
-        SmartDashboard.putNumber("Prox", m_colorSensor.getProximity());
+        SmartDashboard.putNumber("Debug/colorSensor/Red", detectedColor.red);
+        SmartDashboard.putNumber("Debug/colorSensor/Green", detectedColor.green);
+        SmartDashboard.putNumber("Debug/colorSensor/Blue", detectedColor.blue);
+        SmartDashboard.putNumber("Debug/colorSensor/Confidence", m_match.confidence);
+        SmartDashboard.putNumber("Debug/colorSensor/Prox", m_colorSensor.getProximity());
 
         if (m_match.color == ColorConstants.kRedTarget) {
-            SmartDashboard.putString("Detected Color", "Red");
+            SmartDashboard.putString("Debug/colorSensor/Detected Color", "Red");
         } else if (m_match.color == ColorConstants.kBlueTarget) {
-            SmartDashboard.putString("Detected Color", "Blue");
+            SmartDashboard.putString("Debug/colorSensor/Detected Color", "Blue");
         } else if (m_match.color == ColorConstants.kNoTarget) {
-            SmartDashboard.putString("Detected Color", "Neither");
+            SmartDashboard.putString("Debug/colorSensor/Detected Color", "Neither");
         }
 
     }
 
     public boolean isWrongBall() {
+        if (RobotBase.isSimulation()){
+            return (testMode1 == 0) ? false:true;
+        }
+
         if(m_match == null) return false;
         boolean prox = m_colorSensor.getProximity() >= 80;
         boolean red = m_match.color == ColorConstants.kRedTarget;
@@ -79,4 +85,7 @@ public class ColorSensor extends SubsystemBase {
         }
     }
 
+    public void DotestMode(){
+        testMode1 = (testMode1 == 0) ? 1:0;
+    }
 }
