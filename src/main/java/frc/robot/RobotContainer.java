@@ -65,6 +65,7 @@ public class RobotContainer {
   public static JoystickButton controlclosedlooptypeButton;
   public static JoystickButton IntakeButton;
   public static JoystickButton resetOdometryButton;
+  public static JoystickButton manualLimelightButton;
 
   // Operator's buttons
   public static JoystickButton HopperButton;
@@ -100,20 +101,21 @@ public class RobotContainer {
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
     resetyawButton = new JoystickButton(m_driverController, 7);
-    resetOdometryButton = new JoystickButton(m_driverController, 1);
+    resetOdometryButton = new JoystickButton(m_driverController, 8);
     IntakeButton = new JoystickButton(m_driverController, 3);
     controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
     controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
+    manualLimelightButton = new JoystickButton(m_driverController, 1);
 
     // The operator's buttons
     HopperButton = new JoystickButton(m_operatorController, 1);
     BlockerButton = new JoystickButton(m_operatorController, 2);
     ElasticClimberButton = new JoystickButton(m_operatorController, 3);
-    ElasticClimberStopButton = new JoystickButton(m_operatorController, 4);
-    StraightClimberButton = new JoystickButton(m_operatorController, 8);
+    ElasticClimberStopButton = new JoystickButton(m_operatorController, 8);
+    StraightClimberButton = new JoystickButton(m_operatorController, 11);
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
     DontShootButton = new JoystickButton(m_operatorController, 7);
-    ShootParaButton = new JoystickButton(m_operatorController, 8);
+    ShootParaButton = new JoystickButton(m_operatorController, 4);
     if (RobotBase.isSimulation()){    
       testHasBallButton = new JoystickButton(m_operatorController, 9);
       testWrongBallButton  = new JoystickButton(m_operatorController, 10);
@@ -138,6 +140,7 @@ public class RobotContainer {
     //limelightButton.whenHeld(new AutoAim());
     //limelightButton.whenHeld(new InstantCommand(() -> m_aimManager.startAimMoving()));
     //limelightButton.whenReleased(new InstantCommand(() -> m_aimManager.Stop()));
+    manualLimelightButton.whenHeld(new AutoAim());
     limelightButton.whenPressed(new InstantCommand(() -> m_aimManager.switchAimMode()));
     // Intake button
     IntakeButton.whenPressed(new InstantCommand(() -> m_intake.autoturnintaker()));

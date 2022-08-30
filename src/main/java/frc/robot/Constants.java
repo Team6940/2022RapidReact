@@ -33,39 +33,33 @@ public final class Constants {
         
         private static final Point2D[] kHoodPoints = new Point2D.Double[] {
             // (distance, ty-angle)
-            new Point2D.Double(0.635/*25*/, 0.0),
-            new Point2D.Double(0.889/*35*/, 0.0),
-            new Point2D.Double(1.905/*75*/, 10.0), //
-            new Point2D.Double(2.286/*90*/, 15.5), //
-            new Point2D.Double(2.667/*105*/, 18.4), //
-            new Point2D.Double(3.048/*120*/, 23.0), //
-            new Point2D.Double(3.429/*135*/, 26.5), //
-            new Point2D.Double(3.810/*150*/, 29.0), //
-            new Point2D.Double(4.191/*165*/, 30.5), //
-            new Point2D.Double(4.572/*180*/, 32.0), //
-            new Point2D.Double(4.953/*195*/, 36.0), //
-            new Point2D.Double(5.334/*210*/, 37.0), //
-            new Point2D.Double(5.715/*225*/, 38.0)//
+            new Point2D.Double(2.286/*90*/, 0.00), //
+            new Point2D.Double(2.667/*105*/, 0.00), //
+            new Point2D.Double(3.048/*120*/, 0.00), //
+            //new Point2D.Double(3.429/*135*/, 26.5), //
+            //new Point2D.Double(3.810/*150*/, 29.0), //
+            //new Point2D.Double(4.191/*165*/, 30.5), //
+            //new Point2D.Double(4.572/*180*/, 32.0), //
+            //new Point2D.Double(4.953/*195*/, 36.0), //
+            //new Point2D.Double(5.334/*210*/, 37.0), //
+            //new Point2D.Double(5.715/*225*/, 38.0)//
         };
         public static final LinearInterpolationTable kHoodTable = new LinearInterpolationTable(kHoodPoints);
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (distance, shooterSpeedRPM)
-            new Point2D.Double(0.635/*25*/, 1500),
-            new Point2D.Double(0.889/*35*/, 1500),
-            new Point2D.Double(1.905/*75*/, 2340), //
-            new Point2D.Double(2.286/*90*/, 2450), //
-            new Point2D.Double(2.667/*105*/, 2505), //
-            new Point2D.Double(3.048/*120*/, 2610), //
-            new Point2D.Double(3.429/*135*/, 2710), //
-            new Point2D.Double(3.810/*150*/, 2815), //
-            new Point2D.Double(4.191/*165*/, 2890), //
-            new Point2D.Double(4.572/*180*/, 3040), //
-            new Point2D.Double(4.953/*195*/, 3185), //
-            new Point2D.Double(5.334/*210*/, 3315), //
-            new Point2D.Double(5.715/*225*/, 3500), //
-            new Point2D.Double(6.096/*240*/, 3700),
-            new Point2D.Double(6.858/*270*/, 4000),
+            new Point2D.Double(2.286/*90*/, 1375), //
+            new Point2D.Double(2.620/*105*/, 1400), //
+            new Point2D.Double(3.048/*120*/, 1475), //
+            //new Point2D.Double(3.429/*135*/, 2710), //
+            //new Point2D.Double(3.810/*150*/, 2815), //
+            //new Point2D.Double(4.191/*165*/, 2890), //
+            //new Point2D.Double(4.572/*180*/, 3040), //
+            //new Point2D.Double(4.953/*195*/, 3185), //
+            //new Point2D.Double(5.334/*210*/, 3315), //
+            //new Point2D.Double(5.715/*225*/, 3500), //
+            //new Point2D.Double(6.096/*240*/, 3700),
+            //new Point2D.Double(6.858/*270*/, 4000),
         };        
         public static final LinearInterpolationTable kRPMTable = new LinearInterpolationTable(kRPMPoints);
 
@@ -127,15 +121,15 @@ public final class Constants {
     public static final float INF = (float)Math.pow(10, 5); // This represents the Infinite
 
     // Hood constants
-    public static int HoodMotorPort = 20; //14
-    public static double HOOD_GEAR_RATIO = 60.0 / 32.0 ;  //TODO
+    public static int HoodMotorPort = 14; //14
+    public static double HOOD_GEAR_RATIO = 12.7 ;  //TODO
     
     public static final double HOOD_HOME_ANGLE = 0;  //TODO
-    public static final double HOOD_MAX_ANGLE = 30; //TODO
+    public static final double HOOD_MAX_ANGLE = 20; //TODO
     public static final double HOOD_MIN_ANGLE = 0;  //TODO
 
-    public static int HOPPER_TOP_BALL_IR_SENSOR = 0;
-    public static int HOPPER_LOW_BALL_IR_SENSOR = 1;
+    public static int HOPPER_TOP_BALL_IR_SENSOR = 1;
+    public static int HOPPER_LOW_BALL_IR_SENSOR = 0;
 
     public static double SLOW_MUL = 5.0 / 8.0; //TODO
     public static double TOP_BELT_SPEED = 0.8; //TODO
@@ -184,11 +178,11 @@ public final class Constants {
     public static final int IntakerSolenoidPort = 0; //TODO
     public static final boolean vSwitchIntake = false;
     public static final double INTAKE_OPEN_TIME = 0.0;
-    public static final double INTAKE_SPEED = 0.3;  //TODO
+    public static final double INTAKE_SPEED = 1;  //TODO
     public static final double INTAKE_EJECTION_SPEED = -0.5; //TODO
 
     // hopper port
-    public static final double HOPPER_SPEED = 0.3;
+    public static final double HOPPER_SPEED = 1;
     public static final double HOPPER_SLOW_SPEED = HOPPER_SPEED / 2;
     /**
      * Slower speed for the hopper when outtaking to prevent the cargo from exiting the hopper way to fast (and getting launched
@@ -201,8 +195,8 @@ public final class Constants {
     public static final double MIN_AUTO_EJECT_TIME = 0.5;   //TODO
     
     // for eject ball para when more than 3 balls or OpponentBall
-    public static final int SHOOTER_EJECT_SPEED = 750;  //TODO
-    public static final double HOOD_EJECT_ANGLE = 53;  //TODO
+    public static final int SHOOTER_EJECT_SPEED = 1200;  //TODO
+    public static final double HOOD_EJECT_ANGLE = 10;  //TODO
 
     // Blocker
 
@@ -230,7 +224,7 @@ public final class Constants {
     public static final int kTurretStep = 10;
     public static final boolean kOutputTelemetry = false;
     public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
-    public static final double TargetMinError = 1.0; //目标锁定的最小误差  //TODO 
+    public static final double TargetMinError = 5.0; //目标锁定的最小误差  //TODO 
     public static final double TurretMaxSoftLimitAngle = 180; // 度数 //TODO
     public static final double TurretMinSoftLimitAngle = -180; // TODO
     public static final double kTolerance = 2 * 2.0; // allowable angle error in degrees for the PIDSubsystem to
@@ -257,12 +251,12 @@ public final class Constants {
     public static final double SHOOTER_KA = 0 / 12;
 
     public static final double kFlywheelIdleVelocity = 1000; //RPM //TODO
-    public static double kFlyWheelEncoderReductionRatio =  60.0 / 32.0 ;  //TODO
+    public static double kFlyWheelEncoderReductionRatio =  1 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
     public static double kShooterTolerance = 50; //RPM //TODO
     public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
-    public static double kShootOneBallTime = 0.1 ; //TODO every one shooting ball time(seconds)
+    public static double kShootOneBallTime = 5 ; //TODO every one shooting ball time(seconds)
 
     public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,
                     0.01432893, -0.13352268, 0.00632465, 0.1574279, -0.01956647, 1.49045868};

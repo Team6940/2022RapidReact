@@ -16,7 +16,11 @@ import frc.robot.subsystems.PixyCamSPI;
 import frc.robot.subsystems.Shooter;
 //import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Hopper.HopperState;
+import frc.robot.subsystems.Intake.IntakeSolState;
+import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.lib.team3476.Timer;
 
 /**
@@ -95,6 +99,8 @@ public class Robot extends TimedRobot {
     RobotContainer.m_swerve.ZeroHeading();
     RobotContainer.m_swerve.whetherstoreyaw = false;
     //VisionManager.getInstance().ZeroTurret();
+    Hopper.getInstance().setHopperState(HopperState.OFF);
+    Intake.getInstance().setWantedIntakeState(IntakeState.OFF);
     Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
     LimelightSubsystem.getInstance().setLightMode(1);

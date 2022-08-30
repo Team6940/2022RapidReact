@@ -35,7 +35,8 @@ public final class Hopper extends SubsystemBase  {
         hopperMotor.configVoltageCompSaturation(12);
         hopperMotor.enableVoltageCompensation(true);
         topIRSensor = new DigitalInput(Constants.HOPPER_TOP_BALL_IR_SENSOR); //TODO
-        bottomIRSensor =  new DigitalInput(Constants.HOPPER_LOW_BALL_IR_SENSOR);  //TODO
+        bottomIRSensor = new DigitalInput(Constants.HOPPER_LOW_BALL_IR_SENSOR); //TODO
+        hopperState = HopperState.OFF;
     }
 
     @Override

@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class ColorSensor extends SubsystemBase {
     private static ColorSensor instance = null;
-    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(I2C.Port.kMXP);
+    private final ColorSensorV3 m_colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     private final ColorMatch m_colorMatcher = new ColorMatch();
 
     private ColorMatchResult m_match;

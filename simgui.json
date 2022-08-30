@@ -220,10 +220,10 @@
       }
     },
     "Shuffleboard": {
-      "Shoot Parameter": {
+      "Shooter Speed": {
         "open": true
       },
-      "Shooter Speed": {
+      "Summary": {
         "open": true
       },
       "open": true
