@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.AimManager;
 
 public class AutoAim extends CommandBase {
   /** Creates a new AutoAim. */
@@ -40,6 +41,7 @@ public class AutoAim extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_swerve);
     addRequirements(RobotContainer.m_limelight);
+    addRequirements(RobotContainer.m_aimManager);
   }
 
   // Called when the command is initially scheduled.
@@ -111,6 +113,8 @@ public class AutoAim extends CommandBase {
 
       // Goal-Centric
       RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, false);//Use feedback control when auto aiming.
+
+      RobotContainer.m_aimManager.startAimShoot();
   }
 
   // Called once the command ends or is interrupted.
