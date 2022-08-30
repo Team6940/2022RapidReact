@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
     // for hood
     private WPI_TalonSRX mHoodmotor;
     private WPI_TalonFX mHoodmotor2;
-    private int offset = 0;//TODO
+    private int offset = 622;//TODO
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();
     private double desiredHoodAngle;
     HoodControlState hoodstate = HoodControlState.HOME;
@@ -58,10 +58,10 @@ public class Shooter extends SubsystemBase {
     private void configShooter() {
         TalonFXConfiguration lMasterConfig = new TalonFXConfiguration();
 
-        lMasterConfig.slot0.kP = 0.04;//TODO
+        lMasterConfig.slot0.kP = 0.05;//TODO
         lMasterConfig.slot0.kI = 0;
         lMasterConfig.slot0.kD = 0;
-        lMasterConfig.slot0.kF = 0.4;
+        lMasterConfig.slot0.kF = 0.115;
         lMasterConfig.peakOutputForward = 0.8;
         lMasterConfig.peakOutputReverse = 0.0;
         mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
@@ -87,21 +87,21 @@ public class Shooter extends SubsystemBase {
         mHoodmotor2 = new WPI_TalonFX(Constants.HoodMotorPort + 5);
 
         mHoodmotor.setInverted(false);
-        mHoodmotor.setSensorPhase(false);//TODO
+        mHoodmotor.setSensorPhase(false);
         mHoodmotor.setNeutralMode(NeutralMode.Brake);
     
         mHoodmotor.selectProfileSlot(0, 0);//TODO
-        mHoodmotor.config_kP(0, 3.66, 10);
-        mHoodmotor.config_kI(0, 0.01, 10);
-        mHoodmotor.config_kD(0, 10.0, 10);
+        mHoodmotor.config_kP(0, 0.5, 10);
+        mHoodmotor.config_kI(0, 0.0, 10);
+        mHoodmotor.config_kD(0, 0.0, 10);
         mHoodmotor.config_kF(0, 0.00, 10);
-        mHoodmotor.config_IntegralZone(0, 15, 10);
+        mHoodmotor.config_IntegralZone(0, 0, 10);
         mHoodmotor.configMotionCruiseVelocity(600, 10);
         mHoodmotor.configMotionAcceleration(1200, 10);
         // mHoodmotor.configMotionSCurveStrength(6);
 
-        mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MIN_ANGLE, Constants.HOOD_GEAR_RATIO), 10); //TODO
-        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MAX_ANGLE, Constants.HOOD_GEAR_RATIO), 10); //TODO
+        mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MAX_ANGLE, Constants.HOOD_GEAR_RATIO) + offset, 10); //TODO
+        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MIN_ANGLE, Constants.HOOD_GEAR_RATIO), 10); //TODO
         mHoodmotor.configForwardSoftLimitEnable(true, 10);
         mHoodmotor.configReverseSoftLimitEnable(true, 10);
     
@@ -164,6 +164,7 @@ public class Shooter extends SubsystemBase {
         ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
         //mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
         mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
+        //mShooterRght.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         
         if(shootState == ShooterControlState.SHOOT){
             //if(VisionManager.getInstance().isShooterCanShoot()){  //TODO  need to debug what is can shoot condition
@@ -338,9 +339,9 @@ public class Shooter extends SubsystemBase {
 
     public void BlockerWritePeriodicOutputs() {
         if (blockerState == BlockerControlState.BALLLOCKER_ON) {
-            blockerMotor.set(BlockerConstants.kFireSpeed);
+            blockerMotor.set(ControlMode.PercentOutput, BlockerConstants.kFireSpeed);
         } else {
-            blockerMotor.set(BlockerConstants.kStopSpeed);
+            blockerMotor.set(ControlMode.PercentOutput, BlockerConstants.kStopSpeed);
         }
     }
 

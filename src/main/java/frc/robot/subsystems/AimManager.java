@@ -74,6 +74,8 @@ public class AimManager extends SubsystemBase {
     final double ANGULAR_D = 0.0;
     PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
+    public double rotationSpeed = 0;
+
     Translation2d translation;
     
 
@@ -130,6 +132,7 @@ public class AimManager extends SubsystemBase {
     public void writePeriodicOutputs() {
         double currentTime = m_timer.get();
         wrongBall = colorsensor.isWrongBall();
+        //wrongBall = false;
         topHasBall = hooper.isHasTopBall(); //TODO  must add top ball sensor
         //saveShootStat = currentState;
 
@@ -157,8 +160,8 @@ public class AimManager extends SubsystemBase {
         if (currentState == AimManagerState.STOP) {
             hasBallShooting = false; 
             shotBallTime = Double.NEGATIVE_INFINITY;
-            //shooter.setShooterToStop();
-            shooter.setFiring(false);
+            shooter.setShooterToStop();
+            //shooter.setFiring(false);//TODO
         } 
         if (currentState == AimManagerState.AIM_MOVING) {
             //shooter.setShooterToPrepare();
@@ -237,9 +240,10 @@ public class AimManager extends SubsystemBase {
 
     }
 
-    public void DoAutoAim(){
+    public void DoAutoAim() {
+        LimelightSubsystem.getInstance().setLightMode(3);
         double forwardSpeed;
-        double rotationSpeed;
+        //double rotationSpeed;
     
         double totalforwardSpeed;
         double totalrotationSpeed;
@@ -297,7 +301,7 @@ public class AimManager extends SubsystemBase {
           //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
     
           // Goal-Centric
-          RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, true);//Use feedback control when auto aiming.
+          RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, false);//Use feedback control when auto aiming.
     }
 
     public boolean CanShot(){
@@ -312,6 +316,7 @@ public class AimManager extends SubsystemBase {
         shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
         hooper.setHopperState(HopperState.ON);
         shooter.setFiring(true);
+        SwerveDriveTrain.getInstance().Drive(new Translation2d(0, 0), 1, true, true);
     }
 
     public double readShooterSpeedFromShuffleBoard(){
@@ -348,8 +353,12 @@ public class AimManager extends SubsystemBase {
         return shootWrongBallCnt;
     }
 
-    public void switchAimMode(){
-        currentState = (currentState == AimManagerState.STOP) ? AimManagerState.AIM_MOVING:AimManagerState.STOP;
+    public void switchAimMode() {
+        currentState = (currentState == AimManagerState.STOP) ? AimManagerState.AIM_MOVING : AimManagerState.STOP;
+    }
+    
+    public double getRotationSpeed(){
+        return rotationSpeed;
     }
 
     private void addShuffleboardDebug(){
@@ -367,7 +376,7 @@ public class AimManager extends SubsystemBase {
             .withPosition(0, 3)
             .withSize(1, 1);            
         summaryTab.addNumber("HoodAngle",() ->shooter.getHoodAngle())
-            .withPosition(0, 2)
+            .withPosition(1, 1)
             .withSize(1, 1);    
         summaryTab.addString("BlockerState", () ->shooter.getBlockerState().name())
             .withPosition(2, 0)
@@ -390,6 +399,9 @@ public class AimManager extends SubsystemBase {
             .withSize(1, 1);
         AimTab.addBoolean("hasBottomBall",hooper::isHasBottomBall)
             .withPosition(0, 2)
+                .withSize(1, 1);
+        AimTab.addBoolean("hasTopBall",hooper::isHasTopBall)
+            .withPosition(3, 0)
             .withSize(1, 1);  
         AimTab.addBoolean("Wrongball",colorsensor::isWrongBall)
             .withPosition(0, 3)
@@ -403,7 +415,13 @@ public class AimManager extends SubsystemBase {
                 .withSize(1, 1);
         AimTab.addNumber("rotation PID controller", () -> limelight.Get_tx())
             .withPosition(1,3)
-                .withSize(1, 1);        
+                .withSize(1, 1);
+        AimTab.addNumber("rotation Speed", () -> this.getRotationSpeed())
+            .withPosition(2,0)
+                .withSize(1, 1);
+        AimTab.addNumber("distance", () -> this.limelight.getRobotToTargetDistance())
+            .withPosition(2,1)
+                .withSize(1, 1);    
         autoAimRangeEntry = AimTab.add("autoAim range", 0.0)
             .withPosition(1, 2)
             .withSize(1, 1)
