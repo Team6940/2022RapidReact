@@ -137,7 +137,7 @@ public class AimManager extends SubsystemBase {
         double currentTime = m_timer.get();
         wrongBall = colorsensor.isWrongBall();
         //wrongBall = false;
-        topHasBall = hooper.isHasTopBall(); //TODO  must add top ball sensor
+        topHasBall = hooper.isHasTopBall();
         bottomHasBall = hooper.isHasBottomBall();
 
         if(bottomHasBall){
@@ -176,7 +176,6 @@ public class AimManager extends SubsystemBase {
             }
         }
 
-
         if (currentState == AimManagerState.STOP) {
             startBallShooting = false; 
             shotBallTime = Double.NEGATIVE_INFINITY;
@@ -204,66 +203,24 @@ public class AimManager extends SubsystemBase {
                     if(CanShot()){
                         shooter.setFiring(true);
                     }                 
-                }else if (startBallShooting && topHasBall) {   
-                    startBallShooting = false; 
-                    shotBallTime = Double.NEGATIVE_INFINITY;
-                    hooper.setHopperState(HopperState.ON);
-                    shooter.setFiring(false);//TODO how to support continious shoot!
-                    shootBallCnt++;
                 }else{
                     startBallShooting = false;
                     shotBallTime = Double.NEGATIVE_INFINITY;
-                    //hooper.setHopperState(HopperState.OFF);
                     shooter.setFiring(false);//TODO how to support continious shoot! 
                 }
             }else{
                 currentState = AimManagerState.STOP;
             }
         }
+
         if (currentState == AimManagerState.AIM_MOVING) {
             //shooter.setShooterToPrepare();
             DoAutoAim();
             if (isTargetLocked()) {
                 startBallShooting = false; 
                 shotBallTime = Double.NEGATIVE_INFINITY;
-                currentState = AimManagerState.AIM_LOCKED;
+                currentState = AimManagerState.AIM_SHOOT;
             } 
-        }
-        if (currentState == AimManagerState.AIM_LOCKED) {
-            if (isTargetLocked()) {
-                double dist = limelight.getRobotToTargetDistance();  //TODO
-                shooterRPM = m_rpmTable.getOutput(dist);
-                hoodAngle = m_hoodTable.getOutput(dist);
-                //double dist = limelight.getDistance();
-                //shooter.setShooterToShoot();
-                shooter.setShooterSpeed(shooterRPM);
-                //shooter.setHoodToOn();
-                //double curspeed = shooter.getShooterSpeedRpm();
-                shooter.setHoodAngle(hoodAngle);
-                if(topHasBall && CanShot() && !startBallShooting){
-                    shotBallTime = currentTime;
-                    startBallShooting = true;
-                    hooper.setHopperState(HopperState.ON);
-                    shooter.setFiring(true);
-                }else if(startBallShooting && currentTime < shotBallTime + Constants.kShootOneBallTime){
-                    hooper.setHopperState(HopperState.ON);
-                    shooter.setFiring(true);                    
-                }else if (startBallShooting && topHasBall) {   
-                    startBallShooting = false; 
-                    shotBallTime = Double.NEGATIVE_INFINITY;
-                    hooper.setHopperState(HopperState.ON);
-                    shooter.setFiring(true);//TODO how to support continious shoot!
-                    shootBallCnt++;
-                }else{
-                    startBallShooting = false;
-                    shotBallTime = Double.NEGATIVE_INFINITY;
-                    //hooper.setHopperState(HopperState.OFF);
-                    shooter.setFiring(false);//TODO how to support continious shoot! 
-                }
-            }
-            else{
-                currentState = AimManagerState.AIM_MOVING;
-            }
         }
     }
 
