@@ -156,8 +156,8 @@ public class RobotContainer {
     }
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
-    BlockerButton.whenReleased(new InstantCommand(() -> m_shooter.setFiring(false)));
+    BlockerButton.whenHeld(new InstantCommand(() ->m_aimManager.startAimForce()));
+    BlockerButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
 
     // Climber button
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));

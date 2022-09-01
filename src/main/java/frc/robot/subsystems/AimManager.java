@@ -34,8 +34,6 @@ public class AimManager extends SubsystemBase {
     private static LinearInterpolationTable m_hoodTable = ShooterConstants.kHoodTable;
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
     boolean enanbleTelemetry = false;
-    double hoodAngle  = 0;
-    double shooterRPM = 0;
     boolean wrongBall = false ;
     boolean topHasBall = false; 
     boolean bottomHasBall = false;
@@ -107,17 +105,15 @@ public class AimManager extends SubsystemBase {
     public void startAimShoot() {
         currentState = AimManagerState.AIM_SHOOT;
     }
+    public void startAimForce() {
+        currentState = AimManagerState.AIM_FORCE;
+    }    
 
-    public void lockOnTarget() {
-        currentState = AimManagerState.AIM_LOCKED;
+    public void DoShootForve(){
+
     }
-
     public boolean isAimMoving() {
         return (currentState == AimManagerState.AIM_MOVING);
-    }
-
-    public boolean isAimLocked() {
-        return (currentState == AimManagerState.AIM_LOCKED);
     }
 
     public boolean isStop() {
@@ -186,11 +182,9 @@ public class AimManager extends SubsystemBase {
         if (currentState == AimManagerState.AIM_SHOOT) {
             if (topHasBall && isTargetLocked()) {
                 double dist = limelight.getRobotToTargetDistance();  //TODO
-                shooterRPM = m_rpmTable.getOutput(dist);
-                hoodAngle = m_hoodTable.getOutput(dist);
                 //double dist = limelight.getDistance();
-                shooter.setShooterSpeed(shooterRPM);
-                shooter.setHoodAngle(hoodAngle);
+                shooter.setShooterSpeed(m_rpmTable.getOutput(dist));
+                shooter.setHoodAngle(m_hoodTable.getOutput(dist));
                 if( !startBallShooting){
                     shotBallTime = currentTime;
                     startBallShooting = true;
@@ -214,7 +208,6 @@ public class AimManager extends SubsystemBase {
         }
 
         if (currentState == AimManagerState.AIM_MOVING) {
-            //shooter.setShooterToPrepare();
             DoAutoAim();
             if (isTargetLocked()) {
                 startBallShooting = false; 
@@ -222,6 +215,17 @@ public class AimManager extends SubsystemBase {
                 currentState = AimManagerState.AIM_SHOOT;
             } 
         }
+
+        if (currentState == AimManagerState.AIM_FORCE) { 
+            if(topHasBall) {
+                hooper.setHopperState(HopperState.ON);
+                if(CanShot()){                
+                    shooter.setFiring(true);        
+                }
+            }
+            startBallShooting = false; 
+            shotBallTime = Double.NEGATIVE_INFINITY;   
+        }        
     }
 
     public void outputTelemetry() {
@@ -241,7 +245,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public enum AimManagerState {
-        STOP, AIM_LOCKED, AIM_MOVING, AIM_WRONGBALL,AIM_SHOOT
+        STOP, AIM_MOVING, AIM_WRONGBALL,AIM_SHOOT,AIM_FORCE
     }
 
     @Override
@@ -322,8 +326,8 @@ public class AimManager extends SubsystemBase {
         double rpmDiff ,angeDiff;
         boolean isShooterReady,isHoodReady;
 
-        rpmDiff = Math.abs(shooter.getShooterSpeedRpm()- shooterRPM) ;
-        angeDiff = Math.abs(shooter.getHoodAngle() - hoodAngle);
+        rpmDiff = Math.abs(shooter.getShooterSpeedRpm()- shooter.getDesiredShooterSpeedRpm()) ;
+        angeDiff = Math.abs(shooter.getHoodAngle() - shooter.getDesiredHoodAngle());
         RPMDiffEntry.setDouble(rpmDiff);
         HoodAngleDiffEntry.setDouble(angeDiff);
         isShooterReady = rpmDiff < Constants.kShooterTolerance;
@@ -333,10 +337,8 @@ public class AimManager extends SubsystemBase {
     }
 
     public void doShooterEject() {
-        shooterRPM = Constants.SHOOTER_EJECT_SPEED;
-        hoodAngle = Constants.HOOD_EJECT_ANGLE;
-        shooter.setShooterSpeed(shooterRPM);
-        shooter.setHoodAngle(hoodAngle);
+        shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
+        shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
         hooper.setHopperState(HopperState.ON);
         //shooter.setFiring(true);
         SwerveDriveTrain.getInstance().Drive(new Translation2d(0, 0), 1, true, true);
@@ -358,7 +360,6 @@ public class AimManager extends SubsystemBase {
         inputHoodAngle = readHoodAngleFromShuffleBoard();
         shooter.setHoodAngle(inputHoodAngle);
         shooter.setShooterSpeed(inputShootSpeedRPM);
-        shooter.setShooterToMannulShoot();
     }
 
     public boolean isHasBallShooting(){

@@ -182,6 +182,9 @@ public class Shooter extends SubsystemBase {
         }
 
     }
+    public synchronized double getDesiredShooterSpeedRpm() {
+        return desiredShooterSpeed;
+    }
 
     public void setShooterToShoot(){
         shootState = ShooterControlState.SHOOT;
@@ -219,10 +222,10 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets Speed of Shooter FlywheelWheel.
      *
-     * @param shooterSpeedRPM Desired Speed in RPM.
+     * @param RPM Desired Speed in RPM.
      */
-    public void setShooterSpeed(double shooterSpeedRPM) {
-        this.desiredShooterSpeed = shooterSpeedRPM;
+    public void setShooterSpeed(double RPM) {
+        this.desiredShooterSpeed = RPM;
         if (desiredShooterSpeed == 0) {
             shootState = ShooterControlState.STOP;
         }else{
@@ -271,6 +274,9 @@ public class Shooter extends SubsystemBase {
           return Conversions.talonToDegrees((int) mHoodmotor.getSelectedSensorPosition(0)- offset, Constants.HOOD_GEAR_RATIO);
         }
         
+    }
+    public double getDesiredHoodAngle(){
+        return desiredHoodAngle;
     }
 
     public void HoodWritePeriodicOutputs(){
