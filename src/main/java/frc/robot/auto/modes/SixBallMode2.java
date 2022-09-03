@@ -21,6 +21,7 @@ import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.auto.actions.SwervePathAction;
 import frc.robot.auto.actions.ShootAction2;
 import frc.robot.auto.actions.IntakeAndHopperAction;
+import frc.robot.commands.Limelight.AutoAim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -52,19 +53,22 @@ public class SixBallMode2 extends SequentialCommandGroup {
       new SwervePathAction(mSixBallTrajectoryOne).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
       new WaitCommand(0.5),
 
       new SwervePathAction(mSixBallTrajectoryTwo).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new SwervePathAction(mSixBallTrajectoryThree).deadlineWith(
         new IntakeAndHopperAction()
         ),
       new WaitCommand(0.5),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new SwervePathAction(mSixBallTrajectoryFour).deadlineWith(
         new IntakeAndHopperAction()
@@ -75,13 +79,15 @@ public class SixBallMode2 extends SequentialCommandGroup {
         new IntakeAndHopperAction()
         ),
       new WaitCommand(0.5),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new SwervePathAction(mSixBallTrajectorySix).deadlineWith(
         new IntakeAndHopperAction()
         ),
       new WaitCommand(0.5),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new InstantCommand(() -> Intake.getInstance().setIntakeSolState(IntakeSolState.CLOSE)),
       new InstantCommand(() -> Intake.getInstance().setWantedIntakeState(IntakeState.OFF)),

@@ -21,6 +21,7 @@ import frc.robot.subsystems.Intake.IntakeSolState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.Limelight.AutoAim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -55,14 +56,16 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
       //new WaitCommand(0.5),
 
       new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(
         new IntakeAndHopperAction()
         ),
       new WaitCommand(0.5),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(
         new IntakeAndHopperAction() 
@@ -73,7 +76,8 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(
         new IntakeAndHopperAction()  
         ),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new InstantCommand(() -> Intake.getInstance().setIntakeSolState(IntakeSolState.CLOSE)),
       new InstantCommand(() -> Intake.getInstance().setWantedIntakeState(IntakeState.OFF)),

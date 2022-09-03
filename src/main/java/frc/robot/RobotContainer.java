@@ -42,7 +42,7 @@ public class RobotContainer {
 
   public static SwerveDriveTrain m_swerve;
 
-  public static LedSubsystem m_leds;
+  //public static LedSubsystem m_leds;
   public static LimelightSubsystem m_limelight;
   //public static VisionManager m_visionManager;
   public static AimManager m_aimManager;
@@ -85,8 +85,8 @@ public class RobotContainer {
     m_swerve = SwerveDriveTrain.getInstance();
 
     m_limelight = LimelightSubsystem.getInstance();
-    m_leds = LedSubsystem.getInstance();
-    m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
+    //m_leds = LedSubsystem.getInstance();
+    //m_leds.conformToState(LedSubsystem.State.INVISIBLE_TARGET_TRACKING);
     //m_visionManager = VisionManager.getInstance();
     m_aimManager = AimManager.getInstance();
     m_turret = Turret.getInstance();  
@@ -156,8 +156,8 @@ public class RobotContainer {
     }
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
-    BlockerButton.whenReleased(new InstantCommand(() -> m_shooter.setFiring(false)));
+    BlockerButton.whenHeld(new InstantCommand(() ->m_aimManager.startAimForce()));
+    BlockerButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
 
     // Climber button
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
@@ -196,7 +196,8 @@ public class RobotContainer {
     controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
 
     // ShootPara debug Button 
-    ShootParaButton.whenPressed(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
+    ShootParaButton.whenHeld(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
+    ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
     
   }
 

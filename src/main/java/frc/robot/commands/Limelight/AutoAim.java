@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.AimManager;
 
 public class AutoAim extends CommandBase {
   /** Creates a new AutoAim. */
@@ -40,6 +41,7 @@ public class AutoAim extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.m_swerve);
     addRequirements(RobotContainer.m_limelight);
+    addRequirements(RobotContainer.m_aimManager);
   }
 
   // Called when the command is initially scheduled.
@@ -78,7 +80,7 @@ public class AutoAim extends CommandBase {
                         TARGET_HEIGHT_METERS,
                         CAMERA_PITCH_RADIANS,
                         Units.degreesToRadians(RobotContainer.m_limelight.Get_ty()));
-        SmartDashboard.putNumber("Debug/Auto/range", range);
+        //SmartDashboard.putNumber("Debug/Auto/range", range);
         // Use this range as the measurement we give to the PID controller.
         // -1.0 required to ensure positive PID controller effort _increases_ range
         if(RobotContainer.m_limelight.Get_ty()<-1){
@@ -111,12 +113,15 @@ public class AutoAim extends CommandBase {
 
       // Goal-Centric
       RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, false);//Use feedback control when auto aiming.
+
+      RobotContainer.m_aimManager.startAimShoot();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     RobotContainer.m_limelight.setLightMode(1);
+    RobotContainer.m_aimManager.Stop();
   }
 
   // Returns true when the command should end.

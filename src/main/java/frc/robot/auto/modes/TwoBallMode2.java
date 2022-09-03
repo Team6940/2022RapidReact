@@ -21,6 +21,7 @@ import frc.robot.subsystems.Intake.IntakeSolState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
+import frc.robot.commands.Limelight.AutoAim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -50,14 +51,16 @@ public class TwoBallMode2 extends SequentialCommandGroup {
       new SwervePathAction(mTwoBallTrajectoryOne).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
       new WaitCommand(0.5),
 
       new InstantCommand(() -> LimelightSubsystem.getInstance().reloadLimeLightSimu()),
       new SwervePathAction(mTwoBallTrajectoryTwo).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new ShootAction2().withTimeout(1),
+      //new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new InstantCommand(() -> Intake.getInstance().setIntakeSolState(IntakeSolState.CLOSE)),
       new InstantCommand(() -> Intake.getInstance().setWantedIntakeState(IntakeState.OFF)),
