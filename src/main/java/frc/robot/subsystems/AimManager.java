@@ -147,7 +147,7 @@ public class AimManager extends SubsystemBase {
         }
 
         if (currentState == AimManagerState.AIM_WRONGBALL) {
-            if(topHasBall && wrongBall && !hasWrongBallShooting){
+            if( !hasWrongBallShooting){
                 shotWrongBallTime = currentTime;
                 hasWrongBallShooting = true;
                 doShooterEject();
@@ -259,7 +259,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public void DoAutoAim() {
-        LimelightSubsystem.getInstance().setLightMode(3);
+        //LimelightSubsystem.getInstance().setLightMode(3);
         double forwardSpeed;
         //double rotationSpeed;
     
@@ -286,7 +286,7 @@ public class AimManager extends SubsystemBase {
                             TARGET_HEIGHT_METERS,
                             CAMERA_PITCH_RADIANS,
                             Units.degreesToRadians(RobotContainer.m_limelight.Get_ty()));
-            SmartDashboard.putNumber("Debug/Auto/range", range);
+           // SmartDashboard.putNumber("Debug/Auto/range", range);
             autoAimRangeEntry.setDouble(range);
             // Use this range as the measurement we give to the PID controller.
             // -1.0 required to ensure positive PID controller effort _increases_ range
@@ -340,7 +340,6 @@ public class AimManager extends SubsystemBase {
         shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
         shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
         hooper.setHopperState(HopperState.ON);
-        //shooter.setFiring(true);
         SwerveDriveTrain.getInstance().Drive(new Translation2d(0, 0), 1, true, true);
     }
 
@@ -360,6 +359,7 @@ public class AimManager extends SubsystemBase {
         inputHoodAngle = readHoodAngleFromShuffleBoard();
         shooter.setHoodAngle(inputHoodAngle);
         shooter.setShooterSpeed(inputShootSpeedRPM);
+        startAimForce();
     }
 
     public boolean isHasBallShooting(){

@@ -80,7 +80,7 @@ public class AutoAim extends CommandBase {
                         TARGET_HEIGHT_METERS,
                         CAMERA_PITCH_RADIANS,
                         Units.degreesToRadians(RobotContainer.m_limelight.Get_ty()));
-        SmartDashboard.putNumber("Debug/Auto/range", range);
+        //SmartDashboard.putNumber("Debug/Auto/range", range);
         // Use this range as the measurement we give to the PID controller.
         // -1.0 required to ensure positive PID controller effort _increases_ range
         if(RobotContainer.m_limelight.Get_ty()<-1){
@@ -121,6 +121,7 @@ public class AutoAim extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     RobotContainer.m_limelight.setLightMode(1);
+    RobotContainer.m_aimManager.Stop();
   }
 
   // Returns true when the command should end.

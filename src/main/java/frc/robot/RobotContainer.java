@@ -196,7 +196,8 @@ public class RobotContainer {
     controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
 
     // ShootPara debug Button 
-    ShootParaButton.whenPressed(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
+    ShootParaButton.whenHeld(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
+    ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
     
   }
 
