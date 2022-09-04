@@ -30,8 +30,8 @@ public class Intake extends SubsystemBase {
     }
 
     private Intake() {
-        intakeMotor = new WPI_TalonFX(Constants.IntakerPort); //TODO
-        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort); //TODO
+        intakeMotor = new WPI_TalonFX(Constants.IntakerPort); //TODO 设定intake电机
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort); //TODO 设定气动杆
         intakeMotor.configVoltageCompSaturation(12);
         intakeMotor.enableVoltageCompensation(true);
         //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
         //intakeMotor.configOpenloopRamp(0.2, 1000);
     }
 
-    public void selfTest() {
+    public void selfTest() {//自我测试，把intake打开旋转再关上停转
         setIntakeSolState(IntakeSolState.OPEN);
         //OrangeUtility.sleep(1000);
         setIntakeState(IntakeState.INTAKE);
@@ -55,21 +55,21 @@ public class Intake extends SubsystemBase {
 
     public void outputTelemetry(){
         //SmartDashboard.putNumber("Debug/Intake/Current", intakeMotor.getStatorCurrent());
-        SmartDashboard.putBoolean("Debug/Intake/IntakeSolState: ", intakeSolenoid.get());
-        SmartDashboard.putString("Debug/Intake/IntakeSolState", wantedIntakeSolState.toString());
-        SmartDashboard.putNumber("Debug/Intake/CMotorOutput: ", intakeMotor.getMotorOutputPercent());
-        SmartDashboard.putString("Debug/Intake/WantedIntake State", getWantedIntakeState().name());
+        SmartDashboard.putBoolean("Debug/Intake/IntakeSolState: ", intakeSolenoid.get());//在调试版上显示气动杆状态
+        SmartDashboard.putString("Debug/Intake/IntakeSolState", wantedIntakeSolState.toString());//在调试版上显示气动杆的目标状态
+        SmartDashboard.putNumber("Debug/Intake/CMotorOutput: ", intakeMotor.getMotorOutputPercent());//在调试板上显示电机输出百分比
+        SmartDashboard.putString("Debug/Intake/WantedIntake State", getWantedIntakeState().name());//在调试版上输出intake的目标状态
     }
 
 
-    public void close() {
-        intakeSolenoid.close();
-        intakeMotor.close();
-        instance = new Intake();
+    public void close() {//关闭intake
+        intakeSolenoid.close();//关闭起动杆
+        intakeMotor.close();//关闭intake电机
+        instance = new Intake();//???
     }
 
-    public IntakeSolState getIntakeSolState() {
-        if (RobotBase.isSimulation()){
+    public IntakeSolState getIntakeSolState() {//???
+        if (RobotBase.isSimulation()){//???
             return wantedIntakeSolState;
         }else{
             return intakeSolenoid.get() ? IntakeSolState.OPEN : IntakeSolState.CLOSE;
@@ -78,43 +78,43 @@ public class Intake extends SubsystemBase {
     }
 
     // Intake States
-    public enum IntakeSolState {
+    public enum IntakeSolState {//气动杆状态，打开和关闭
         OPEN, CLOSE
     }
 
-    private IntakeSolState wantedIntakeSolState = IntakeSolState.CLOSE;
+    private IntakeSolState wantedIntakeSolState = IntakeSolState.CLOSE;//默认设定intake起动杆为关闭
 
     // this a extern func for other command call.
-    public synchronized void setIntakeSolState(IntakeSolState intakeSolState) {
+    public synchronized void setIntakeSolState(IntakeSolState intakeSolState) {//将气动杆状态输出到气动杆上
         wantedIntakeSolState = intakeSolState;
         switch (intakeSolState) {
-            case OPEN:
+            case OPEN://打开气动杆
                 intakeSolenoid.set(true);
                 break;
-            case CLOSE:
+            case CLOSE://关闭气动杆
                 intakeSolenoid.set(false);
         }
     }
 
-    public enum IntakeState {
+    public enum IntakeState {//intake状态，分别对应：吸球、吐出、缓慢吐出、关闭
         INTAKE, EJECT, SLOW_EJECT, OFF
     }
 
-    private IntakeState wantedIntakeState = IntakeState.OFF;
+    private IntakeState wantedIntakeState = IntakeState.OFF;//默认intake状态关闭
     
     // this a extern func for other command call.
-    public synchronized void setWantedIntakeState(IntakeState intakeState) {
+    public synchronized void setWantedIntakeState(IntakeState intakeState) {//设定intake状态
         wantedIntakeState = intakeState;
     }
-    public synchronized IntakeState getWantedIntakeState() {
+    public synchronized IntakeState getWantedIntakeState() {//获取intake状态
         return wantedIntakeState ;
     }
 
-    private void setIntakeMotor(double speed) {
+    private void setIntakeMotor(double speed) {//设定intake电机转速
         intakeMotor.set(ControlMode.PercentOutput, speed);
     }
 
-    private void setIntakeState(IntakeState intakeState) {
+    private void setIntakeState(IntakeState intakeState) {//将intake状态输出到电机上
         switch (intakeState) {
             case INTAKE:
                 setIntakeMotor(Constants.INTAKE_SPEED);
@@ -127,12 +127,12 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        setIntakeState(wantedIntakeState);
+        setIntakeState(wantedIntakeState);//持续地将Intake状态输出到电机上
         outputTelemetry();
     }
 
     private int cnt = 0;
-    public void autoturnintaker()
+    public void autoturnintaker()//用cnt周期性地控制intake状态
     {
         if(cnt % 2 == 0){
              setIntakeSolState(IntakeSolState.CLOSE);

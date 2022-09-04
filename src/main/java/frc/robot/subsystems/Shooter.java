@@ -18,21 +18,21 @@ import edu.wpi.first.wpilibj.RobotBase;
 
 
 public class Shooter extends SubsystemBase {
-    private static Shooter instance = null;
-    private static WPI_TalonFX mShooterLeft;
-    private static WPI_TalonFX mShooterRght;
-    private final ShooterPeriodicIO ShooterPeriodicIO = new ShooterPeriodicIO();
-    ShooterControlState shootState = ShooterControlState.STOP;
+    private static Shooter instance = null;//设定intake
+    private static WPI_TalonFX mShooterLeft;//左shooter电机
+    private static WPI_TalonFX mShooterRght;//右shooter电机
+    private final ShooterPeriodicIO ShooterPeriodicIO = new ShooterPeriodicIO();//???
+    ShooterControlState shootState = ShooterControlState.STOP;//shooter状态
     //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
     private double desiredShooterSpeed = 0;
 
     /**
      * We use FeedForward and a little P gains for Shooter
      */
-    SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);
+    SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);//???
 
     // for hood
-    private WPI_TalonSRX mHoodmotor;
+    private WPI_TalonSRX mHoodmotor;//
     private WPI_TalonFX mHoodmotor2;
     private int offset = 622;//TODO
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();
@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
         return instance;
     }
 
-    private void configShooter() {
+    private void configShooter() {//设定shooter
         TalonFXConfiguration lMasterConfig = new TalonFXConfiguration();
 
         lMasterConfig.slot0.kP = 0.0000005;//TODO
