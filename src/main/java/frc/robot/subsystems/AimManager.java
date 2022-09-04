@@ -39,6 +39,8 @@ public class AimManager extends SubsystemBase {
     boolean bottomHasBall = false;
     boolean startBallShooting = false;
     double shotBallTime = Double.NEGATIVE_INFINITY;
+    boolean startOpenClosedShooting = false;
+    double shotOpenClosedBallTime = Double.NEGATIVE_INFINITY;    
     double shotWrongBallTime = Double.NEGATIVE_INFINITY;
     boolean hasWrongBallShooting = false;
     int shootBallCnt = 0;
@@ -53,6 +55,9 @@ public class AimManager extends SubsystemBase {
         shooterParaTab.add("Shooter Speed", 1).getEntry();
     private NetworkTableEntry inputHoodAngle =
         shooterParaTab.add("Hood Angle", 1).getEntry();    
+    private NetworkTableEntry inputShooterPercent =
+        shooterParaTab.add("Shooter Percent", 1).getEntry();    
+
     
       /** Creates a new AutoAim. */
     // Constants such as camera and target height stored. Change per robot and goal!
@@ -108,6 +113,10 @@ public class AimManager extends SubsystemBase {
     public void startAimForce() {
         currentState = AimManagerState.AIM_FORCE;
     }    
+    public void startAimOpenClosed() {
+        currentState = AimManagerState.AIM_OPEN_CLOSED;
+    }    
+    
 
     public void DoShootForve(){
 
@@ -225,7 +234,27 @@ public class AimManager extends SubsystemBase {
             }
             startBallShooting = false; 
             shotBallTime = Double.NEGATIVE_INFINITY;   
-        }        
+        }
+
+        if (currentState == AimManagerState.AIM_OPEN_CLOSED) { 
+            if( !startOpenClosedShooting){
+                shotOpenClosedBallTime = currentTime;
+                startOpenClosedShooting = true;
+            }else if (startOpenClosedShooting && currentTime < shotOpenClosedBallTime + Constants.kShootOneBallTime) {
+                shooter.setFiring(true);;
+            }else if(startOpenClosedShooting){
+                shooter.setFiring(true);
+                startOpenClosedShooting = false;
+                shotOpenClosedBallTime = Double.NEGATIVE_INFINITY;       
+                currentState = AimManagerState.STOP;
+            }
+            else {
+                startOpenClosedShooting = false;
+                shotOpenClosedBallTime = Double.NEGATIVE_INFINITY;
+                currentState = AimManagerState.STOP;
+            }
+  
+        }            
     }
 
     public void outputTelemetry() {
@@ -245,7 +274,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public enum AimManagerState {
-        STOP, AIM_MOVING, AIM_WRONGBALL,AIM_SHOOT,AIM_FORCE
+        STOP, AIM_MOVING, AIM_WRONGBALL,AIM_SHOOT,AIM_FORCE,AIM_OPEN_CLOSED
     }
 
     @Override
@@ -352,6 +381,12 @@ public class AimManager extends SubsystemBase {
         //SmartDashboard.putNumber("Debug/Shooter/Hood Angle", inputHoodAngle.getDouble(20.0));
         return inputHoodAngle.getDouble(20.0);
     }
+
+    public double readShooterPercentFromShuffleBoard(){
+        //SmartDashboard.putNumber("Debug/Shooter/Hood Angle", inputHoodAngle.getDouble(20.0));
+        return inputShooterPercent.getDouble(20.0);
+    }
+
     public void DebugShootParameter(){
         double inputShootSpeedRPM = 0;
         double inputHoodAngle = 0;
@@ -360,6 +395,13 @@ public class AimManager extends SubsystemBase {
         shooter.setHoodAngle(inputHoodAngle);
         shooter.setShooterSpeed(inputShootSpeedRPM);
         startAimForce();
+    }
+
+    public void DebugShootOpenClosedParameter(){
+        double percent = 0;
+        percent = readShooterPercentFromShuffleBoard();
+        shooter.setShooterPercentSpeed(percent);
+        startAimOpenClosed();
     }
 
     public boolean isHasBallShooting(){
@@ -451,6 +493,9 @@ public class AimManager extends SubsystemBase {
 
         AimTab.addBoolean("hasWrongBallShooting",() ->this.isHasWrongBallShooting())
             .withPosition(0, 6)
+            .withSize(1, 1);
+        AimTab.addNumber("Shooter Percent",shooter::getShooterCurrent)
+            .withPosition(0, 7)
             .withSize(1, 1);
 
         AimTab.addNumber("rotation PID controller", () -> limelight.Get_tx())

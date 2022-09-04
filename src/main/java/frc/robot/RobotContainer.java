@@ -76,6 +76,7 @@ public class RobotContainer {
   public static JoystickButton ShooterSwitchModeButton;
   public static JoystickButton DontShootButton;
   public static JoystickButton ShootParaButton;
+  public static JoystickButton ShootOpenClosedParaButon;
   public static JoystickButton testHasBallButton;
   public static JoystickButton testWrongBallButton;
 
@@ -116,6 +117,8 @@ public class RobotContainer {
     ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
     DontShootButton = new JoystickButton(m_operatorController, 7);
     ShootParaButton = new JoystickButton(m_operatorController, 4);
+    ShootOpenClosedParaButon = new JoystickButton(m_operatorController, 5);
+
     if (RobotBase.isSimulation()){    
       testHasBallButton = new JoystickButton(m_operatorController, 9);
       testWrongBallButton  = new JoystickButton(m_operatorController, 10);
@@ -198,6 +201,8 @@ public class RobotContainer {
     // ShootPara debug Button 
     ShootParaButton.whenHeld(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
     ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
+
+    ShootOpenClosedParaButon.whenPressed(new InstantCommand(() ->m_aimManager.DebugShootOpenClosedParameter()));
     
   }
 

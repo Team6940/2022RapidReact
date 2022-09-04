@@ -25,6 +25,7 @@ public class Shooter extends SubsystemBase {
     ShooterControlState shootState = ShooterControlState.STOP;
     //LinearFilter currentFilter = LinearFilter.highPass(0.1, 0.02);
     private double desiredShooterSpeed = 0;
+    private double desiredShooterPercentSpeed = 0;
 
     /**
      * We use FeedForward and a little P gains for Shooter
@@ -157,8 +158,9 @@ public class Shooter extends SubsystemBase {
             desiredShooterSpeed = Constants.kFlywheelIdleVelocity;
         }
 
-        if(shootState == ShooterControlState.MANNUL_SHOOT){
-            ;   
+        if(shootState == ShooterControlState.PERCENT_SHOOT){
+            mShooterLeft.set(ControlMode.PercentOutput, desiredShooterPercentSpeed);
+            return ;
         }
         //double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
         ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
@@ -197,12 +199,11 @@ public class Shooter extends SubsystemBase {
         shootState = ShooterControlState.STOP;
     }
 
-    public void setShooterToMannulShoot(){
-        shootState = ShooterControlState.MANNUL_SHOOT;
+    public void setShooterToPercentShoot(){
+        shootState = ShooterControlState.PERCENT_SHOOT;
     }
-    
     public enum ShooterControlState {
-        STOP, PREPARE_SHOOT, SHOOT,MANNUL_SHOOT
+        STOP, PREPARE_SHOOT, SHOOT,PERCENT_SHOOT
     }
 
     public class ShooterPeriodicIO {
@@ -231,6 +232,24 @@ public class Shooter extends SubsystemBase {
         }else{
             shootState = ShooterControlState.SHOOT;
         }
+    }
+
+    public void setShooterPercentSpeed(double percent) {
+        this.desiredShooterPercentSpeed = percent;
+        if (desiredShooterSpeed == 0) {
+            shootState = ShooterControlState.STOP;
+        }else{
+            shootState = ShooterControlState.PERCENT_SHOOT;
+        }
+    }
+
+    public double getShooterCurrent(){
+        if(RobotBase.isSimulation()){
+            return desiredShooterPercentSpeed;
+        }else{
+            return mShooterLeft.getStatorCurrent();
+        }
+
     }
 
     // for hood

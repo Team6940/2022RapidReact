@@ -472,7 +472,6 @@ public class VisionManager extends SubsystemBase {
         inputHoodAngle = readHoodAngleFromShuffleBoard();
         shooter.setHoodAngle(inputHoodAngle);
         shooter.setShooterSpeed(inputShootSpeedRPM);
-        shooter.setShooterToMannulShoot();
     }
 
     public void doShooterEject() {
