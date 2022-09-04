@@ -254,7 +254,7 @@ public final class Constants {
     public static double kFlyWheelEncoderReductionRatio =  1 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
-    public static double kShooterTolerance = 50; //RPM //TODO
+    public static double kShooterTolerance = 150; //RPM //TODO
     public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
     public static double kShootOneBallTime = 5 ; //TODO every one shooting ball time(seconds)
 

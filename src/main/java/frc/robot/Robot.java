@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
     Intake.getInstance().setWantedIntakeState(IntakeState.OFF);
     Shooter.getInstance().setShooterToStop();
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
-    LimelightSubsystem.getInstance().setLightMode(1);
+    //LimelightSubsystem.getInstance().setLightMode(1);
     //VisionManager.getInstance().startVisionFinding();
   }
 

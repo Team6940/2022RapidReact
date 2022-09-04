@@ -58,10 +58,10 @@ public class Shooter extends SubsystemBase {
     private void configShooter() {
         TalonFXConfiguration lMasterConfig = new TalonFXConfiguration();
 
-        lMasterConfig.slot0.kP = 0.05;//TODO
+        lMasterConfig.slot0.kP = 0.0000005;//TODO
         lMasterConfig.slot0.kI = 0;
         lMasterConfig.slot0.kD = 0;
-        lMasterConfig.slot0.kF = 0.115;
+        lMasterConfig.slot0.kF = 0.05;
         lMasterConfig.peakOutputForward = 0.8;
         lMasterConfig.peakOutputReverse = 0.0;
         mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);
