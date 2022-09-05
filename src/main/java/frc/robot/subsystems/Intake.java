@@ -85,7 +85,7 @@ public class Intake extends SubsystemBase {
     private IntakeSolState wantedIntakeSolState = IntakeSolState.CLOSE;//默认设定intake起动杆为关闭
 
     // this a extern func for other command call.
-    public synchronized void setIntakeSolState(IntakeSolState intakeSolState) {//将气动杆状态输出到气动杆上
+    public synchronized void setIntakeSolState(IntakeSolState intakeSolState) {//将气动杆状态输出到气动杆
         wantedIntakeSolState = intakeSolState;
         switch (intakeSolState) {
             case OPEN://打开气动杆
