@@ -19,24 +19,24 @@ public class Blocker extends SubsystemBase {
   private static Blocker instance = null;
 
   public Blocker() {
-    m_blockermotor = new WPI_TalonFX(Constants.BlockerMotorPort);
+    m_blockermotor = new WPI_TalonFX(Constants.BlockerMotorPort);//设定blocker电机
 
     m_blockermotor.configVoltageCompSaturation(12);
-    m_blockermotor.enableVoltageCompensation(true);
+    m_blockermotor.enableVoltageCompensation(true);//???
   }
 
-  public static Blocker getInstance() {
+  public static Blocker getInstance() {//创建一个Blocker
     if (instance == null){
         instance = new Blocker();
     }
     return instance;
   }
 
-  public void writePeriodicOutputs(){
-    if(currentState == BlockerControlState.BALLLOCKER_ON){
+  public void writePeriodicOutputs(){//状态机输出
+    if(currentState == BlockerControlState.BALLLOCKER_ON){//如果blocker处于On状态，让blocker电机定速旋转
       m_blockermotor.set(ControlMode.PercentOutput, Constants.BlockerMotorSpeed);
       //currentState = BlockerControlState.BALLLOCKER_OFF;
-    }else if(currentState == BlockerControlState.BALLLOCKER_OFF){
+    }else if(currentState == BlockerControlState.BALLLOCKER_OFF){//如果blocker处于off状态，让blocker停止
       m_blockermotor.set(ControlMode.PercentOutput, 0);
     }
   }
@@ -51,25 +51,25 @@ public class Blocker extends SubsystemBase {
     autoTurnOnBlocker();
   }
 
-  public void turnonballLocker(){
+  public void turnonballLocker(){//打开blocker
     currentState = BlockerControlState.BALLLOCKER_ON;
   }
 
-  public void turnoffballLocker(){
+  public void turnoffballLocker(){//关闭blocker
     currentState = BlockerControlState.BALLLOCKER_OFF;
   }
 
-  public void autoTurnOnBlocker(){
-    if(VisionManager.getInstance().isShooterCanShoot()){
+  public void autoTurnOnBlocker(){//自动处理blocker开关
+    if(VisionManager.getInstance().isShooterCanShoot()){//如果shooter可以射球，把blocker打开
       currentState = BlockerControlState.BALLLOCKER_ON;
     }else{
       currentState = BlockerControlState.BALLLOCKER_OFF;
     }
   }
 
-  public enum BlockerControlState {
-    BALLLOCKER_ON,
-    BALLLOCKER_OFF
+  public enum BlockerControlState {//blocker的两种状态
+    BALLLOCKER_ON,//blocker打开
+    BALLLOCKER_OFF//blocker关闭
   }
 
   public static class PeriodicIO {
@@ -80,7 +80,7 @@ public class Blocker extends SubsystemBase {
       public double demand;
   }
 
-  public BlockerControlState getBlockerState(){
+  public BlockerControlState getBlockerState(){//获取blocker的当前状态
       return currentState;
   }
 }
