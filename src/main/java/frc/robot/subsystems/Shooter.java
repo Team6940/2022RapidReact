@@ -67,8 +67,14 @@ public class Shooter extends SubsystemBase {
         //shooter电机参数设定
         mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);//设定shooter电机
         mShooterLeft.setInverted(true);//TODO 电机是否反转
-        mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
+        //mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
         mShooterLeft.setNeutralMode(NeutralMode.Coast);//???
+        mShooterLeft.config_kP(0, 0.0000005);
+        mShooterLeft.config_kI(0, 0);
+        mShooterLeft.config_kD(0, 0);
+        mShooterLeft.config_kF(0, 0.05);
+        mShooterLeft.configPeakOutputForward(0.8);
+        mShooterLeft.configPeakOutputReverse(0);
         mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);//设定反馈传感器???
         mShooterLeft.configVoltageCompSaturation(12);
         mShooterLeft.enableVoltageCompensation(true);
@@ -76,8 +82,14 @@ public class Shooter extends SubsystemBase {
         mShooterRght = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
         mShooterRght.setInverted(false);//TODO
         mShooterRght.follow(mShooterLeft);
-        mShooterRght.configAllSettings(lMasterConfig);
+        //mShooterRght.configAllSettings(lMasterConfig);
         mShooterRght.setNeutralMode(NeutralMode.Coast);
+        mShooterRght.config_kP(0, 0.0000005);
+        mShooterRght.config_kI(0, 0);
+        mShooterRght.config_kD(0, 0);
+        mShooterRght.config_kF(0, 0.05);
+        mShooterRght.configPeakOutputForward(0.8);
+        mShooterRght.configPeakOutputReverse(0);
         mShooterRght.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         mShooterRght.configVoltageCompSaturation(12);
         mShooterRght.enableVoltageCompensation(true); 
