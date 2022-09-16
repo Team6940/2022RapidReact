@@ -32,7 +32,7 @@ public class AutoAim extends CommandBase {
   PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
     
   final double ANGULAR_P = 0.02;
-  final double ANGULAR_D = 0.0;
+  final double ANGULAR_D = 0;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
   Translation2d translation;
@@ -112,7 +112,7 @@ public class AutoAim extends CommandBase {
       //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
 
       // Goal-Centric
-      RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, false);//Use feedback control when auto aiming.
+      RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, true);//Use feedback control when auto aiming.
 
       RobotContainer.m_aimManager.startAimShoot();
   }

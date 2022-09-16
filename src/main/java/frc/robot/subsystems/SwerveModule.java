@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -85,11 +86,13 @@ public class SwerveModule extends SubsystemBase {
 
     pivot_encoder_inverted = pivotEncoderInvert ? -1.0 : 1.0;
 
-    //drive_motor_.configVoltageCompSaturation(12);
-    //.enableVoltageCompensation(true);
+    drive_motor_.configVoltageCompSaturation(12);
+    drive_motor_.enableVoltageCompensation(true);
 
-    //pivot_motor_.configVoltageCompSaturation(12);
-    //pivot_motor_.enableVoltageCompensation(true);
+    pivot_motor_.configVoltageCompSaturation(12);
+    pivot_motor_.enableVoltageCompensation(true);
+
+    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
 
 
     SetDriveMotorInverted(driveMotorInvert);
