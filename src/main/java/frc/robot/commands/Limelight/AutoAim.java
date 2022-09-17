@@ -7,13 +7,19 @@ package frc.robot.commands.Limelight;
 import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.lib.team2910.control.PidConstants;
+import frc.robot.lib.team2910.control.PidController;
 import frc.robot.subsystems.AimManager;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Hopper.HopperState;
 
 public class AutoAim extends CommandBase {
@@ -36,6 +42,21 @@ public class AutoAim extends CommandBase {
   final double ANGULAR_D = 0;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
+  private static final PidConstants PID_CONSTANTS = new PidConstants(0.5, 2.0, 0.025);
+  private static final double ROTATION_STATIC_CONSTANT = 0.3;
+  private static final double MAXIMUM_AVERAGE_VELOCITY = 2.0;
+  
+  private PidController controller = new PidController(PID_CONSTANTS);
+  private double lastTime = 0.0;
+
+  ProfiledPIDController thetaController =
+  new ProfiledPIDController(
+      AutoConstants.kPThetaController,
+      AutoConstants.kIThetaController,
+      AutoConstants.kDThetaController,
+      AutoConstants.kThetaControllerConstraints);
+      
+    
   Translation2d translation;
     
   public AutoAim() {
@@ -44,6 +65,11 @@ public class AutoAim extends CommandBase {
     addRequirements(RobotContainer.m_limelight);
     addRequirements(RobotContainer.m_aimManager);
     addRequirements(RobotContainer.m_shooter);
+
+    controller.setInputRange(-Math.PI, Math.PI);
+    controller.setContinuous(true);
+    controller.setIntegralRange(Math.toRadians(10.0));
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   // Called when the command is initially scheduled.
@@ -51,11 +77,18 @@ public class AutoAim extends CommandBase {
   public void initialize() {
     RobotContainer.m_swerve.auto = true;
     RobotContainer.m_limelight.setLightMode(3);
+    lastTime = Timer.getFPGATimestamp();
+    controller.reset();
+    //thetaController.reset(measurement);//TODO
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double time = Timer.getFPGATimestamp();
+    double dt = time - lastTime;
+    lastTime = time;
+
     double forwardSpeed;
     double rotationSpeed;
 
@@ -113,8 +146,27 @@ public class AutoAim extends CommandBase {
       // Use our forward/turn speeds to control the drivetrain
       //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
 
+      double rotationalVelocity = 0.0;
+      if (LimelightSubsystem.getInstance().isTargetVisible()) {
+        //double currentAngle = drivetrain.getPose().rotation.toRadians();
+        //double targetAngle = visionSubsystem.getAngleToTarget().getAsDouble();
+        double targetTx = RobotContainer.m_limelight.Get_tx();
+        controller.setSetpoint(0);
+        rotationalVelocity = controller.calculate(targetTx, dt);
+
+        //if (drivetrain.getAverageAbsoluteValueVelocity() < MAXIMUM_AVERAGE_VELOCITY) {
+        //    rotationalVelocity += Math.copySign(
+        //            ROTATION_STATIC_CONSTANT / RobotController.getBatteryVoltage(),
+        //            rotationalVelocity
+        //    );
+        //}
+      }
+      
+      double rotationSpeed2 = thetaController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
       // Goal-Centric
-      RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, true);//Use feedback control when auto aiming.
+      //RobotContainer.m_swerve.Drive(translation, -totalrotationSpeed, true, true);//Use feedback control when auto aiming.
+      RobotContainer.m_swerve.Drive(translation, -rotationalVelocity, true, true);//Use feedback control when auto aiming.
+      //RobotContainer.m_swerve.Drive(translation, - rotationSpeed2, true, true);//Use feedback control when auto aiming.
 
       RobotContainer.m_aimManager.startAimShoot();
   }
@@ -127,7 +179,7 @@ public class AutoAim extends CommandBase {
     RobotContainer.m_shooter.setFiring(false);
     RobotContainer.m_shooter.setShooterToStop();
     RobotContainer.m_hopper.setHopperState(HopperState.OFF);
-
+    RobotContainer.m_swerve.Drive(new Translation2d(0,0), 0, true, true);//TODO
   }
 
   // Returns true when the command should end.
