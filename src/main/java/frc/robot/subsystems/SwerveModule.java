@@ -92,7 +92,7 @@ public class SwerveModule extends SubsystemBase {
     pivot_motor_.configVoltageCompSaturation(12);
     pivot_motor_.enableVoltageCompensation(true);
 
-    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
+    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
 
 
     SetDriveMotorInverted(driveMotorInvert);
