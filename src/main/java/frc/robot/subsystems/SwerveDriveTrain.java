@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.PIDController;
@@ -34,9 +33,8 @@ public class SwerveDriveTrain extends SubsystemBase {
   private SwerveModule swerve_modules_[] = new SwerveModule[4];
 
   public PigeonIMU gyro;
-  public AHRS ahrs;
-  public PixyCamSPI mPixy;
-  byte PixySignature;
+ // public PixyCamSPI mPixy;
+  //byte PixySignature;
 
   public boolean auto = false;
 
@@ -92,11 +90,11 @@ public class SwerveDriveTrain extends SubsystemBase {
     swerve_modules_[2] = new SwerveModule(5, 6, false,  false, 711,  false, false);//back left
     swerve_modules_[3] = new SwerveModule(7, 8, false, false, 2651,  false, false);//back right
     
-    ahrs = new AHRS(SPI.Port.kMXP);
+    //ahrs = new AHRS(SPI.Port.kMXP);
 
-    mPixy = PixyCamSPI.getInstance();
+    //mPixy = PixyCamSPI.getInstance();
     /* select cargo color for sig */
-    PixySignature = SmartDashboard.getBoolean("Debug/Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
+    //PixySignature = SmartDashboard.getBoolean("Debug/Pixy/alliance", false) ? Pixy2CCC.CCC_SIG1 : Pixy2CCC.CCC_SIG2;
 
     SmartDashboard.putData("Debug/Drive/Field", m_field);
 
@@ -279,10 +277,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     //}
   }
 
-  public double getHeading(){
-    return Math.IEEEremainder(ahrs.getAngle(), 360);
-  }
-
   public Rotation2d GetGyroRotation2d(){
     // An offset will be needed if the robot doesn't face downfield
     // AHRS version
@@ -290,10 +284,6 @@ public class SwerveDriveTrain extends SubsystemBase {
 
     //Pigeon Version
     return Rotation2d.fromDegrees(gyro.getFusedHeading());
-  }
-
-  public double GetYaw(){
-    return ahrs.getYaw();
   }
 
   public double deadband(double x){
@@ -342,8 +332,8 @@ public class SwerveDriveTrain extends SubsystemBase {
     return gyro.getRoll();
   }
 
-  public Rotation2d getYaw() {
-    return Rotation2d.fromDegrees(gyro.getFusedHeading());
+  public double GetYaw() {
+    return gyro.getFusedHeading();
   }
   
   public FieldRelativeSpeed getFieldRelativeSpeed() {
