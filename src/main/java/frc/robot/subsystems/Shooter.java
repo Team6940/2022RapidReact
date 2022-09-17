@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -61,26 +62,40 @@ public class Shooter extends SubsystemBase {
         lMasterConfig.slot0.kP = 0.0000005;//TODO
         lMasterConfig.slot0.kI = 0;
         lMasterConfig.slot0.kD = 0;
-        lMasterConfig.slot0.kF = 0.05;
+        lMasterConfig.slot0.kF = 0.057;
         lMasterConfig.peakOutputForward = 0.8;
         lMasterConfig.peakOutputReverse = 0.0;
         //shooter电机参数设定
         mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);//设定shooter电机
         mShooterLeft.setInverted(true);//TODO 电机是否反转
-        mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
+        //mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
         mShooterLeft.setNeutralMode(NeutralMode.Coast);//???
+        mShooterLeft.config_kP(0, 0.0000005);
+        mShooterLeft.config_kI(0, 0);
+        mShooterLeft.config_kD(0, 0);
+        mShooterLeft.config_kF(0, 0.057);
+        mShooterLeft.configPeakOutputForward(1);
+        mShooterLeft.configPeakOutputReverse(-1);
         mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);//设定反馈传感器???
         mShooterLeft.configVoltageCompSaturation(12);
         mShooterLeft.enableVoltageCompensation(true);
+        mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
         //右电机，同上
         mShooterRght = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
         mShooterRght.setInverted(false);//TODO
         mShooterRght.follow(mShooterLeft);
-        mShooterRght.configAllSettings(lMasterConfig);
+        //mShooterRght.configAllSettings(lMasterConfig);
         mShooterRght.setNeutralMode(NeutralMode.Coast);
+        mShooterRght.config_kP(0, 0.0000005);//0.0000005
+        mShooterRght.config_kI(0, 0);
+        mShooterRght.config_kD(0, 0);
+        mShooterRght.config_kF(0, 0.05);//0.05
+        mShooterRght.configPeakOutputForward(1.0);
+        mShooterRght.configPeakOutputReverse(-1.0);
         mShooterRght.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         mShooterRght.configVoltageCompSaturation(12);
-        mShooterRght.enableVoltageCompensation(true); 
+        mShooterRght.enableVoltageCompensation(true);
+        mShooterRght.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
     }
 
     private void configHood(){//设定hood参数
@@ -162,10 +177,10 @@ public class Shooter extends SubsystemBase {
         if(shootState == ShooterControlState.MANNUL_SHOOT){
             ;   
         }
-        //double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
+        double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
         ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-        //mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
-        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
+        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+        //mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         //mShooterRght.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         
         if(shootState == ShooterControlState.SHOOT){

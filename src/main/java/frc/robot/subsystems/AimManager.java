@@ -134,6 +134,7 @@ public class AimManager extends SubsystemBase {
         wrongBall = colorsensor.isWrongBall();
         //wrongBall = false;
         topHasBall = hooper.isHasTopBall();
+        //topHasBall = true;
         bottomHasBall = hooper.isHasBottomBall();
 
         if(bottomHasBall){

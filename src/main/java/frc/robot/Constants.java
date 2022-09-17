@@ -48,9 +48,7 @@ public final class Constants {
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (distance, shooterSpeedRPM)
-            new Point2D.Double(2.286/*90*/, 1375), //
-            new Point2D.Double(2.620/*105*/, 1400), //
-            new Point2D.Double(3.048/*120*/, 1475), //
+            new Point2D.Double(3.176/*90*/, 2350), //
             //new Point2D.Double(3.429/*135*/, 2710), //
             //new Point2D.Double(3.810/*150*/, 2815), //
             //new Point2D.Double(4.191/*165*/, 2890), //
@@ -65,11 +63,7 @@ public final class Constants {
 
         private static final Point2D[] kShotTimes = new Point2D.Double[] {
         // (ty-angle,time)
-        new Point2D.Double(2.667/*105*/, 0.77),
-        new Point2D.Double(3.429/*135*/, 0.82),
-        new Point2D.Double(4.191/*165*/, 0.85),
-        new Point2D.Double(4.953/*195*/, 0.87),
-        new Point2D.Double(6.096/*240*/, 1.03)
+        new Point2D.Double(3.17/*135*/, 7.00),
         };
 
         public static final LinearInterpolationTable kTimeTable = new LinearInterpolationTable(kShotTimes);
@@ -292,8 +286,9 @@ public final class Constants {
     public static double kDriveMotorkP = 0.01; // 5e-2 0.05   0.025
     public static double kDriveMotorkI = 0; //5e-4 0.005  0.0016
     public static double kDriveMotorkD = 1; //   5e-0 5 1.5  2.5
-    public static double kDriveMotorkF = 0.05;//   0.045       0.06
+    public static double kDriveMotorkF = 0.005;//   0.045       0.06
     public static double kDriveMotorIZone = 0;// 90          240
+    public static double kSensorVelocityMeasPeriod = 10;
 
     public static double kPivotMotorkP = 3;//3
     public static double kPivotMotorkI = 0;

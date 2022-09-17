@@ -418,7 +418,21 @@ public class SwerveDriveTrain extends SubsystemBase {
 
     swerveDriveTab.addBoolean("isOpenloop", () ->this.isOpenLoop)
     .withPosition(1, 3)
-    .withSize(1, 1);    
+    .withSize(1, 1);
+    
+    swerveDriveTab.addNumber("FieldRelativeSpeedX", () ->this.getFieldRelativeXVelocity())
+    .withPosition(2, 0)
+    .withSize(1, 1);
+    
+    swerveDriveTab.addNumber("FieldRelativeSpeedY", () ->this.getFieldRelativeYVelocity())
+    .withPosition(2, 1)
+    .withSize(1, 1);
+    
+    swerveDriveTab.addNumber("FieldRelativeSpeedRot", () ->this.getFieldRelativeAngularVelocity())
+    .withPosition(2, 2)
+    .withSize(1, 1);
+             
   }
+  
 
 }
