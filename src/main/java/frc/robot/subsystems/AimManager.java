@@ -142,7 +142,7 @@ public class AimManager extends SubsystemBase {
             topHasBall = hooper.isHasTopBall();
         }
 
-        if(topHasBall && wrongBall ){
+        if(/*topHasBall && */wrongBall ){
             //saveShootStat = currentState;
             currentState = AimManagerState.AIM_WRONGBALL;
         }
@@ -155,33 +155,32 @@ public class AimManager extends SubsystemBase {
                 if(CanShot()){
                     shooter.setFiring(true);
                 }
-            }else if (hasWrongBallShooting && currentTime < shotWrongBallTime + Constants.kShootOneBallTime) {
+            }else if (hasWrongBallShooting 
+                && currentTime < shotWrongBallTime + Constants.kShootOneWrongBallTime) {
                 doShooterEject();
                 if(CanShot()){
                     shooter.setFiring(true);
                 }
-            }else if(hasWrongBallShooting){
+            }else{
                 hasWrongBallShooting = false;
                 shotWrongBallTime = Double.NEGATIVE_INFINITY;       
                 currentState = AimManagerState.STOP;
                 shootWrongBallCnt++;
-            }
-            else {
-                hasWrongBallShooting = false;
-                shotWrongBallTime = Double.NEGATIVE_INFINITY;
-                currentState = AimManagerState.STOP;
+                shooter.setFiring(false);
+                shooter.setShooterToStop();
+                hooper.setHopperState(HopperState.OFF);
             }
         }
 
         if (currentState == AimManagerState.STOP) {
             startBallShooting = false; 
             shotBallTime = Double.NEGATIVE_INFINITY;
-            shooter.setShooterToStop();
-            shooter.setFiring(false);//TODO
+            //shooter.setShooterToStop();
+            //shooter.setFiring(false);
         } 
 
         if (currentState == AimManagerState.AIM_SHOOT) {
-            if (topHasBall && isTargetLocked()) {
+            if (/*topHasBall && */isTargetLocked()) {
                 double dist = limelight.getRobotToTargetDistance();  //TODO
                 //double dist = limelight.getDistance();
                 shooter.setShooterSpeed(m_rpmTable.getOutput(dist));
@@ -193,7 +192,8 @@ public class AimManager extends SubsystemBase {
                     if(CanShot()){
                         shooter.setFiring(true);
                     }
-                }else if(startBallShooting && currentTime < shotBallTime + Constants.kShootOneBallTime){
+                }else if(startBallShooting 
+                    && currentTime < shotBallTime + Constants.kShootOneBallTime){
                     hooper.setHopperState(HopperState.ON);
                     if(CanShot()){
                         shooter.setFiring(true);
@@ -201,7 +201,10 @@ public class AimManager extends SubsystemBase {
                 }else{
                     startBallShooting = false;
                     shotBallTime = Double.NEGATIVE_INFINITY;
-                    shooter.setFiring(false);//TODO how to support continious shoot! 
+                    shooter.setFiring(false);
+                    shooter.setShooterToStop();
+                    hooper.setHopperState(HopperState.OFF);
+                    shootBallCnt++;
                 }
             }else{
                 currentState = AimManagerState.STOP;
@@ -218,7 +221,7 @@ public class AimManager extends SubsystemBase {
         }
 
         if (currentState == AimManagerState.AIM_FORCE) { 
-            if(topHasBall) {
+            /*if(topHasBall) */{
                 hooper.setHopperState(HopperState.ON);
                 if(CanShot()){                
                     shooter.setFiring(true);        
@@ -446,15 +449,15 @@ public class AimManager extends SubsystemBase {
         AimTab.addBoolean("Wrongball",colorsensor::isWrongBall)
             .withPosition(0, 4)
             .withSize(1, 1);                      
-        AimTab.addBoolean("hasBallShooting",() ->this.isHasBallShooting())
+        /*AimTab.addBoolean("hasBallShooting",() ->this.isHasBallShooting())
             .withPosition(0, 5)
-            .withSize(1, 1);            
+            .withSize(1, 1);       */     
 
-        AimTab.addBoolean("hasWrongBallShooting",() ->this.isHasWrongBallShooting())
+        /*AimTab.addBoolean("hasWrongBallShooting",() ->this.isHasWrongBallShooting())
             .withPosition(0, 6)
-            .withSize(1, 1);
+            .withSize(1, 1);*/
 
-        AimTab.addNumber("rotation PID controller", () -> limelight.Get_tx())
+        AimTab.addNumber("limelight tx", () -> limelight.Get_tx())
             .withPosition(3,0)
             .withSize(1, 1);
         AimTab.addNumber("rotation Speed", () -> this.getRotationSpeed())

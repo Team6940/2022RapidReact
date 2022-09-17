@@ -49,8 +49,8 @@ public final class Constants {
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (distance, shooterSpeedRPM)
             new Point2D.Double(3.176/*90*/, 2350), //
-            //new Point2D.Double(3.429/*135*/, 2710), //
-            //new Point2D.Double(3.810/*150*/, 2815), //
+            new Point2D.Double(3.429/*135*/, 2710), //
+            new Point2D.Double(3.810/*150*/, 2815), //
             //new Point2D.Double(4.191/*165*/, 2890), //
             //new Point2D.Double(4.572/*180*/, 3040), //
             //new Point2D.Double(4.953/*195*/, 3185), //
@@ -250,7 +250,8 @@ public final class Constants {
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
     public static double kShooterTolerance = 150; //RPM //TODO
     public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
-    public static double kShootOneBallTime = 5 ; //TODO every one shooting ball time(seconds)
+    public static double kShootOneBallTime = 0.5 ; //TODO every one shooting ball time(seconds)
+    public static double kShootOneWrongBallTime = 2 ; //TODO every one shooting ball time(seconds)
 
     public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,
                     0.01432893, -0.13352268, 0.00632465, 0.1574279, -0.01956647, 1.49045868};

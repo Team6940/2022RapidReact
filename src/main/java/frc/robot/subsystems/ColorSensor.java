@@ -26,7 +26,7 @@ public class ColorSensor extends SubsystemBase {
     boolean enanbleTelemetry = false;
   
     public ColorSensor() {
-        addShuffleboardDebug();
+        //addShuffleboardDebug();
         m_colorMatcher.addColorMatch(ColorConstants.kBlueTarget);
         m_colorMatcher.addColorMatch(ColorConstants.kRedTarget);
         m_colorMatcher.addColorMatch(ColorConstants.kNoTarget);

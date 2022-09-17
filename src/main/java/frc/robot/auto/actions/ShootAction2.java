@@ -37,6 +37,7 @@ public class ShootAction2 extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     shooter.setFiring(false);
+    shooter.setShooterToStop();
     aimManager.Stop();
   }
 

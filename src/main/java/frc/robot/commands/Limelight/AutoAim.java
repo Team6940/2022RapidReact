@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.AimManager;
+import frc.robot.subsystems.Hopper.HopperState;
 
 public class AutoAim extends CommandBase {
   /** Creates a new AutoAim. */
@@ -42,6 +43,7 @@ public class AutoAim extends CommandBase {
     addRequirements(RobotContainer.m_swerve);
     addRequirements(RobotContainer.m_limelight);
     addRequirements(RobotContainer.m_aimManager);
+    addRequirements(RobotContainer.m_shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -122,6 +124,10 @@ public class AutoAim extends CommandBase {
   public void end(boolean interrupted) {
     RobotContainer.m_limelight.setLightMode(1);
     RobotContainer.m_aimManager.Stop();
+    RobotContainer.m_shooter.setFiring(false);
+    RobotContainer.m_shooter.setShooterToStop();
+    RobotContainer.m_hopper.setHopperState(HopperState.OFF);
+
   }
 
   // Returns true when the command should end.
