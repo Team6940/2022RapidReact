@@ -78,6 +78,7 @@ public class RobotContainer {
   public static JoystickButton ShootParaButton;
   public static JoystickButton testHasBallButton;
   public static JoystickButton testWrongBallButton;
+  public static JoystickButton ShootkFButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -113,9 +114,10 @@ public class RobotContainer {
     ElasticClimberButton = new JoystickButton(m_operatorController, 3);
     ElasticClimberStopButton = new JoystickButton(m_operatorController, 8);
     StraightClimberButton = new JoystickButton(m_operatorController, 11);
-    ShooterSwitchModeButton = new JoystickButton(m_operatorController, 6);
+    ShooterSwitchModeButton = new JoystickButton(m_operatorController, 9);
     DontShootButton = new JoystickButton(m_operatorController, 7);
     ShootParaButton = new JoystickButton(m_operatorController, 4);
+    ShootkFButton = new JoystickButton(m_operatorController, 6);
     if (RobotBase.isSimulation()){    
       testHasBallButton = new JoystickButton(m_operatorController, 9);
       testWrongBallButton  = new JoystickButton(m_operatorController, 10);
@@ -140,6 +142,9 @@ public class RobotContainer {
     //limelightButton.whenHeld(new AutoAim());
     //limelightButton.whenHeld(new InstantCommand(() -> m_aimManager.startAimMoving()));
     //limelightButton.whenReleased(new InstantCommand(() -> m_aimManager.Stop()));
+    ShootkFButton.whenHeld(new InstantCommand(() -> m_shooter.setShooterMax()));
+    ShootkFButton.whenReleased(new InstantCommand(() -> m_shooter.setShooterZero()));
+
     manualLimelightButton.whenHeld(new AutoAim());
     limelightButton.whenPressed(new InstantCommand(() -> m_aimManager.switchAimMode()));
     // Intake button
@@ -156,8 +161,8 @@ public class RobotContainer {
     }
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() ->m_aimManager.startAimForce()));
-    BlockerButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
+    BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
+    BlockerButton.whenReleased(new InstantCommand(() ->m_shooter.setFiring(false)));
 
     // Climber button
     //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
@@ -198,6 +203,8 @@ public class RobotContainer {
     // ShootPara debug Button 
     ShootParaButton.whenPressed(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
     //ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
+    //ShootParaButton.whenHeld(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
+    //ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.StopAll()));
     
   }
 
