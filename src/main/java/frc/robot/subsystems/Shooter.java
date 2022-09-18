@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.setInverted(true);//TODO 电机是否反转
         //mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
         mShooterLeft.setNeutralMode(NeutralMode.Coast);//???
-        mShooterLeft.config_kP(0, 0.0000005);
+        mShooterLeft.config_kP(0, 0.1);
         mShooterLeft.config_kI(0, 0);
         mShooterLeft.config_kD(0, 0);
         mShooterLeft.config_kF(0, 0.057);
@@ -79,23 +79,25 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);//设定反馈传感器???
         mShooterLeft.configVoltageCompSaturation(12);
         mShooterLeft.enableVoltageCompensation(true);
-        mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
+        mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
+        mShooterLeft.configVelocityMeasurementWindow(64);
         //右电机，同上
         mShooterRght = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
         mShooterRght.setInverted(false);//TODO
         mShooterRght.follow(mShooterLeft);
         //mShooterRght.configAllSettings(lMasterConfig);
         mShooterRght.setNeutralMode(NeutralMode.Coast);
-        mShooterRght.config_kP(0, 0.0000005);//0.0000005
+        mShooterRght.config_kP(0, 0.1);//0.0000005
         mShooterRght.config_kI(0, 0);
         mShooterRght.config_kD(0, 0);
-        mShooterRght.config_kF(0, 0.05);//0.05
+        mShooterRght.config_kF(0, 0.057);//0.05
         mShooterRght.configPeakOutputForward(1.0);
         mShooterRght.configPeakOutputReverse(-1.0);
         mShooterRght.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         mShooterRght.configVoltageCompSaturation(12);
         mShooterRght.enableVoltageCompensation(true);
-        mShooterRght.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
+        mShooterRght.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
+        mShooterRght.configVelocityMeasurementWindow(64);
     }
 
     private void configHood(){//设定hood参数
@@ -179,7 +181,7 @@ public class Shooter extends SubsystemBase {
         }
         double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
         ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
-        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand, DemandType.ArbitraryFeedForward, cal_shooterFeedForward);
+        mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand/*, DemandType.ArbitraryFeedForward, cal_shooterFeedForward*/);
         //mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         //mShooterRght.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         
@@ -297,12 +299,12 @@ public class Shooter extends SubsystemBase {
         return desiredHoodAngle;
     }
 
-    public void HoodWritePeriodicOutputs(){//重复执行的函数
-        if(hoodstate == HoodControlState.HOME){//如果hood的状态为home
+    public void HoodWritePeriodicOutputs() {//重复执行的函数
+        if (hoodstate == HoodControlState.HOME) {//如果hood的状态为home
             desiredHoodAngle = Constants.HOOD_HOME_ANGLE;//将hood电机转到home角度
-        }else if(hoodstate == HoodControlState.STOP){//如果是stop，那么保持电机角度
+        } else if (hoodstate == HoodControlState.STOP) {//如果是stop，那么保持电机角度
             desiredHoodAngle = getHoodAngle();
-        }else if(hoodstate == HoodControlState.ON){
+        } else if (hoodstate == HoodControlState.ON) {
             ;
         }
         double targetPos = Conversions.degreesToTalon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO) + offset;//计算目标电机位置（以Unit为单位
@@ -350,6 +352,18 @@ public class Shooter extends SubsystemBase {
      */
     public void setFiring(boolean shoot) {//设定开火
         blockerState = shoot ? BlockerControlState.BALLLOCKER_ON : BlockerControlState.BALLLOCKER_OFF;
+    }
+
+    public void setShooterMax() {
+        mShooterLeft.set(1.0);
+    }
+
+    public void setShooterZero() {
+        mShooterLeft.set(0);
+    }
+
+    public double getShooterVelocityUnit() {
+        return mShooterLeft.getSelectedSensorVelocity();
     }
 
     /**

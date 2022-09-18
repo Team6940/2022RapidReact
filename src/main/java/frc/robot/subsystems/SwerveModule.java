@@ -203,8 +203,8 @@ public class SwerveModule extends SubsystemBase {
         //    drive_motor_inverted * percentOutput);
           
         drive_motor_.set(ControlMode.Velocity, //TODO: Test combining FeedForward and velocity closed loop
-            drive_motor_inverted * driveOutput, DemandType.ArbitraryFeedForward,
-            drive_motor_inverted * percentOutput);
+            drive_motor_inverted * driveOutput/*, DemandType.ArbitraryFeedForward,
+            drive_motor_inverted * percentOutput*/);
       }
     }
     else{
