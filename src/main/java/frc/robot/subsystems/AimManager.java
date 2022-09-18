@@ -77,7 +77,7 @@ public class AimManager extends SubsystemBase {
     public double rotationSpeed = 0;
 
     Translation2d translation;
-    
+    int shootStep = 0;
 
 
     public AimManager() {     
@@ -239,10 +239,10 @@ public class AimManager extends SubsystemBase {
                 startForceBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
                 shooter.setFiring(false);
-                shooter.setShooterToStop();
+                //shooter.setShooterToStop();
                 hooper.setHopperState(HopperState.OFF);
                 shootBallCnt++;
-                currentState = AimManagerState.STOP;
+                //currentState = AimManagerState.STOP;
             }            
         }        
     }
@@ -372,13 +372,25 @@ public class AimManager extends SubsystemBase {
         return inputHoodAngle.getDouble(20.0);
     }
     public void DebugShootParameter(){
-        double inputShootSpeedRPM = 0;
-        double inputHoodAngle = 0;
-        inputShootSpeedRPM = readShooterSpeedFromShuffleBoard();
-        inputHoodAngle = readHoodAngleFromShuffleBoard();
-        shooter.setHoodAngle(inputHoodAngle);
-        shooter.setShooterSpeed(inputShootSpeedRPM);
-        startAimForce();
+        if( (shootStep % 2)  == 0){
+            double inputShootSpeedRPM = 0;
+            double inputHoodAngle = 0;
+            startForceBallShooting = false;
+            inputShootSpeedRPM = readShooterSpeedFromShuffleBoard();
+            inputHoodAngle = readHoodAngleFromShuffleBoard();
+            shooter.setHoodAngle(inputHoodAngle);
+            shooter.setShooterSpeed(inputShootSpeedRPM);
+            startAimForce();
+            shootStep++;
+        }else{
+            startForceBallShooting = false;
+            shooter.setFiring(false);
+            shooter.setShooterToStop();
+            hooper.setHopperState(HopperState.OFF);
+            Stop();
+            shootStep++;
+        }
+
     }
 
     public boolean isHasBallShooting(){
