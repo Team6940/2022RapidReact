@@ -38,6 +38,7 @@ public class AimManager extends SubsystemBase {
     boolean topHasBall = false; 
     boolean bottomHasBall = false;
     boolean startBallShooting = false;
+    boolean startForceBallShooting = false;
     double shotBallTime = Double.NEGATIVE_INFINITY;
     double shotWrongBallTime = Double.NEGATIVE_INFINITY;
     boolean hasWrongBallShooting = false;
@@ -221,14 +222,28 @@ public class AimManager extends SubsystemBase {
         }
 
         if (currentState == AimManagerState.AIM_FORCE) { 
-            /*if(topHasBall) */{
+            if( !startForceBallShooting){
+                shotBallTime = currentTime;
+                startForceBallShooting = true;
                 hooper.setHopperState(HopperState.ON);
-                if(CanShot()){                
-                    shooter.setFiring(true);        
+                if(CanShot()){
+                    shooter.setFiring(true);
                 }
-            }
-            startBallShooting = false; 
-            shotBallTime = Double.NEGATIVE_INFINITY;   
+            }else if(startForceBallShooting 
+                && currentTime < shotBallTime + Constants.kShootOneBallTime){
+                hooper.setHopperState(HopperState.ON);
+                if(CanShot()){
+                    shooter.setFiring(true);
+                }                 
+            }else{
+                startForceBallShooting = false;
+                shotBallTime = Double.NEGATIVE_INFINITY;
+                shooter.setFiring(false);
+                shooter.setShooterToStop();
+                hooper.setHopperState(HopperState.OFF);
+                shootBallCnt++;
+                currentState = AimManagerState.STOP;
+            }            
         }        
     }
 
