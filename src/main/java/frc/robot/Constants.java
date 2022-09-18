@@ -33,10 +33,10 @@ public final class Constants {
         
         private static final Point2D[] kHoodPoints = new Point2D.Double[] {
             // (distance, ty-angle)
-            new Point2D.Double(2.286/*90*/, 0.00), //
-            new Point2D.Double(2.667/*105*/, 0.00), //
-            new Point2D.Double(3.048/*120*/, 0.00), //
-            //new Point2D.Double(3.429/*135*/, 26.5), //
+            new Point2D.Double(2.386/*90*/, 0), //
+            new Point2D.Double(2.887/*105*/, 7.00), //
+            new Point2D.Double(3.349/*120*/, 12.00), //
+            new Point2D.Double(3.914/*135*/, 15.00), //
             //new Point2D.Double(3.810/*150*/, 29.0), //
             //new Point2D.Double(4.191/*165*/, 30.5), //
             //new Point2D.Double(4.572/*180*/, 32.0), //
@@ -48,10 +48,10 @@ public final class Constants {
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (distance, shooterSpeedRPM)
-            new Point2D.Double(3.176/*90*/, 2350), //
-            new Point2D.Double(3.429/*135*/, 2710), //
-            new Point2D.Double(3.810/*150*/, 2815), //
-            //new Point2D.Double(4.191/*165*/, 2890), //
+            new Point2D.Double(2.396/*90*/, 2305), //
+            new Point2D.Double(2.887/*135*/, 2360), //
+            new Point2D.Double(3.349/*150*/, 2405), //
+            new Point2D.Double(3.914/*165*/, 2460), //
             //new Point2D.Double(4.572/*180*/, 3040), //
             //new Point2D.Double(4.953/*195*/, 3185), //
             //new Point2D.Double(5.334/*210*/, 3315), //
@@ -87,7 +87,7 @@ public final class Constants {
 
     public static final class DriveConstants {
         public static final double kMaxAcceleration = 3.0;
-        public static final double kMaxSpeedMetersPerSecond = 3.25; // Maximum Sustainable Drivetrain Speed under Normal
+        public static final double kMaxSpeedMetersPerSecond = 4; // Maximum Sustainable Drivetrain Speed under Normal
                                                                     // Conditions & Battery, Robot will not exceed this
                                                                     // speed in closed loop control
         public static final double kMaxAngularSpeed = Math.PI; // Maximum Angular Speed desired. NOTE: Robot can exceed this
@@ -230,7 +230,7 @@ public final class Constants {
 
     // Limelight Constants
     public static final double kHorizAngleCorrection = 2.5;   // + is left
-    public static final double LL_MOUNT_HEIGHT = 0.84;  /* limelight 固定height */  //TODO
+    public static final double LL_MOUNT_HEIGHT = 0.875;  /* limelight 固定height */  //TODO
     public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
     public static final double kTrackTolerance = 1.146; // Allowable Limelight angle(degree) error in radians //TODO
 
@@ -248,9 +248,10 @@ public final class Constants {
     public static double kFlyWheelEncoderReductionRatio =  1 ;  //TODO
     public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
     public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
-    public static double kShooterTolerance = 150; //RPM //TODO
+    public static double kShooterTolerance = 100; //RPM //TODO
     public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
-    public static double kShootOneBallTime = 0.5 ; //TODO every one shooting ball time(seconds)
+    public static double kShootOneBallTime = 1; //TODO every one shooting ball time(seconds)
+    public static double kShootTestTime = 60;
     public static double kShootOneWrongBallTime = 2 ; //TODO every one shooting ball time(seconds)
 
     public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,
@@ -284,10 +285,10 @@ public final class Constants {
      * 车子在行驶过程中基本不抖动，底盘PID大部分情况下是正常的。
      * 
      */
-    public static double kDriveMotorkP = 0.01; // 5e-2 0.05   0.025
+    public static double kDriveMotorkP = 0.1; // 5e-2 0.05   0.025
     public static double kDriveMotorkI = 0; //5e-4 0.005  0.0016
-    public static double kDriveMotorkD = 1; //   5e-0 5 1.5  2.5
-    public static double kDriveMotorkF = 0.005;//   0.045       0.06
+    public static double kDriveMotorkD = 0; //   5e-0 5 1.5  2.5
+    public static double kDriveMotorkF = 0.042;//   0.045       0.06
     public static double kDriveMotorIZone = 0;// 90          240
     public static double kSensorVelocityMeasPeriod = 10;
 
@@ -377,7 +378,11 @@ public final class Constants {
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
-				3*Math.PI, 3*Math.PI);
+                        3 * Math.PI, 3 * Math.PI);
+                
+                        public static final TrapezoidProfile.Constraints kThetaAimControllerConstraints =
+                        new TrapezoidProfile.Constraints(
+                            Math.PI, Math.PI);
     }
 
     //Climber Constants

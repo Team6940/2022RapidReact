@@ -42,7 +42,7 @@ public class AutoAim extends CommandBase {
   final double ANGULAR_D = 0;
   PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-  private static final PidConstants PID_CONSTANTS = new PidConstants(0.5, 2.0, 0.025);
+  private static final PidConstants PID_CONSTANTS = new PidConstants(0.5, 0, 0);
   private static final double ROTATION_STATIC_CONSTANT = 0.3;
   private static final double MAXIMUM_AVERAGE_VELOCITY = 2.0;
   
@@ -51,10 +51,10 @@ public class AutoAim extends CommandBase {
 
   ProfiledPIDController thetaController =
   new ProfiledPIDController(
-      AutoConstants.kPThetaController,
-      AutoConstants.kIThetaController,
-      AutoConstants.kDThetaController,
-      AutoConstants.kThetaControllerConstraints);
+      0.3,
+      0,
+      0,
+      AutoConstants.kThetaAimControllerConstraints);
       
     
   Translation2d translation;
@@ -70,6 +70,7 @@ public class AutoAim extends CommandBase {
     controller.setContinuous(true);
     controller.setIntegralRange(Math.toRadians(10.0));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.reset(0);
   }
 
   // Called when the command is initially scheduled.
@@ -164,8 +165,8 @@ public class AutoAim extends CommandBase {
       
       double rotationSpeed2 = thetaController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
       // Goal-Centric
-      //RobotContainer.m_swerve.Drive(translation, -totalrotationSpeed, true, true);//Use feedback control when auto aiming.
-      RobotContainer.m_swerve.Drive(translation, -rotationalVelocity, true, true);//Use feedback control when auto aiming.
+      RobotContainer.m_swerve.Drive(translation, -totalrotationSpeed, true, true);//Use feedback control when auto aiming.
+      //RobotContainer.m_swerve.Drive(translation, -rotationalVelocity, true, true);//Use feedback control when auto aiming.
       //RobotContainer.m_swerve.Drive(translation, - rotationSpeed2, true, true);//Use feedback control when auto aiming.
 
       RobotContainer.m_aimManager.startAimShoot();
