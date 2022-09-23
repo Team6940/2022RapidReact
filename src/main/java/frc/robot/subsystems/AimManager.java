@@ -44,17 +44,21 @@ public class AimManager extends SubsystemBase {
     boolean hasWrongBallShooting = false;
     int shootBallCnt = 0;
     int shootWrongBallCnt = 0;
+    double lastShooterRPM = 0;
+    double lastHoodAngle = 0;
     AimManagerState saveShootStat = AimManagerState.STOP;
     private Timer m_timer = new Timer();
     ShuffleboardTab summaryTab = Shuffleboard.getTab("Summary");
     ShuffleboardTab AimTab = Shuffleboard.getTab("AimManager");
-    NetworkTableEntry autoAimRangeEntry, DistanceEntry,RPMDiffEntry,HoodAngleDiffEntry;
+    NetworkTableEntry autoAimRangeEntry, DistanceEntry,RPMDiffEntry,HoodAngleDiffEntry,lookupTableRPM;
     private ShuffleboardTab shooterParaTab = Shuffleboard.getTab("Shoot Parameter");
     private NetworkTableEntry InputShooterSpeed =
         shooterParaTab.add("Shooter Speed", 1).getEntry();
     private NetworkTableEntry inputHoodAngle =
         shooterParaTab.add("Hood Angle", 1).getEntry();    
     
+    private NetworkTableEntry inputDistance =
+        shooterParaTab.add("inputDistance", 1).getEntry();    
       /** Creates a new AutoAim. */
     // Constants such as camera and target height stored. Change per robot and goal!
     final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(20 / 2.54);  //TODO
@@ -182,10 +186,22 @@ public class AimManager extends SubsystemBase {
 
         if (currentState == AimManagerState.AIM_SHOOT) {
             if (topHasBall && isTargetLocked()) {
-                double dist = limelight.getRobotToTargetDistance(); //TODO
+                double dist = limelight.getRobotToTargetDistance(); 
                 //double dist = limelight.getDistance();
-                shooter.setShooterSpeed(m_rpmTable.getOutput(dist));
-                shooter.setHoodAngle(m_hoodTable.getOutput(dist));
+                double speed = m_rpmTable.getOutput(dist);
+                double angle = m_hoodTable.getOutput(dist);
+                if( Math.abs(speed - lastShooterRPM) < Constants.kShooterTolerance ){
+                    speed = lastShooterRPM;
+                }else{
+                    lastShooterRPM = speed;
+                }
+                if( Math.abs(angle - lastHoodAngle) < Constants.HoodConstants.kHoodTolerance){
+                    angle = lastHoodAngle;
+                }else{
+                    lastHoodAngle = angle;
+                }
+                shooter.setShooterSpeed(speed);
+                shooter.setHoodAngle(angle);
                 if (!startBallShooting) {
                     shotBallTime = currentTime;
                     //startBallShooting = true;
@@ -204,12 +220,22 @@ public class AimManager extends SubsystemBase {
                     startBallShooting = false;
                     shotBallTime = Double.NEGATIVE_INFINITY;
                     shooter.setFiring(false);
-                    shooter.setShooterToStop();
+                    //shooter.setShooterToStop();
                     //hooper.setHopperState(HopperState.OFF);
                     shootBallCnt++;
                 }
-            } else {
+            } else if (topHasBall){
+                startBallShooting = false;
+                shotBallTime = Double.NEGATIVE_INFINITY;
+                shooter.setFiring(false);
+                shooter.setShooterToPrepare();
+            }
+            else {
                 currentState = AimManagerState.STOP;
+                startBallShooting = false;
+                shotBallTime = Double.NEGATIVE_INFINITY;
+                shooter.setFiring(false);
+                shooter.setShooterToStop();
             }
         }
 
@@ -379,11 +405,21 @@ public class AimManager extends SubsystemBase {
         //SmartDashboard.putNumber("Debug/Shooter/Hood Angle", inputHoodAngle.getDouble(20.0));
         return inputHoodAngle.getDouble(20.0);
     }
+    public double readDistanceromShuffleBoard(){
+        //SmartDashboard.putNumber("Debug/Shooter/Hood Angle", inputDistance.getDouble(20.0));
+        return inputDistance.getDouble(20.0);
+    }
+    
     public void DebugShootParameter(){
         double inputShootSpeedRPM = 0;
         double inputHoodAngle = 0;
+        double inputDist = 0;
+        double calcRPM = 0;
         inputShootSpeedRPM = readShooterSpeedFromShuffleBoard();
         inputHoodAngle = readHoodAngleFromShuffleBoard();
+        inputDist = readDistanceromShuffleBoard();
+        calcRPM = m_rpmTable.getOutput(inputDist);
+        lookupTableRPM.setDouble(calcRPM);
         shooter.setHoodAngle(inputHoodAngle);
         shooter.setShooterSpeed(inputShootSpeedRPM);
         startAimForce();
@@ -493,6 +529,10 @@ public class AimManager extends SubsystemBase {
             .withPosition(3, 2)
             .withSize(1, 1)
             .getEntry();       
+        lookupTableRPM = AimTab.add("LookupTable RPM", 0.0)
+            .withPosition(3, 3)
+            .withSize(1, 1)
+            .getEntry();        
                    
 
 
