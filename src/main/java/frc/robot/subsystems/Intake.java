@@ -55,21 +55,21 @@ public class Intake extends SubsystemBase {
 
     public void outputTelemetry(){
         //SmartDashboard.putNumber("Debug/Intake/Current", intakeMotor.getStatorCurrent());
-        SmartDashboard.putBoolean("Debug/Intake/IntakeSolState: ", intakeSolenoid.get());//在调试版上显示气动杆状态
-        SmartDashboard.putString("Debug/Intake/IntakeSolState", wantedIntakeSolState.toString());//在调试版上显示气动杆的目标状态
-        SmartDashboard.putNumber("Debug/Intake/CMotorOutput: ", intakeMotor.getMotorOutputPercent());//在调试板上显示电机输出百分比
-        SmartDashboard.putString("Debug/Intake/WantedIntake State", getWantedIntakeState().name());//在调试版上输出intake的目标状态
+        SmartDashboard.putBoolean("Debug/Intake/IntakeSolState: ", intakeSolenoid.get());//show the state of the intake solenoid on the smart dashboard
+        SmartDashboard.putString("Debug/Intake/IntakeSolState", wantedIntakeSolState.toString());//show the target state  of the solstate
+        SmartDashboard.putNumber("Debug/Intake/CMotorOutput: ", intakeMotor.getMotorOutputPercent());//show the output pct of the motor output on the smart dashboard
+        SmartDashboard.putString("Debug/Intake/WantedIntake State", getWantedIntakeState().name());//show the name of the intake state
     }
 
 
-    public void close() {//关闭intake
-        intakeSolenoid.close();//关闭起动杆
-        intakeMotor.close();//关闭intake电机
+    public void close() {//close the intake
+        intakeSolenoid.close();//close the solenoid
+        intakeMotor.close();//close the intake motor
         instance = new Intake();//???
     }
 
-    public IntakeSolState getIntakeSolState() {//???
-        if (RobotBase.isSimulation()){//???
+    public IntakeSolState getIntakeSolState() {//get the instance of the solstate
+        if (RobotBase.isSimulation()){//if the robot is running in simulation
             return wantedIntakeSolState;
         }else{
             return intakeSolenoid.get() ? IntakeSolState.OPEN : IntakeSolState.CLOSE;

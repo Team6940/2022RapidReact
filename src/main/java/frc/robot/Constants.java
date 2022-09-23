@@ -230,14 +230,14 @@ public final class Constants {
 
     // Limelight Constants
     public static final double kHorizAngleCorrection = 2.5;   // + is left
-    public static final double LL_MOUNT_HEIGHT = 0.875;  /* limelight 固定height */  //TODO
-    public static final double LL_MOUNT_ANGLE = 30; /* limelight固定角度 */   //TODO
+    public static final double LL_MOUNT_HEIGHT = 0.875;  /* the hight of the limelight(meters) */  //TODO
+    public static final double LL_MOUNT_ANGLE = 30; /* the angle of the limelight(degrees) */   //TODO
     public static final double kTrackTolerance = 1.146; // Allowable Limelight angle(degree) error in radians //TODO
 
 
     // Shooter Constants
-    public static final double SHOOTER_LAUNCH_ANGLE = 90-Math.toDegrees(0.35); //SHOOTER固定角度  //TODO
-    public static final double SHOOTER_MOUNT_HEIGHT = 0.83;  //SHOOTER高度  //TODO
+    public static final double SHOOTER_LAUNCH_ANGLE = 90-Math.toDegrees(0.35); //the angle of the shooter(degrees)  //TODO
+    public static final double SHOOTER_MOUNT_HEIGHT = 0.83;  //the height of the shooter(meters)  //TODO
     public static final int SHOOT_L_MASTER_ID = 11;  //TODO
     public static final int SHOOT_R_MASTER_ID = 12;  //TODO
     public static final double SHOOTER_KS = 0 / 12;

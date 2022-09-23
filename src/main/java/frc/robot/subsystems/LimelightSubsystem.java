@@ -17,10 +17,10 @@ import java.awt.geom.Point2D;
 
 public class LimelightSubsystem extends SubsystemBase {
 
-  private static LimelightSubsystem instance = null;
+  private static LimelightSubsystem instance = null;//the instance of Limelightsubsystem
   /** Creates a new Limelight. */
-  public NetworkTable m_limTable;
-  public double constTx = 4.0;
+  public NetworkTable m_limTable;//the network table in which the robot communicate with the limelight
+  public double constTx = 4.0;//???
   public double constTv = 4.0;
   public double constTy = 4.0;
   public double tv ;
@@ -33,7 +33,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public int simuTxStop = 0;
   public OptionalDouble distancetoTarget = OptionalDouble.empty();
 
-  private static Point2D[] points = new Point2D.Double[] {
+  private static Point2D[] points = new Point2D.Double[] {//the points of the interpolation table
     // (ty-angle,distance)
     new Point2D.Double(-24.0, 7.366/*290.0*/), // 242
     new Point2D.Double(-20.0, 6.045/*238.0*/), // 196
@@ -49,32 +49,32 @@ public class LimelightSubsystem extends SubsystemBase {
     new Point2D.Double(20.0, 1.905/*75.0*/)
     //
 };
-private static LinearInterpolationTable distTable = new LinearInterpolationTable(points);
+private static LinearInterpolationTable distTable = new LinearInterpolationTable(points);//create a linearinterpolation table with the points
 
   
   public LimelightSubsystem() {
-    m_limTable = NetworkTableInstance.getDefault().getTable("limelight");
+    m_limTable = NetworkTableInstance.getDefault().getTable("limelight");//get the instance of limelight on the default network instance
   }
 
-  public static LimelightSubsystem getInstance() {
+  public static LimelightSubsystem getInstance() {//create a limelight subsystem
     if (instance == null){
       instance = new LimelightSubsystem();
     }
     return instance;
   }
-  public double Get_tx(){
+  public double Get_tx(){//get the tx of the limelight
     tx = m_limTable.getEntry("tx").getDouble(0);
-    if (RobotBase.isSimulation()){
+    if (RobotBase.isSimulation()){//if the robot is running on simulation
       if(simTx >= 0.2){
         simTx = simTx-0.2;
       }
       tx = simTx; 
     }
-    SmartDashboard.putNumber("Debug/Limglight/tx", tx);
+    SmartDashboard.putNumber("Debug/Limglight/tx", tx);//put the tx on the dashboard
     return tx;
   }
 
-  public double Get_ty(){
+  public double Get_ty(){//get the ty of the limelight
     ty = m_limTable.getEntry("ty").getDouble(0);
     if (RobotBase.isSimulation()){
       if(simTy >= 0.2){
