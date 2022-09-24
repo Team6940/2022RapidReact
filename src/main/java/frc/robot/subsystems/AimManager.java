@@ -6,9 +6,6 @@ import frc.robot.Constants;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
 
-import javax.lang.model.util.ElementScanner6;
-
-import org.photonvision.PhotonUtils;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.lib.team1706.LinearInterpolationTable;
