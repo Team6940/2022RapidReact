@@ -40,6 +40,8 @@ public class IntakeAndHopperAction extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    mHopper.setHopperState(HopperState.OFF);
+    mIntake.setWantedIntakeState(IntakeState.OFF);
   }
 
   // Returns true when the command should end.

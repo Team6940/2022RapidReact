@@ -103,9 +103,7 @@ public class AimManager extends SubsystemBase {
     public void setAimManagerState(AimManagerState state) {
         currentState = state;
     }
-    public void startAimMoving() {
-        currentState = AimManagerState.AIM_MOVING;
-    }
+
     public void startAimShoot() {
         currentState = AimManagerState.AIM_SHOOT;
     }
@@ -115,9 +113,6 @@ public class AimManager extends SubsystemBase {
 
     public void DoShootForve(){
 
-    }
-    public boolean isAimMoving() {
-        return (currentState == AimManagerState.AIM_MOVING);
     }
 
     public boolean isStop() {
@@ -154,9 +149,9 @@ public class AimManager extends SubsystemBase {
         if (currentState == AimManagerState.AIM_WRONGBALL) {
             if (!hasWrongBallShooting) {
                 shotWrongBallTime = currentTime;
-                hasWrongBallShooting = true;
                 doShooterEject();
                 if (CanShot()) {
+                    hasWrongBallShooting = true;    
                     shooter.setFiring(true);
                 }
             } else if (hasWrongBallShooting
@@ -203,7 +198,6 @@ public class AimManager extends SubsystemBase {
                 shooter.setHoodAngle(angle);
                 if (!startBallShooting) {
                     shotBallTime = currentTime;
-                    //startBallShooting = true;
                     hooper.setHopperState(HopperState.ON);
                     if (CanShot()) {
                         shooter.setFiring(true);
@@ -235,14 +229,6 @@ public class AimManager extends SubsystemBase {
                 shotBallTime = Double.NEGATIVE_INFINITY;
                 shooter.setFiring(false);
                 shooter.setShooterToStop();
-            }
-        }
-
-        if (currentState == AimManagerState.AIM_MOVING) {
-            if (isTargetLocked()) {
-                startBallShooting = false;
-                shotBallTime = Double.NEGATIVE_INFINITY;
-                currentState = AimManagerState.AIM_SHOOT;
             }
         }
 
@@ -296,7 +282,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public enum AimManagerState {
-        STOP, AIM_MOVING, AIM_WRONGBALL,AIM_SHOOT,AIM_FORCE
+        STOP, AIM_WRONGBALL,AIM_SHOOT,AIM_FORCE
     }
 
     @Override
@@ -370,10 +356,6 @@ public class AimManager extends SubsystemBase {
     }
     public int getShootWrongBallCnt(){
         return shootWrongBallCnt;
-    }
-
-    public void switchAimMode() {
-        currentState = (currentState == AimManagerState.STOP) ? AimManagerState.AIM_MOVING : AimManagerState.STOP;
     }
     
     public double getRotationSpeed(){
