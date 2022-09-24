@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.lib.team3476.Timer;
 import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -30,8 +30,8 @@ public class Intake extends SubsystemBase {
     }
 
     private Intake() {
-        intakeMotor = new WPI_TalonFX(Constants.IntakerPort); //TODO 设定intake电机
-        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.IntakerSolenoidPort); //TODO 设定气动杆
+        intakeMotor = new WPI_TalonFX(IntakeConstants.IntakerPort); //TODO 设定intake电机
+        intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.IntakerSolenoidPort); //TODO 设定气动杆
         intakeMotor.configVoltageCompSaturation(12);
         intakeMotor.enableVoltageCompensation(true);
         //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
@@ -89,10 +89,10 @@ public class Intake extends SubsystemBase {
         wantedIntakeSolState = intakeSolState;
         switch (intakeSolState) {
             case OPEN://打开气动杆
-                intakeSolenoid.set(true);
+                intakeSolenoid.set(false);
                 break;
             case CLOSE://关闭气动杆
-                intakeSolenoid.set(false);
+                intakeSolenoid.set(true);
         }
     }
 
@@ -117,7 +117,7 @@ public class Intake extends SubsystemBase {
     private void setIntakeState(IntakeState intakeState) {//将intake状态输出到电机上
         switch (intakeState) {
             case INTAKE:
-                setIntakeMotor(Constants.INTAKE_SPEED);
+                setIntakeMotor(IntakeConstants.INTAKE_SPEED);
                 break;
             case OFF:
                 setIntakeMotor(0);
@@ -130,6 +130,18 @@ public class Intake extends SubsystemBase {
         setIntakeState(wantedIntakeState);//持续地将Intake状态输出到电机上
         outputTelemetry();
     }
+
+    public void runIntaker() {
+        setIntakeSolState(IntakeSolState.OPEN);
+        setWantedIntakeState(IntakeState.INTAKE);
+        Hopper.getInstance().setHopperState(HopperState.ON);
+    }
+
+    public void stopIntaker(){
+        setIntakeSolState(IntakeSolState.CLOSE);
+        setWantedIntakeState(IntakeState.OFF);
+        Hopper.getInstance().setHopperState(HopperState.OFF);
+    }    
 
     private int cnt = 0;
     public void autoturnintaker()//用cnt周期性地控制intake状态

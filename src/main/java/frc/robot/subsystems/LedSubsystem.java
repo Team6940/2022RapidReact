@@ -5,7 +5,7 @@ import java.util.List;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.commands.leds.cmdSetLeds;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.lib.team1323.lib.util.HSVtoRGB;
@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LedSubsystem  extends SubsystemBase {
     private static LedSubsystem instance = null;
-    AddressableLED ledStrip = new AddressableLED(Constants.LED_PORT);
-    AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(Constants.LED_LENGTH);
+    AddressableLED ledStrip = new AddressableLED(LEDConstants.LED_PORT);
+    AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(LEDConstants.LED_LENGTH);
     int m_rainbowFirstPixelHue = 0;
     boolean lit = false;
     double lastOnTime = 0.0;

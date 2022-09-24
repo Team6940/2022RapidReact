@@ -2,10 +2,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.GoalConstants;
+import frc.robot.Constants.HoodConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.lib.team503.util.Util;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -121,7 +123,7 @@ public class VisionManager extends SubsystemBase {
     }
 
     public boolean isVisionGoodRange(double angle) {
-        return (valueIsRange(angle, Constants.TurretMinSoftLimitAngle, Constants.TurretMaxSoftLimitAngle)
+        return (valueIsRange(angle, TurretConstants.TurretMinSoftLimitAngle, TurretConstants.TurretMaxSoftLimitAngle)
                 && limelight.isTargetVisible());
     }
 
@@ -150,7 +152,7 @@ public class VisionManager extends SubsystemBase {
     }
 
     public boolean isTargetLocked() {
-        return (Math.abs(limelight.Get_tx()) < Constants.TargetMinError
+        return (Math.abs(limelight.Get_tx()) < TurretConstants.TargetMinError
                 && limelight.isTargetVisible());
     }
 
@@ -176,15 +178,15 @@ public class VisionManager extends SubsystemBase {
             shooter.setFiring(false);
             desiredAngle = turret.getTurretAngleDeg();
             if (direction == 0) {
-                desiredAngle -= Constants.kTurretStep;
-                desiredAngle = Math.max(desiredAngle, Constants.TurretMinSoftLimitAngle);
-                if (desiredAngle <= Constants.TurretMinSoftLimitAngle) {
+                desiredAngle -= TurretConstants.kTurretStep;
+                desiredAngle = Math.max(desiredAngle, TurretConstants.TurretMinSoftLimitAngle);
+                if (desiredAngle <= TurretConstants.TurretMinSoftLimitAngle) {
                     direction = 1;
                 }
             } else {
-                desiredAngle += Constants.kTurretStep;
-                desiredAngle = Math.min(desiredAngle, Constants.TurretMaxSoftLimitAngle);
-                if (desiredAngle >= Constants.TurretMaxSoftLimitAngle) {
+                desiredAngle += TurretConstants.kTurretStep;
+                desiredAngle = Math.min(desiredAngle, TurretConstants.TurretMaxSoftLimitAngle);
+                if (desiredAngle >= TurretConstants.TurretMaxSoftLimitAngle) {
                     direction = 0;
                 }
             }
@@ -279,8 +281,8 @@ public class VisionManager extends SubsystemBase {
     }
 
     public void setFixedShootParams(){
-        double  speed = Conversions.MPSToRPM( getShooterLaunchVelocity(Constants.SHOOTER_LAUNCH_ANGLE),
-                                     Constants.kFlyWheelCircumference);
+        double  speed = Conversions.MPSToRPM( getShooterLaunchVelocity(ShooterConstants.SHOOTER_LAUNCH_ANGLE),
+                                     ShooterConstants.kFlyWheelCircumference);
         shooter.setShooterSpeed(speed);
     }
 
@@ -288,12 +290,12 @@ public class VisionManager extends SubsystemBase {
         Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(futureDist));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
-                Conversions.RPMToMPS(angleAndSpeed.y, Constants.kFlyWheelCircumference), // Shot Speed
+                Conversions.RPMToMPS(angleAndSpeed.y, ShooterConstants.kFlyWheelCircumference), // Shot Speed
                 angleAndSpeed.x,                                                         // Hood Angle
                 angleToGoal,         // Turret target angle (The same coordinate system with swerve)
                 driveDrain.getFieldRelativeSpeed().vx,              // Swerve speed in X axis (field-oriented)
                 driveDrain.getFieldRelativeSpeed().vy);             // Swerve speed in Y axis (field-oriented)
-        targetVelocity = Conversions.MPSToRPM(mShotParams[2], Constants.kFlyWheelCircumference);
+        targetVelocity = Conversions.MPSToRPM(mShotParams[2], ShooterConstants.kFlyWheelCircumference);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - driveDrain.GetHeading_Deg());
@@ -307,12 +309,12 @@ public class VisionManager extends SubsystemBase {
         Vector2 angleAndSpeed = SHOOTER_TUNING.getInterpolated(new InterpolatingDouble(futureDist));
         double[] mShotParams = new double [3];
         mShotParams = GetMovingShotParams(
-                Conversions.RPMToMPS(angleAndSpeed.y, Constants.kFlyWheelCircumference), // Shot Speed   
+                Conversions.RPMToMPS(angleAndSpeed.y, ShooterConstants.kFlyWheelCircumference), // Shot Speed   
                 angleAndSpeed.x,                                                         // Hood Angle
                 angleToGoal,    // Turret Angle (The same coordinate system with swerve)
                 driveDrain.getFieldRelativeSpeed().vx,              // Swerve speed in X axis (field-oriented)
                 driveDrain.getFieldRelativeSpeed().vy);             // Swerve speed in Y axis (field-oriented)
-        targetVelocity = Conversions.MPSToRPM(mShotParams[2],Constants.kFlyWheelCircumference);
+        targetVelocity = Conversions.MPSToRPM(mShotParams[2],ShooterConstants.kFlyWheelCircumference);
         targetHoodAngle = mShotParams[1];
         targetTurretAngle = Util.boundAngleNeg180to180Degrees(
                         mShotParams[0] - driveDrain.GetHeading_Deg());
@@ -346,28 +348,28 @@ public class VisionManager extends SubsystemBase {
         final float velSquaredDist = distVel * vel;
 
         float pitch = 0;
-        pitch += Constants.angleCoefficients[0] * disCubed;
-        pitch += Constants.angleCoefficients[1] * distSquaredVel;
-        pitch += Constants.angleCoefficients[2] * velSquaredDist;
-        pitch += Constants.angleCoefficients[3] * velCubed;
-        pitch += Constants.angleCoefficients[4] * distSquared;
-        pitch += Constants.angleCoefficients[5] * dist;
-        pitch += Constants.angleCoefficients[6] * velSquared;
-        pitch += Constants.angleCoefficients[7] * vel;
-        pitch += Constants.angleCoefficients[8] * distVel;
-        pitch += Constants.angleCoefficients[9];
+        pitch += ShooterConstants.angleCoefficients[0] * disCubed;
+        pitch += ShooterConstants.angleCoefficients[1] * distSquaredVel;
+        pitch += ShooterConstants.angleCoefficients[2] * velSquaredDist;
+        pitch += ShooterConstants.angleCoefficients[3] * velCubed;
+        pitch += ShooterConstants.angleCoefficients[4] * distSquared;
+        pitch += ShooterConstants.angleCoefficients[5] * dist;
+        pitch += ShooterConstants.angleCoefficients[6] * velSquared;
+        pitch += ShooterConstants.angleCoefficients[7] * vel;
+        pitch += ShooterConstants.angleCoefficients[8] * distVel;
+        pitch += ShooterConstants.angleCoefficients[9];
 
         float speed = 0;
-        speed += Constants.speedCoefficients[0] * disCubed;
-        speed += Constants.speedCoefficients[1] * distSquaredVel;
-        speed += Constants.speedCoefficients[2] * velSquaredDist;
-        speed += Constants.speedCoefficients[3] * velCubed;
-        speed += Constants.speedCoefficients[4] * distSquared;
-        speed += Constants.speedCoefficients[5] * dist;
-        speed += Constants.speedCoefficients[6] * velSquared;
-        speed += Constants.speedCoefficients[7] * vel;
-        speed += Constants.speedCoefficients[8] * distVel;
-        speed += Constants.speedCoefficients[9];
+        speed += ShooterConstants.speedCoefficients[0] * disCubed;
+        speed += ShooterConstants.speedCoefficients[1] * distSquaredVel;
+        speed += ShooterConstants.speedCoefficients[2] * velSquaredDist;
+        speed += ShooterConstants.speedCoefficients[3] * velCubed;
+        speed += ShooterConstants.speedCoefficients[4] * distSquared;
+        speed += ShooterConstants.speedCoefficients[5] * dist;
+        speed += ShooterConstants.speedCoefficients[6] * velSquared;
+        speed += ShooterConstants.speedCoefficients[7] * vel;
+        speed += ShooterConstants.speedCoefficients[8] * distVel;
+        speed += ShooterConstants.speedCoefficients[9];
 
         final float tangentialRobotSpeed = (float)tangentialVelocity;
         final Vector tangentialRobotVel = Vector.fromAngleAndRadius(
@@ -390,7 +392,7 @@ public class VisionManager extends SubsystemBase {
     
     public void shootOnMoveOrbit() {
         Vector3D ballVelocity = calcBallVelocity();
-        targetVelocity = Conversions.MPSToRPM(ballVelocity.norm(),Constants.kFlyWheelCircumference);
+        targetVelocity = Conversions.MPSToRPM(ballVelocity.norm(),ShooterConstants.kFlyWheelCircumference);
         targetHoodAngle = Math.toDegrees(ballVelocity.getPitch());
         targetTurretAngle = Util
                 .boundAngleNeg180to180Degrees(ballVelocity.getYaw() - driveDrain.GetHeading_Deg());
@@ -401,12 +403,12 @@ public class VisionManager extends SubsystemBase {
 
     public double getShooterLaunchVelocity(double shooterAngle) {
         double speed = 0;
-        double d = Constants.CARGO_DIAMETER;
-        double D = Constants.UPPER_HUB_DIAMETER;
+        double d = GoalConstants.CARGO_DIAMETER;
+        double D = GoalConstants.UPPER_HUB_DIAMETER;
         double g = 9.81;
-        double H = Constants.LL_UPPER_HUB_HEIGHT;
-        double h = Constants.SHOOTER_MOUNT_HEIGHT;
-        double L = limelight.getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
+        double H = GoalConstants.LL_UPPER_HUB_HEIGHT;
+        double h = ShooterConstants.SHOOTER_MOUNT_HEIGHT;
+        double L = limelight.getRobotToTargetDistance() + GoalConstants.UPPER_HUB_DIAMETER / 2; //getRobotToTargetDistance() + Constants.UPPER_HUB_DIAMETER / 2 ; 
         double alpha = Math.toRadians(shooterAngle); // Set to proper value
         /* v is mini speed  */
         double vMin = Math.sqrt(g * (H-h+Math.sqrt(Math.pow(L,2)+Math.pow(H-h,2))));
@@ -477,8 +479,8 @@ public class VisionManager extends SubsystemBase {
 
     public void doShooterEject() {
         startVisionMannul();
-        shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
-        shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
+        shooter.setShooterSpeed(ShooterConstants.SHOOTER_EJECT_SPEED);
+        shooter.setHoodAngle(HoodConstants.HOOD_EJECT_ANGLE);
         shooter.setFiring(true);
     }
 

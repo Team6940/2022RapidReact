@@ -8,6 +8,7 @@ import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.lib.team1706.MathUtils;
 import frc.robot.lib.team2910.control.PidConstants;
 import frc.robot.lib.team2910.control.PidController;
 import frc.robot.subsystems.AimManager;
@@ -58,6 +62,10 @@ public class AutoAim extends CommandBase {
       
     
   Translation2d translation;
+
+  private final SlewRateLimiter m_slewX = new SlewRateLimiter(DriveConstants.kTranslationSlew);
+  private final SlewRateLimiter m_slewY = new SlewRateLimiter(DriveConstants.kTranslationSlew);
+  private final SlewRateLimiter m_slewRot = new SlewRateLimiter(DriveConstants.kRotationSlew);
     
   public AutoAim() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -96,13 +104,13 @@ public class AutoAim extends CommandBase {
     double totalforwardSpeed;
     double totalrotationSpeed;
 
-    double lastx = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getLeftY());
-    double lasty = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getLeftX());
-    double lastz = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getRightX());
+    double translationX = -inputTransform(RobotContainer.m_driverController.getLeftY());
+    double translationY = -inputTransform(RobotContainer.m_driverController.getLeftX());
+    double rotationNew = -inputTransform(RobotContainer.m_driverController.getRightX());
 
-    double llastx = - RobotContainer.m_swerve.deadband(lastx) * Constants.kMaxSpeed;
-    double llasty = - RobotContainer.m_swerve.deadband(lasty) * Constants.kMaxSpeed;
-    double llastz = lastz * Constants.kMaxOmega;
+    Translation2d translation = new Translation2d(m_slewX.calculate(
+      translationX) * SwerveConstants.kMaxSpeed,
+        m_slewY.calculate(translationY) * SwerveConstants.kMaxSpeed);
 
     // Vision-alignment mode
     // Query the latest result from PhotonVision
@@ -139,10 +147,8 @@ public class AutoAim extends CommandBase {
           rotationSpeed = 0;
         } 
 
-      totalforwardSpeed = /*forwardSpeed * Constants.kMaxSpeed*/ + llastx;
-      totalrotationSpeed = rotationSpeed * Constants.kMaxOmega + llastz;
-
-      translation = new Translation2d(totalforwardSpeed, llasty);
+      totalforwardSpeed = /*forwardSpeed * Constants.kMaxSpeed*/ + translationX;
+      totalrotationSpeed = rotationSpeed + rotationNew;
 
       // Use our forward/turn speeds to control the drivetrain
       //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
@@ -164,8 +170,13 @@ public class AutoAim extends CommandBase {
       }
       
       double rotationSpeed2 = thetaController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
+      
       // Goal-Centric
-      RobotContainer.m_swerve.Drive(translation, -totalrotationSpeed, true, true);//Use feedback control when auto aiming.
+      RobotContainer.m_swerve.Drive(
+          translation,
+          m_slewRot.calculate(totalrotationSpeed) * DriveConstants.kMaxAngularSpeed, //If it does work well, remove the rotation slew rate limiter
+          true,
+          true);//Use feedback control when auto aiming.
       //RobotContainer.m_swerve.Drive(translation, -rotationalVelocity, true, true);//Use feedback control when auto aiming.
       //RobotContainer.m_swerve.Drive(translation, - rotationSpeed2, true, true);//Use feedback control when auto aiming.
 
@@ -187,5 +198,21 @@ public class AutoAim extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+    /**
+   * This function takes the user input from the controller analog sticks, applys
+   * a deadband and then quadratically
+   * transforms the input so that it is easier for the user to drive, this is
+   * especially important on high torque motors
+   * such as the NEOs or Falcons as it makes it more intuitive and easier to make
+   * small corrections
+   * 
+   * @param input is the input value from the controller axis, should be a value
+   *              between -1.0 and 1.0
+   * @return the transformed input value
+   */
+  private double inputTransform(double input) {
+    return MathUtils.signedSquare(MathUtils.applyDeadband(input));
   }
 }

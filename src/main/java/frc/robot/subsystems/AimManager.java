@@ -14,7 +14,9 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.lib.team1706.LinearInterpolationTable;
 import frc.robot.subsystems.Hopper.HopperState;
 import frc.robot.subsystems.Shooter.ShooterControlState;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.TurretConstants;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -130,7 +132,7 @@ public class AimManager extends SubsystemBase {
     }
     
     public boolean isTargetLocked() {
-        return (Math.abs(limelight.Get_tx()) < Constants.TargetMinError
+        return (Math.abs(limelight.Get_tx()) < TurretConstants.TargetMinError
                 && limelight.isTargetVisible());
     }
 
@@ -161,7 +163,7 @@ public class AimManager extends SubsystemBase {
                     shooter.setFiring(true);
                 }
             } else if (hasWrongBallShooting
-                    && currentTime < shotWrongBallTime + Constants.kShootOneWrongBallTime) {
+                    && currentTime < shotWrongBallTime + ShooterConstants.kShootOneWrongBallTime) {
                 doShooterEject();
                 if (CanShot()) {
                     shooter.setFiring(true);
@@ -190,7 +192,7 @@ public class AimManager extends SubsystemBase {
                 //double dist = limelight.getDistance();
                 double speed = m_rpmTable.getOutput(dist);
                 double angle = m_hoodTable.getOutput(dist);
-                if( Math.abs(speed - lastShooterRPM) < Constants.kShooterTolerance ){
+                if( Math.abs(speed - lastShooterRPM) < ShooterConstants.kShooterTolerance ){
                     speed = lastShooterRPM;
                 }else{
                     lastShooterRPM = speed;
@@ -211,7 +213,7 @@ public class AimManager extends SubsystemBase {
                         startBallShooting = true;
                     }
                 } else if (startBallShooting
-                        && currentTime < shotBallTime + Constants.kShootOneBallTime) {
+                        && currentTime < shotBallTime + ShooterConstants.kShootOneBallTime) {
                     hooper.setHopperState(HopperState.ON);
                     if (CanShot()) {
                         shooter.setFiring(true);
@@ -240,7 +242,6 @@ public class AimManager extends SubsystemBase {
         }
 
         if (currentState == AimManagerState.AIM_MOVING) {
-            DoAutoAim();
             if (isTargetLocked()) {
                 startBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
@@ -258,7 +259,7 @@ public class AimManager extends SubsystemBase {
                     startForceBallShooting = true;
                 }
             } else if (startForceBallShooting
-                    && currentTime < shotBallTime + Constants.kShootTestTime) {
+                    && currentTime < shotBallTime + ShooterConstants.kShootTestTime) {
                 hooper.setHopperState(HopperState.ON);
                 if (CanShot()) {
                     shooter.setFiring(true);
@@ -307,72 +308,6 @@ public class AimManager extends SubsystemBase {
         if(enanbleTelemetry){
             outputTelemetry();       
         }
-   
-
-    }
-
-    public void DoAutoAim() {
-        //LimelightSubsystem.getInstance().setLightMode(3);
-        double forwardSpeed;
-        //double rotationSpeed;
-    
-        double totalforwardSpeed;
-        double totalrotationSpeed;
-    
-        double lastx = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getLeftY());
-        double lasty = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getLeftX());
-        double lastz = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getRightX());
-    
-        double llastx = - RobotContainer.m_swerve.deadband(lastx) * Constants.kMaxSpeed;
-        double llasty = - RobotContainer.m_swerve.deadband(lasty) * Constants.kMaxSpeed;
-        double llastz = lastz * Constants.kMaxOmega;
-    
-        // Vision-alignment mode
-        // Query the latest result from PhotonVision
-        double target  = RobotContainer.m_limelight.Get_tv();
-    
-        if (target != 0.0f) {
-            // First calculate range
-            double range =
-                    PhotonUtils.calculateDistanceToTargetMeters(
-                            CAMERA_HEIGHT_METERS,
-                            TARGET_HEIGHT_METERS,
-                            CAMERA_PITCH_RADIANS,
-                            Units.degreesToRadians(RobotContainer.m_limelight.Get_ty()));
-           // SmartDashboard.putNumber("Debug/Auto/range", range);
-            autoAimRangeEntry.setDouble(range);
-            // Use this range as the measurement we give to the PID controller.
-            // -1.0 required to ensure positive PID controller effort _increases_ range
-            if(RobotContainer.m_limelight.Get_ty()<-1){
-              forwardSpeed = 1.0 * forwardController.calculate(range, GOAL_RANGE_METERS);;
-            }
-            else if(RobotContainer.m_limelight.Get_ty() > 1){
-              forwardSpeed = -1.0 * forwardController.calculate(range, GOAL_RANGE_METERS);
-            }
-            else{
-              forwardSpeed = 0;
-            }
-    
-    
-            // Also calculate angular power
-            // -1.0 required to ensure positive PID controller effort _increases_ yaw
-            rotationSpeed = -1.0 * turnController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
-          } else {
-              // If we have no targets, stay still.
-              forwardSpeed = 0;
-              rotationSpeed = 0;
-            } 
-    
-          totalforwardSpeed = /*forwardSpeed * Constants.kMaxSpeed*/ + llastx;
-          totalrotationSpeed = rotationSpeed * Constants.kMaxOmega + llastz;
-    
-          translation = new Translation2d(totalforwardSpeed, llasty);
-    
-          // Use our forward/turn speeds to control the drivetrain
-          //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
-    
-          // Goal-Centric
-          RobotContainer.m_swerve.Drive(translation, - totalrotationSpeed, true, false);//Use feedback control when auto aiming.
     }
 
     public boolean CanShot(){
@@ -383,15 +318,15 @@ public class AimManager extends SubsystemBase {
         angeDiff = Math.abs(shooter.getHoodAngle() - shooter.getDesiredHoodAngle());
         RPMDiffEntry.setDouble(rpmDiff);
         HoodAngleDiffEntry.setDouble(angeDiff);
-        isShooterReady = rpmDiff < Constants.kShooterTolerance;
-        isHoodReady = angeDiff < Constants.HoodConstants.kHoodTolerance;
+        isShooterReady = rpmDiff < ShooterConstants.kShooterTolerance;
+        isHoodReady = angeDiff < HoodConstants.kHoodTolerance;
 
         return (isShooterReady && isHoodReady);
     }
 
     public void doShooterEject() {
-        shooter.setShooterSpeed(Constants.SHOOTER_EJECT_SPEED);
-        shooter.setHoodAngle(Constants.HOOD_EJECT_ANGLE);
+        shooter.setShooterSpeed(ShooterConstants.SHOOTER_EJECT_SPEED);
+        shooter.setHoodAngle(HoodConstants.HOOD_EJECT_ANGLE);
         hooper.setHopperState(HopperState.ON);
         SwerveDriveTrain.getInstance().Drive(new Translation2d(0, 0), 1, true, true);
     }

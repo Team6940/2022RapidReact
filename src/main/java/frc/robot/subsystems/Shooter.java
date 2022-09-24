@@ -11,8 +11,9 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants;
 import frc.robot.Constants.BlockerConstants;
+import frc.robot.Constants.HoodConstants;
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team1678.math.Conversions;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -30,7 +31,7 @@ public class Shooter extends SubsystemBase {
     /**
      * We use FeedForward and a little P gains for Shooter
      */
-    SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(Constants.SHOOTER_KS, Constants.SHOOTER_KV, Constants.SHOOTER_KA);//???
+    SimpleMotorFeedforward shooterFeedForward = new SimpleMotorFeedforward(ShooterConstants.SHOOTER_KS, ShooterConstants.SHOOTER_KV, ShooterConstants.SHOOTER_KA);//???
 
     // for hood
     private WPI_TalonSRX mHoodmotor;//hood一号电机
@@ -66,7 +67,7 @@ public class Shooter extends SubsystemBase {
         lMasterConfig.peakOutputForward = 0.8;
         lMasterConfig.peakOutputReverse = 0.0;
         //shooter电机参数设定
-        mShooterLeft = new WPI_TalonFX(Constants.SHOOT_L_MASTER_ID);//设定shooter电机
+        mShooterLeft = new WPI_TalonFX(ShooterConstants.SHOOT_L_MASTER_ID);//设定shooter电机
         mShooterLeft.setInverted(true);//TODO 电机是否反转
         //mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
         mShooterLeft.setNeutralMode(NeutralMode.Coast);//???
@@ -82,7 +83,7 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
         mShooterLeft.configVelocityMeasurementWindow(64);
         //右电机，同上
-        mShooterRght = new WPI_TalonFX(Constants.SHOOT_R_MASTER_ID);
+        mShooterRght = new WPI_TalonFX(ShooterConstants.SHOOT_R_MASTER_ID);
         mShooterRght.setInverted(false);//TODO
         mShooterRght.follow(mShooterLeft);
         //mShooterRght.configAllSettings(lMasterConfig);
@@ -102,8 +103,8 @@ public class Shooter extends SubsystemBase {
 
     private void configHood(){//设定hood参数
         //hood电机参数
-        mHoodmotor = new WPI_TalonSRX(Constants.HoodMotorPort);
-        mHoodmotor2 = new WPI_TalonFX(Constants.HoodMotorPort + 5);
+        mHoodmotor = new WPI_TalonSRX(HoodConstants.HoodMotorPort);
+        mHoodmotor2 = new WPI_TalonFX(HoodConstants.HoodMotorPort + 5);
         //设定反转
         mHoodmotor.setInverted(false);
         mHoodmotor.setSensorPhase(false);
@@ -119,8 +120,8 @@ public class Shooter extends SubsystemBase {
         mHoodmotor.configMotionAcceleration(1200, 10);//???
         // mHoodmotor.configMotionSCurveStrength(6);
 
-        mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MAX_ANGLE, Constants.HOOD_GEAR_RATIO) + offset, 10); //TODO
-        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(Constants.HOOD_MIN_ANGLE, Constants.HOOD_GEAR_RATIO), 10); //TODO
+        mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(HoodConstants.HOOD_MAX_ANGLE, HoodConstants.HOOD_GEAR_RATIO) + offset, 10); //TODO
+        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(HoodConstants.HOOD_MIN_ANGLE, HoodConstants.HOOD_GEAR_RATIO), 10); //TODO
         mHoodmotor.configForwardSoftLimitEnable(true, 10);
         mHoodmotor.configReverseSoftLimitEnable(true, 10);
     
@@ -173,14 +174,14 @@ public class Shooter extends SubsystemBase {
             //setHoodToStop();
         }
         if(shootState == ShooterControlState.PREPARE_SHOOT){
-            desiredShooterSpeed = Constants.kFlywheelIdleVelocity;
+            desiredShooterSpeed = ShooterConstants.kFlywheelIdleVelocity;
         }
 
         if(shootState == ShooterControlState.MANNUL_SHOOT){
             ;   
         }
-        double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, Constants.kFlyWheelCircumference));
-        ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,Constants.kFlyWheelEncoderReductionRatio);
+        double cal_shooterFeedForward = shooterFeedForward.calculate(Conversions.RPMToMPS(desiredShooterSpeed, ShooterConstants.kFlyWheelCircumference));
+        ShooterPeriodicIO.flywheel_demand = Conversions.RPMToFalcon(desiredShooterSpeed,ShooterConstants.kFlyWheelEncoderReductionRatio);
         mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand/*, DemandType.ArbitraryFeedForward, cal_shooterFeedForward*/);
         //mShooterLeft.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
         //mShooterRght.set(ControlMode.Velocity, ShooterPeriodicIO.flywheel_demand);
@@ -195,9 +196,9 @@ public class Shooter extends SubsystemBase {
 
     public synchronized double getShooterSpeedRpm() {//以rpm的单位获取shooter转速
         if (RobotBase.isSimulation()) {
-            return Conversions.falconToRPM(ShooterPeriodicIO.flywheel_demand, Constants.kFlyWheelEncoderReductionRatio);
+            return Conversions.falconToRPM(ShooterPeriodicIO.flywheel_demand, ShooterConstants.kFlyWheelEncoderReductionRatio);
         }else{
-            return Conversions.falconToRPM(mShooterLeft.getSelectedSensorVelocity(), Constants.kFlyWheelEncoderReductionRatio);
+            return Conversions.falconToRPM(mShooterLeft.getSelectedSensorVelocity(), ShooterConstants.kFlyWheelEncoderReductionRatio);
         }
 
     }
@@ -264,12 +265,12 @@ public class Shooter extends SubsystemBase {
 
     public void setHoodAngle(double targetAngle){//设定hood角度（以实际角度为单位
         // Preform Bounds checking between MAX and MIN range
-        if (targetAngle < Constants.HOOD_MIN_ANGLE) {//作上下约束
-            targetAngle = Constants.HOOD_MIN_ANGLE;
+        if (targetAngle < HoodConstants.HOOD_MIN_ANGLE) {//作上下约束
+            targetAngle = HoodConstants.HOOD_MIN_ANGLE;
         }
 
-        if (targetAngle > Constants.HOOD_MAX_ANGLE) {
-            targetAngle = Constants.HOOD_MAX_ANGLE;
+        if (targetAngle > HoodConstants.HOOD_MAX_ANGLE) {
+            targetAngle = HoodConstants.HOOD_MAX_ANGLE;
         }
         desiredHoodAngle = targetAngle;   //设定hood目标角度
         hoodstate = HoodControlState.ON;//开启hood
@@ -289,9 +290,9 @@ public class Shooter extends SubsystemBase {
     
     public double getHoodAngle(){//获取hood当前角度
         if (RobotBase.isSimulation()){
-          return Conversions.talonToDegrees(HoodPeriodicIO.position - offset, Constants.HOOD_GEAR_RATIO);
+          return Conversions.talonToDegrees(HoodPeriodicIO.position - offset, HoodConstants.HOOD_GEAR_RATIO);
         }else{
-          return Conversions.talonToDegrees((int) mHoodmotor.getSelectedSensorPosition(0)- offset, Constants.HOOD_GEAR_RATIO);
+          return Conversions.talonToDegrees((int) mHoodmotor.getSelectedSensorPosition(0)- offset, HoodConstants.HOOD_GEAR_RATIO);
         }
         
     }
@@ -301,14 +302,14 @@ public class Shooter extends SubsystemBase {
 
     public void HoodWritePeriodicOutputs() {//重复执行的函数
         if (hoodstate == HoodControlState.HOME) {//如果hood的状态为home
-            desiredHoodAngle = Constants.HOOD_HOME_ANGLE;//将hood电机转到home角度
+            desiredHoodAngle = HoodConstants.HOOD_HOME_ANGLE;//将hood电机转到home角度
         } else if (hoodstate == HoodControlState.STOP) {//如果是stop，那么保持电机角度
             desiredHoodAngle = getHoodAngle();
         } else if (hoodstate == HoodControlState.ON) {
             ;
         }
-        double targetPos = Conversions.degreesToTalon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO) + offset;//计算目标电机位置（以Unit为单位
-        //double targetPosFalcon = Conversions.degreesToFalcon(desiredHoodAngle, Constants.HOOD_GEAR_RATIO);
+        double targetPos = Conversions.degreesToTalon(desiredHoodAngle, HoodConstants.HOOD_GEAR_RATIO) + offset;//计算目标电机位置（以Unit为单位
+        //double targetPosFalcon = Conversions.degreesToFalcon(desiredHoodAngle, HoodConstants.HOOD_GEAR_RATIO);
         HoodPeriodicIO.demand = (int) targetPos;//设定电机目标位置
         mHoodmotor.set(ControlMode.MotionMagic, targetPos);//输出电机位置
         //mHoodmotor2.set(ControlMode.MotionMagic, targetPosFalcon);

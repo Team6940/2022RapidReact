@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-import static frc.robot.Constants.ROBOT_TRACKER_PERIOD;
+import static frc.robot.Constants.RobotTrackerConstants.ROBOT_TRACKER_PERIOD;
 
 @SuppressWarnings("UnstableApiUsage")
 public final class RobotTracker extends SubsystemBase {

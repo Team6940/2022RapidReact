@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.lib.team1678.math.Conversions;
 import frc.robot.lib.team1678.util.CTREModuleState;
 
@@ -56,33 +57,33 @@ public class SwerveModule extends SubsystemBase {
     
     drive_motor_.setNeutralMode(NeutralMode.Brake);
     pivot_motor_.setNeutralMode(NeutralMode.Coast);
-    drive_motor_.configPeakOutputForward( Constants.kDriveMotorMaxOutput);
-    drive_motor_.configPeakOutputReverse(-Constants.kDriveMotorMaxOutput);
-    pivot_motor_.configPeakOutputForward( Constants.kPivotMotorMaxOutput);
-    pivot_motor_.configPeakOutputReverse(-Constants.kPivotMotorMaxOutput);
+    drive_motor_.configPeakOutputForward( SwerveConstants.kDriveMotorMaxOutput);
+    drive_motor_.configPeakOutputReverse(-SwerveConstants.kDriveMotorMaxOutput);
+    pivot_motor_.configPeakOutputForward( SwerveConstants.kPivotMotorMaxOutput);
+    pivot_motor_.configPeakOutputReverse(-SwerveConstants.kPivotMotorMaxOutput);
 
     drive_motor_.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     pivot_motor_.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
-    drive_motor_.config_kP(0, Constants.kDriveMotorkP);
-    drive_motor_.config_kI(0, Constants.kDriveMotorkI);
-    drive_motor_.config_kD(0, Constants.kDriveMotorkD);
-    drive_motor_.config_kF(0, Constants.kDriveMotorkF);
-    drive_motor_.config_IntegralZone(0, Constants.kDriveMotorIZone);
+    drive_motor_.config_kP(0, SwerveConstants.kDriveMotorkP);
+    drive_motor_.config_kI(0, SwerveConstants.kDriveMotorkI);
+    drive_motor_.config_kD(0, SwerveConstants.kDriveMotorkD);
+    drive_motor_.config_kF(0, SwerveConstants.kDriveMotorkF);
+    drive_motor_.config_IntegralZone(0, SwerveConstants.kDriveMotorIZone);
   
-    pivot_motor_.config_kP(0, Constants.kPivotMotorkP);
-    pivot_motor_.config_kI(0, Constants.kPivotMotorkI);
-    pivot_motor_.config_kD(0, Constants.kPivotMotorkD);
-    pivot_motor_.config_kF(0, Constants.kPivotMotorF);
-    pivot_motor_.config_IntegralZone(0, Constants.kPivotMotorkIZone);
-    pivot_motor_.configMotionCruiseVelocity(Constants.motionCruiseVelocity);
-    pivot_motor_.configMotionAcceleration(Constants.motionAcceleration);
+    pivot_motor_.config_kP(0, SwerveConstants.kPivotMotorkP);
+    pivot_motor_.config_kI(0, SwerveConstants.kPivotMotorkI);
+    pivot_motor_.config_kD(0, SwerveConstants.kPivotMotorkD);
+    pivot_motor_.config_kF(0, SwerveConstants.kPivotMotorF);
+    pivot_motor_.config_IntegralZone(0, SwerveConstants.kPivotMotorkIZone);
+    pivot_motor_.configMotionCruiseVelocity(SwerveConstants.motionCruiseVelocity);
+    pivot_motor_.configMotionAcceleration(SwerveConstants.motionAcceleration);
 
-    drive_motor_.configOpenloopRamp(Constants.kLoopSeconds);
-    drive_motor_.configClosedloopRamp(Constants.kLoopSeconds);
+    drive_motor_.configOpenloopRamp(SwerveConstants.kLoopSeconds);
+    drive_motor_.configClosedloopRamp(SwerveConstants.kLoopSeconds);
 
-    pivot_motor_.configOpenloopRamp(Constants.kLoopSeconds);
-    pivot_motor_.configClosedloopRamp(Constants.kLoopSeconds);
+    pivot_motor_.configOpenloopRamp(SwerveConstants.kLoopSeconds);
+    pivot_motor_.configClosedloopRamp(SwerveConstants.kLoopSeconds);
 
     pivot_encoder_inverted = pivotEncoderInvert ? -1.0 : 1.0;
 
@@ -158,7 +159,7 @@ public class SwerveModule extends SubsystemBase {
     /**
      * Prevent robot from driving automatically.
      */
-    if(Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.05)){
+    if(Math.abs(state.speedMetersPerSecond) <= (SwerveConstants.kMaxSpeed * 0.05)){
       state.speedMetersPerSecond = 0;
     }
 
@@ -166,9 +167,9 @@ public class SwerveModule extends SubsystemBase {
       state, new Rotation2d(angle));
 
     double driveOutput = optimalState.speedMetersPerSecond /
-    (Constants.kWheelDiameter / 2.0) /
-    Constants.kDriveEncoderReductionRatio *
-    Constants.kDriveEncoderResolution * 0.1;
+    (SwerveConstants.kWheelDiameter / 2.0) /
+    SwerveConstants.kDriveEncoderReductionRatio *
+    SwerveConstants.kDriveEncoderResolution * 0.1;
 
     //final double CTREDriveOutput = Conversions.MPSToFalcon(optimalState.speedMetersPerSecond, Constants.SwerveConstants.wheelCircumference, Constants.SwerveConstants.driveGearRatio);
 
@@ -180,11 +181,11 @@ public class SwerveModule extends SubsystemBase {
     }
 
     //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-    double Angle = (Math.abs(state.speedMetersPerSecond) <= (Constants.kMaxSpeed * 0.01)) ? lastAngle : optimalAngle;
+    double Angle = (Math.abs(state.speedMetersPerSecond) <= (SwerveConstants.kMaxSpeed * 0.01)) ? lastAngle : optimalAngle;
     
     double pivotOutput = Angle /
-    Constants.kPivotEncoderReductionRatio *
-    Constants.kPivotEncoderResolution *
+    SwerveConstants.kPivotEncoderReductionRatio *
+    SwerveConstants.kPivotEncoderResolution *
     pivot_encoder_inverted + offset_;
 
     //double MaxFreeSpeed = Conversions.RPMToFalcon(6380, 1);
@@ -289,8 +290,8 @@ public class SwerveModule extends SubsystemBase {
     /*The unit is radian*/
     return MathUtil.angleModulus(      
     (pivot_motor_.getSelectedSensorPosition() - offset_) /
-    Constants.kPivotEncoderResolution *
-    Constants.kPivotEncoderReductionRatio *
+    SwerveConstants.kPivotEncoderResolution *
+    SwerveConstants.kPivotEncoderReductionRatio *
     pivot_encoder_inverted);
   }
 
@@ -298,8 +299,8 @@ public class SwerveModule extends SubsystemBase {
     /*The unit is radian*/
     return 
         (pivot_motor_.getSelectedSensorPosition() - offset_) /
-        Constants.kPivotEncoderResolution *
-        Constants.kPivotEncoderReductionRatio *
+        SwerveConstants.kPivotEncoderResolution *
+        SwerveConstants.kPivotEncoderReductionRatio *
         pivot_encoder_inverted;
   }
 
@@ -307,9 +308,9 @@ public class SwerveModule extends SubsystemBase {
     /*The unit is meters_per_second */
     return
         drive_motor_.getSelectedSensorVelocity() * drive_motor_inverted / 0.1 /
-        Constants.kDriveEncoderResolution *
-        Constants.kDriveEncoderReductionRatio *
-            Constants.kWheelDiameter / 2;
+        SwerveConstants.kDriveEncoderResolution *
+        SwerveConstants.kDriveEncoderReductionRatio *
+            SwerveConstants.kWheelDiameter / 2;
     //return Conversions.falconToMPS(drive_motor_.getSelectedSensorVelocity(), Constants.kWheelDiameter * Math.PI,
     //    Constants.kDriveEncoderReductionRatioTest);
   }
