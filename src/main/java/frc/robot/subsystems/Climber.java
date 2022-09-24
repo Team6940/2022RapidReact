@@ -4,7 +4,7 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
-import frc.robot.Constants;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.lib.team3476.Timer;
 //import frc.utility.controllers.LazyTalonSRX;
 //import org.jetbrains.annotations.NotNull;
@@ -14,8 +14,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static frc.robot.Constants.CLIMBER_ENCODER_TICKS_PER_INCH;
-import static frc.robot.Constants.DO_BACK_HOOK_CLIMB;
+import static frc.robot.Constants.ClimberConstants.CLIMBER_ENCODER_TICKS_PER_INCH;
+import static frc.robot.Constants.ClimberConstants.DO_BACK_HOOK_CLIMB;
 //import static frc.utility.Pneumatics.getPneumaticsHub;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -187,12 +187,12 @@ public final class Climber extends SubsystemBase {
                         (cl) -> {
                             cl.startingClimb = false;
                             //cl.setBrakeState(BrakeState.FREE);
-                            cl.climberMotor.set(ControlMode.MotionMagic, Constants.CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION);//TODO Change value the extension
+                            cl.climberMotor.set(ControlMode.MotionMagic, ClimberConstants.CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION);//TODO Change value the extension
                             //cl.setClawState(ClawState.UNLATCHED);
                         },
                         (cl) -> Math.abs(
-                                Constants.CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION - cl.climberMotor.getSelectedSensorPosition())
-                                < Constants.CLIMBER_MOTOR_MAX_ERROR,
+                                ClimberConstants.CLIMBER_GRAB_ON_FIRST_BAR_EXTENSION - cl.climberMotor.getSelectedSensorPosition())
+                                < ClimberConstants.CLIMBER_MOTOR_MAX_ERROR,
                         (cl) -> {},
                         true
                 )
@@ -223,21 +223,21 @@ public final class Climber extends SubsystemBase {
          * <ul>
          *     Moves the elevator arm up to the maximum height. At this height the arm will contact the next bar when the robot
          *     unpivots. Will continue to the next state once the elevator arm is at it's Max Extension
-         *     ({@link Constants#MAX_CLIMBER_EXTENSION}). At this point the robot is only supporting the pivoting arm.
+         *     ({@link ClimberConstants#MAX_CLIMBER_EXTENSION}). At this point the robot is only supporting the pivoting arm.
          * </ul>
          */
         MOVE_WEIGHT_TO_PIVOT_ARM(
                 new ClimbStep(
                         (cl) -> {
                             if (cl.shouldDoBackHookStep()) {
-                                cl.data = Constants.MAX_CLIMBER_EXTENSION;
-                                cl.climberMotor.set(ControlMode.MotionMagic, Constants.MAX_CLIMBER_EXTENSION);
+                                cl.data = ClimberConstants.MAX_CLIMBER_EXTENSION;
+                                cl.climberMotor.set(ControlMode.MotionMagic, ClimberConstants.MAX_CLIMBER_EXTENSION);
                             } else {
-                                cl.data = Constants.CLIMBER_ELEVATOR_UNLATCH_AMOUNT;
-                                cl.climberMotor.set(ControlMode.MotionMagic, Constants.CLIMBER_ELEVATOR_MAX_SAFE_HEIGHT);
+                                cl.data = ClimberConstants.CLIMBER_ELEVATOR_UNLATCH_AMOUNT;
+                                cl.climberMotor.set(ControlMode.MotionMagic, ClimberConstants.CLIMBER_ELEVATOR_MAX_SAFE_HEIGHT);
                             }
                         },
-                        (cl) -> cl.climberMotor.getSelectedSensorPosition() > cl.data - Constants.CLIMBER_MOTOR_MAX_ERROR,
+                        (cl) -> cl.climberMotor.getSelectedSensorPosition() > cl.data - ClimberConstants.CLIMBER_MOTOR_MAX_ERROR,
                         (cl) -> {},
                         true
                 )
@@ -264,7 +264,7 @@ public final class Climber extends SubsystemBase {
                         },
                         (cl) -> {
                             if (cl.shouldDoBackHookStep()) return true; // We didn't pivot, continue
-                            return Timer.getFPGATimestamp() - cl.data > Constants.ARM_PIVOT_DURATION; // true if we ARM_PIVOT_DURATION time has elapsed
+                            return Timer.getFPGATimestamp() - cl.data > ClimberConstants.ARM_PIVOT_DURATION; // true if we ARM_PIVOT_DURATION time has elapsed
                         },
                         (cl) -> {},
                         true
@@ -292,7 +292,7 @@ public final class Climber extends SubsystemBase {
                                 return true;
                             } else {
                                 return RobotTracker.getInstance().getGyroRollVelocity() > 0
-                                        && Roll > Constants.ELEVATOR_ARM_SAFE_ANGLE;  //TODO  暂时删除getGyroRollVelocity
+                                        && Roll > ClimberConstants.ELEVATOR_ARM_SAFE_ANGLE;  //TODO  暂时删除getGyroRollVelocity
                             }
                         },
                         (cl) -> {},
@@ -315,12 +315,12 @@ public final class Climber extends SubsystemBase {
                 new ClimbStep(
                         (cl) -> {
                             if (!cl.shouldDoBackHookStep()) {
-                                cl.climberMotor.set(ControlMode.MotionMagic, Constants.MAX_CLIMBER_EXTENSION);
+                                cl.climberMotor.set(ControlMode.MotionMagic, ClimberConstants.MAX_CLIMBER_EXTENSION);
                             }
                         },
                         (cl) -> {
                             if (cl.timesRun == 1) return true;
-                            return cl.climberMotor.getSelectedSensorPosition() > Constants.MAX_CLIMBER_EXTENSION - Constants.CLIMBER_MOTOR_MAX_ERROR;
+                            return cl.climberMotor.getSelectedSensorPosition() > ClimberConstants.MAX_CLIMBER_EXTENSION - ClimberConstants.CLIMBER_MOTOR_MAX_ERROR;
                         },
                         (cl) -> {},
                         true
@@ -331,7 +331,7 @@ public final class Climber extends SubsystemBase {
          * On the first run or when the back hook climb is disabled:
          * <ul>
          *     Unpivot the elevator arm so elevator arm is pulled onto the next bar. Waits
-         *     {@link Constants#ARM_UNPIVOT_DURATION} for the arm to unpivot.
+         *     {@link ClimberConstants#ARM_UNPIVOT_DURATION} for the arm to unpivot.
          * </ul>
          * When doing the back hook climb:
          * <ul>
@@ -349,7 +349,7 @@ public final class Climber extends SubsystemBase {
                                 cl.data = Timer.getFPGATimestamp();
                             } else {
                                 cl.setPivotState(PivotState.INLINE);
-                                cl.data = Timer.getFPGATimestamp() + Constants.ARM_UNPIVOT_DURATION;
+                                cl.data = Timer.getFPGATimestamp() + ClimberConstants.ARM_UNPIVOT_DURATION;
                             }
                         },
                         (cl) -> Timer.getFPGATimestamp() - cl.data > 0,
@@ -376,7 +376,7 @@ public final class Climber extends SubsystemBase {
                             if (cl.shouldDoBackHookStep()) {
                                 return false;
                             }
-                            return Roll < Constants.ON_NEXT_BAR_ANGLE;
+                            return Roll < ClimberConstants.ON_NEXT_BAR_ANGLE;
                         },
                         (cl) -> {},
                         false
@@ -399,12 +399,12 @@ public final class Climber extends SubsystemBase {
                         (cl) -> {
                             if (cl.shouldDoBackHookStep()) {
                                 cl.climberMotor.set(ControlMode.MotionMagic,
-                                        Constants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_BACK_HOOK);
-                                cl.data = Constants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_BACK_HOOK;
+                                        ClimberConstants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_BACK_HOOK);
+                                cl.data = ClimberConstants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_BACK_HOOK;
                             } else {
                                 cl.climberMotor.set(ControlMode.MotionMagic,
-                                        Constants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_FRONT_HOOK);
-                                cl.data = Constants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_FRONT_HOOK;
+                                        ClimberConstants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_FRONT_HOOK);
+                                cl.data = ClimberConstants.CLIMBER_GRAB_ON_NEXT_BAR_EXTENSION_FRONT_HOOK;
                             }
                             SwerveDriveTrain.getInstance().setSWERVE_MODULE_STATE_FORWARD();
                         },
@@ -445,7 +445,7 @@ public final class Climber extends SubsystemBase {
                             //cl.setClawState(ClawState.UNLATCHED);
                             cl.data = Timer.getFPGATimestamp();
                         },
-                        (cl) -> Timer.getFPGATimestamp() - cl.data > Constants.PIVOT_ARM_UNLATCH_DURATION,
+                        (cl) -> Timer.getFPGATimestamp() - cl.data > ClimberConstants.PIVOT_ARM_UNLATCH_DURATION,
                         (cl) -> {},
                         true
                 )
@@ -464,7 +464,7 @@ public final class Climber extends SubsystemBase {
                             if (cl.timesRun != 1 || !DO_BACK_HOOK_CLIMB) {
                                 return true; //We've already unpivoted, so we don't need to wait
                             }
-                            return Timer.getFPGATimestamp() - cl.data > Constants.ARM_UNPIVOT_DURATION;
+                            return Timer.getFPGATimestamp() - cl.data > ClimberConstants.ARM_UNPIVOT_DURATION;
                         },
                         (cl) -> {},
                         true
@@ -500,8 +500,8 @@ public final class Climber extends SubsystemBase {
      */
     private boolean isPivotArmContactingBar() {
         if (pivotingArmContactSwitchA.get() ^ pivotingArmContactSwitchB.get()) {
-            if (otherPivotingArmMustContactByTime > Timer.getFPGATimestamp() + Constants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME) {
-                otherPivotingArmMustContactByTime = Timer.getFPGATimestamp() + Constants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME;
+            if (otherPivotingArmMustContactByTime > Timer.getFPGATimestamp() + ClimberConstants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME) {
+                otherPivotingArmMustContactByTime = Timer.getFPGATimestamp() + ClimberConstants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME;
             } else if (Timer.getFPGATimestamp() > otherPivotingArmMustContactByTime) {
                 pauseClimb();
             }
@@ -522,8 +522,8 @@ public final class Climber extends SubsystemBase {
      */
     private boolean isElevatorArmContactingBar() {
         if (elevatorArmContactSwitchA.get() ^ elevatorArmContactSwitchB.get()) {
-            if (otherElevatorArmMustContactByTime > Timer.getFPGATimestamp() + Constants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME) {
-                otherElevatorArmMustContactByTime = Timer.getFPGATimestamp() + Constants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME;
+            if (otherElevatorArmMustContactByTime > Timer.getFPGATimestamp() + ClimberConstants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME) {
+                otherElevatorArmMustContactByTime = Timer.getFPGATimestamp() + ClimberConstants.MAX_ALLOW_ONLY_ONE_SWITCH_CONTACT_TIME;
             } else if (Timer.getFPGATimestamp() > otherElevatorArmMustContactByTime) {
                 pauseClimb();
             }
@@ -538,24 +538,24 @@ public final class Climber extends SubsystemBase {
     private int timesRun;
 
     private Climber() {
-        //super(Constants.CLIMBER_PERIOD, 1);
+        //super(ClimberConstants.CLIMBER_PERIOD, 1);
 
-        climberMotor = new WPI_TalonFX(Constants.leftClimberMotorPort);
-        climberMotor2 =  new WPI_TalonFX(Constants.rghtClimberMotorPort);
+        climberMotor = new WPI_TalonFX(ClimberConstants.leftClimberMotorPort);
+        climberMotor2 =  new WPI_TalonFX(ClimberConstants.rghtClimberMotorPort);
         climberMotor2.follow(climberMotor);
-        climberMotor.config_kF(0, Constants.CLIMBER_MOTOR_KF);
-        climberMotor.config_kP(0, Constants.CLIMBER_MOTOR_KP);
-        climberMotor.config_kI(0, Constants.CLIMBER_MOTOR_KI);
-        climberMotor.config_kD(0, Constants.CLIMBER_MOTOR_KD);
-        climberMotor.config_IntegralZone(0, Constants.CLIMBER_MOTOR_IZONE);
-        climberMotor.configMaxIntegralAccumulator(0, Constants.CLIMBER_MOTOR_MAX_IACCUMULATOR);
-        climberMotor.configPeakOutputForward(Constants.CLIMBER_MOTOR_MAX_OUTPUT);
-        climberMotor.configPeakOutputReverse(-Constants.CLIMBER_MOTOR_MAX_OUTPUT);
+        climberMotor.config_kF(0, ClimberConstants.CLIMBER_MOTOR_KF);
+        climberMotor.config_kP(0, ClimberConstants.CLIMBER_MOTOR_KP);
+        climberMotor.config_kI(0, ClimberConstants.CLIMBER_MOTOR_KI);
+        climberMotor.config_kD(0, ClimberConstants.CLIMBER_MOTOR_KD);
+        climberMotor.config_IntegralZone(0, ClimberConstants.CLIMBER_MOTOR_IZONE);
+        climberMotor.configMaxIntegralAccumulator(0, ClimberConstants.CLIMBER_MOTOR_MAX_IACCUMULATOR);
+        climberMotor.configPeakOutputForward(ClimberConstants.CLIMBER_MOTOR_MAX_OUTPUT);
+        climberMotor.configPeakOutputReverse(-ClimberConstants.CLIMBER_MOTOR_MAX_OUTPUT);
         climberMotor.setNeutralMode(NeutralMode.Brake);
-        climberMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, Constants.CLIMBER_CURRENT_LIMIT,
-                Constants.CLIMBER_CURRENT_LIMIT, 0));
-        climberMotor2.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, Constants.CLIMBER_CURRENT_LIMIT,
-                Constants.CLIMBER_CURRENT_LIMIT, 0));
+        climberMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, ClimberConstants.CLIMBER_CURRENT_LIMIT,
+                ClimberConstants.CLIMBER_CURRENT_LIMIT, 0));
+        climberMotor2.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, ClimberConstants.CLIMBER_CURRENT_LIMIT,
+                ClimberConstants.CLIMBER_CURRENT_LIMIT, 0));
 
         climberMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20); // Default is 10ms
         climberMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 25); // Default is 10ms
@@ -575,19 +575,19 @@ public final class Climber extends SubsystemBase {
         climberMotor2.setControlFramePeriod(ControlFrame.Control_4_Advanced, 25);
         climberMotor2.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 500);
 
-        elevatorArmContactSwitchA = new DigitalInput(Constants.ELEVATOR_ARM_CONTACT_SWITCH_A_DIO_CHANNEL);
-        elevatorArmContactSwitchB = new DigitalInput(Constants.ELEVATOR_ARM_CONTACT_SWITCH_B_DIO_CHANNEL);
+        elevatorArmContactSwitchA = new DigitalInput(ClimberConstants.ELEVATOR_ARM_CONTACT_SWITCH_A_DIO_CHANNEL);
+        elevatorArmContactSwitchB = new DigitalInput(ClimberConstants.ELEVATOR_ARM_CONTACT_SWITCH_B_DIO_CHANNEL);
 
-        pivotingArmContactSwitchA = new DigitalInput(Constants.PIVOTING_ARM_CONTACT_SWITCH_A_DIO_CHANNEL);
-        pivotingArmContactSwitchB = new DigitalInput(Constants.PIVOTING_ARM_CONTACT_SWITCH_B_DIO_CHANNEL);
-        //pivotingArmLatchedSwitchA = new DigitalInput(Constants.PIVOTING_ARM_LATCHED_SWITCH_A_DIO_CHANNEL);
-        //pivotingArmLatchedSwitchB = new DigitalInput(Constants.PIVOTING_ARM_LATCHED_SWITCH_B_DIO_CHANNEL);
+        pivotingArmContactSwitchA = new DigitalInput(ClimberConstants.PIVOTING_ARM_CONTACT_SWITCH_A_DIO_CHANNEL);
+        pivotingArmContactSwitchB = new DigitalInput(ClimberConstants.PIVOTING_ARM_CONTACT_SWITCH_B_DIO_CHANNEL);
+        //pivotingArmLatchedSwitchA = new DigitalInput(ClimberConstants.PIVOTING_ARM_LATCHED_SWITCH_A_DIO_CHANNEL);
+        //pivotingArmLatchedSwitchB = new DigitalInput(ClimberConstants.PIVOTING_ARM_LATCHED_SWITCH_B_DIO_CHANNEL);
 
-        //latchSolenoid = getPneumaticsHub().makeSolenoid(Constants.LATCH_SOLENOID_ID);
-        //pivotSolenoid = getPneumaticsHub().makeSolenoid(Constants.PIVOT_SOLENOID_ID);
-        //brakeSolenoid = getPneumaticsHub().makeSolenoid(Constants.BRAKE_SOLENOID_ID);
+        //latchSolenoid = getPneumaticsHub().makeSolenoid(ClimberConstants.LATCH_SOLENOID_ID);
+        //pivotSolenoid = getPneumaticsHub().makeSolenoid(ClimberConstants.PIVOT_SOLENOID_ID);
+        //brakeSolenoid = getPneumaticsHub().makeSolenoid(ClimberConstants.BRAKE_SOLENOID_ID);
         
-        pivotSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.PIVOT_SOLENOID_ID);
+        pivotSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, ClimberConstants.PIVOT_SOLENOID_ID);
 
         climberMotor.setInverted(true);
         climberMotor2.setInverted(true);
@@ -666,7 +666,7 @@ public final class Climber extends SubsystemBase {
      */
     public synchronized void deployClimb() {
         timesRun = 0;
-        climberMotor.set(ControlMode.MotionMagic, Constants.CLIMBER_DEPLOY_HEIGHT);
+        climberMotor.set(ControlMode.MotionMagic, ClimberConstants.CLIMBER_DEPLOY_HEIGHT);
         //setBrakeState(BrakeState.FREE);
         //setClawState(ClawState.UNLATCHED);
         setPivotState(PivotState.INLINE);
@@ -713,10 +713,10 @@ public final class Climber extends SubsystemBase {
         }
 
         if (!isPaused) {
-            //            if (climberMotor.getSelectedSensorPosition() < Constants.MIN_CLIMBER_ELEVATOR_HEIGHT
+            //            if (climberMotor.getSelectedSensorPosition() < ClimberConstants.MIN_CLIMBER_ELEVATOR_HEIGHT
             //                    && climberMotor.getSelectedSensorVelocity() < 0) {
             //                stopClimb();
-            //            } else if (climberMotor.getSelectedSensorPosition() > Constants.MAX_CLIMBER_ELEVATOR_HEIGHT
+            //            } else if (climberMotor.getSelectedSensorPosition() > ClimberConstants.MAX_CLIMBER_ELEVATOR_HEIGHT
             //                    && climberMotor.getSelectedSensorVelocity() > 0) {
             //                stopClimb();
             //            }
@@ -825,7 +825,7 @@ public final class Climber extends SubsystemBase {
         SmartDashboard.putNumber("Debug/Climber/Motor Percent Output", climberMotor.getMotorOutputPercent());
         SmartDashboard.putNumber("Debug/Climber/Motor Current", climberMotor.getStatorCurrent());
         SmartDashboard.putNumber("Debug/Climber/Motor 2 Current", climberMotor2.getStatorCurrent());
-        SmartDashboard.putNumber("Debug/Climber/Motor Current Limit", Constants.CLIMBER_CURRENT_LIMIT);
+        SmartDashboard.putNumber("Debug/Climber/Motor Current Limit", ClimberConstants.CLIMBER_CURRENT_LIMIT);
 
         SmartDashboard.putBoolean("Debug/Climber/Elevator Arm Contact Switch A", elevatorArmContactSwitchA.get());
         SmartDashboard.putBoolean("Debug/Climber/Elevator Arm Contact Switch B", elevatorArmContactSwitchB.get());

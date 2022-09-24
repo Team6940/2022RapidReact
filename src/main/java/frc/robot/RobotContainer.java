@@ -61,24 +61,20 @@ public class RobotContainer {
   // Swerve Driver's buttons
   public static JoystickButton limelightButton;
   public static JoystickButton resetyawButton;
-  public static JoystickButton controlopenlooptypeButton;
-  public static JoystickButton controlclosedlooptypeButton;
-  public static JoystickButton IntakeButton;
   public static JoystickButton resetOdometryButton;
   public static JoystickButton manualLimelightButton;
+  public double triggerLeft;
+  public double triggerRght;
 
   // Operator's buttons
   public static JoystickButton HopperButton;
   public static JoystickButton BlockerButton;
-  public static JoystickButton ElasticClimberButton;
-  public static JoystickButton ElasticClimberStopButton;
-  public static JoystickButton StraightClimberButton;
+  public static JoystickButton ClimberButton;
   public static JoystickButton ShooterSwitchModeButton;
-  public static JoystickButton DontShootButton;
+  //public static JoystickButton DontShootButton;
   public static JoystickButton ShootParaButton;
   public static JoystickButton testHasBallButton;
   public static JoystickButton testWrongBallButton;
-  public static JoystickButton ShootkFButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -101,23 +97,18 @@ public class RobotContainer {
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
-    resetyawButton = new JoystickButton(m_driverController, 7);
-    resetOdometryButton = new JoystickButton(m_driverController, 8);
-    IntakeButton = new JoystickButton(m_driverController, 3);
-    controlopenlooptypeButton  = new JoystickButton(m_driverController, 4);
-    controlclosedlooptypeButton = new JoystickButton(m_driverController, 5);
-    manualLimelightButton = new JoystickButton(m_driverController, 1);
+    resetyawButton = new JoystickButton(m_driverController, 2);
+    resetOdometryButton = new JoystickButton(m_driverController, 3);
+    triggerLeft = m_driverController.getLeftTriggerAxis();
+    triggerRght = m_driverController.getRightTriggerAxis();
 
     // The operator's buttons
     HopperButton = new JoystickButton(m_operatorController, 1);
     BlockerButton = new JoystickButton(m_operatorController, 2);
-    ElasticClimberButton = new JoystickButton(m_operatorController, 3);
-    ElasticClimberStopButton = new JoystickButton(m_operatorController, 8);
-    StraightClimberButton = new JoystickButton(m_operatorController, 11);
-    ShooterSwitchModeButton = new JoystickButton(m_operatorController, 9);
-    DontShootButton = new JoystickButton(m_operatorController, 7);
+    ClimberButton = new JoystickButton(m_operatorController, 3);
+    //ShooterSwitchModeButton = new JoystickButton(m_operatorController, 9);
+    //DontShootButton = new JoystickButton(m_operatorController, 7);
     ShootParaButton = new JoystickButton(m_operatorController, 4);
-    ShootkFButton = new JoystickButton(m_operatorController, 6);
     if (RobotBase.isSimulation()){    
       testHasBallButton = new JoystickButton(m_operatorController, 9);
       testWrongBallButton  = new JoystickButton(m_operatorController, 10);
@@ -139,39 +130,39 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Limelight button
-    //limelightButton.whenHeld(new AutoAim());
-    //limelightButton.whenHeld(new InstantCommand(() -> m_aimManager.startAimMoving()));
-    //limelightButton.whenReleased(new InstantCommand(() -> m_aimManager.Stop()));
-    ShootkFButton.whenHeld(new InstantCommand(() -> m_shooter.setShooterMax()));
-    ShootkFButton.whenReleased(new InstantCommand(() -> m_shooter.setShooterZero()));
-
-    manualLimelightButton.whenHeld(new AutoAim());
-    limelightButton.whenPressed(new InstantCommand(() -> m_aimManager.switchAimMode()));
-    // Intake button
-    IntakeButton.whenPressed(new InstantCommand(() -> m_intake.autoturnintaker()));
+    limelightButton.whenHeld(new AutoAim());
   
     // Hopper button
     HopperButton.whenHeld(new InstantCommand(() ->m_hopper.setHopperState(HopperState.ON)));
     HopperButton.whenReleased(new InstantCommand(() -> m_hopper.setHopperState(HopperState.OFF)));
-
-    // simulation test Button
-    if (RobotBase.isSimulation()){    
-      testHasBallButton.whenPressed(new InstantCommand(() -> m_hopper.DotestMode()));
-      testWrongBallButton.whenPressed(new InstantCommand(() -> m_colorsensor.DotestMode()));
-    }
 
     // Blocker button
     BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
     BlockerButton.whenReleased(new InstantCommand(() ->m_shooter.setFiring(false)));
 
     // Climber button
-    //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetElasticClimber()));
-    //ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopElasticClimber()));
-    //StraightClimberButton.whenPressed(new InstantCommand(() -> m_climber.autosetStraighClimber()));
-    //ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climber.autoStartClimb()));
-    //ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climber.stopClimb()));
-    ElasticClimberButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimber()));
-    ElasticClimberStopButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimberSol()));
+    ClimberButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimber()));
+
+    // Reset Yaw button . Remember to protect it during the game!
+    resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
+    
+    /* Use the method below if the head PID Control is wanted*/
+    //resetyawButton.whenReleased(new InstantCommand(() -> m_swerve.WhetherStoreYaw()));
+    
+    resetOdometryButton.whenPressed(new InstantCommand(() -> m_swerve.resetOdometry()));
+    
+    // ShootPara debug Button 
+    ShootParaButton.whenPressed(new InstantCommand(() -> m_aimManager.DebugShootParameter()));
+
+    // simulation test Button
+    if (RobotBase.isSimulation()){    
+      testHasBallButton.whenPressed(new InstantCommand(() -> m_hopper.DotestMode()));
+      testWrongBallButton.whenPressed(new InstantCommand(() -> m_colorsensor.DotestMode()));
+    }
+    
+    /**
+     * Below are the buttons when we use a turret
+     */
 
     // Shooter button
     //ShooterSwitchModeButton.whenPressed(new InstantCommand(() -> m_visionManager.autoSwitchShooterMode()));
@@ -190,22 +181,6 @@ public class RobotContainer {
         new InstantCommand(() -> m_visionManager.startVisionFinding())
         )
       );*/
-
-    // Reset Yaw button . Remember to protect it during the game!
-    resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
-    resetyawButton.whenReleased(new InstantCommand(() -> m_swerve.WhetherStoreYaw()));
-
-    resetOdometryButton.whenPressed(new InstantCommand(() -> m_swerve.resetOdometry()));
-
-    controlopenlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeOpen()));
-    controlclosedlooptypeButton.whenPressed(new InstantCommand(() -> m_swerve.setControlModeClosed()));
-
-    // ShootPara debug Button 
-    ShootParaButton.whenPressed(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
-    //ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.Stop()));
-    //ShootParaButton.whenHeld(new InstantCommand(() ->m_aimManager.DebugShootParameter()));
-    //ShootParaButton.whenReleased(new InstantCommand(() ->m_aimManager.StopAll()));
-    
   }
 
   /**
@@ -221,7 +196,5 @@ public class RobotContainer {
     if (getAutonomousCommand() != null) {
       getAutonomousCommand().cancel();
     }
-    //m_moveShoot.schedule();
-    //new SmartFeed(m_turret, m_highElevator, m_lowElevator, m_robotDrive, m_shooter, m_hood, m_colorSensor).withTimeout(2.0).schedule();
   }
 }

@@ -2,7 +2,7 @@ package frc.robot.lib.team1690;
 
 import java.lang.Math;
 
-import frc.robot.Constants;
+import frc.robot.Constants.GlobalConstants;
 
 public final class Vector {
 
@@ -19,7 +19,7 @@ public final class Vector {
     }
 
     public static Vector INF() {
-        return new Vector(Constants.INF, Constants.INF);
+        return new Vector(GlobalConstants.INF, GlobalConstants.INF);
     }
 
     public float norm() {

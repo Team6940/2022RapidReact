@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.HopperConstants;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public final class Hopper extends SubsystemBase  {
@@ -31,11 +32,11 @@ public final class Hopper extends SubsystemBase  {
 
     private Hopper() {
         //super(Constants.HOPPER_PERIOD, 5);
-        hopperMotor = new WPI_TalonFX(Constants.BallLoaderPort); //TODO
+        hopperMotor = new WPI_TalonFX(HopperConstants.HopperPort); //TODO
         hopperMotor.configVoltageCompSaturation(12);
         hopperMotor.enableVoltageCompensation(true);
-        topIRSensor = new DigitalInput(Constants.HOPPER_TOP_BALL_IR_SENSOR); //TODO
-        bottomIRSensor = new DigitalInput(Constants.HOPPER_LOW_BALL_IR_SENSOR); //TODO
+        topIRSensor = new DigitalInput(HopperConstants.HOPPER_TOP_BALL_IR_SENSOR); //TODO
+        bottomIRSensor = new DigitalInput(HopperConstants.HOPPER_LOW_BALL_IR_SENSOR); //TODO
         hopperState = HopperState.OFF;
     }
 
@@ -44,16 +45,16 @@ public final class Hopper extends SubsystemBase  {
         // Hopper Motor Control
         switch (hopperState) {
             case ON:
-                setHopperSpeed(Constants.HOPPER_SPEED);
+                setHopperSpeed(HopperConstants.HOPPER_SPEED);
                 break;
             case OFF:
                 setHopperSpeed(0);
                 break;
             case REVERSE:
-                setHopperSpeed(-Constants.HOPPER_SPEED);
+                setHopperSpeed(-HopperConstants.HOPPER_SPEED);
                 break;
             case SLOW:
-                setHopperSpeed(Constants.HOPPER_SLOW_SPEED);
+                setHopperSpeed(HopperConstants.HOPPER_SLOW_SPEED);
                 break;
         } //TODO
 

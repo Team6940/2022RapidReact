@@ -25,11 +25,6 @@
         "header": {
           "open": true
         }
-      },
-      "Talon SRX[2]": {
-        "header": {
-          "open": true
-        }
       }
     },
     "PWM Outputs": {

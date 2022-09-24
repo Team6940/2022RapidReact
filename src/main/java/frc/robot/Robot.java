@@ -101,7 +101,11 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
+    if (m_robotContainer.triggerLeft > 0 || m_robotContainer.triggerRght > 0) {
+      Intake.getInstance().runIntaker();
+    } else {
+      Intake.getInstance().stopIntaker();
+    }
   }
 
   @Override

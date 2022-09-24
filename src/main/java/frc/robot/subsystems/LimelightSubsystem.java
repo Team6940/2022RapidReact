@@ -10,8 +10,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants.GoalConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.lib.team1706.LinearInterpolationTable;
 import java.awt.geom.Point2D;
 
@@ -147,14 +148,14 @@ private static LinearInterpolationTable distTable = new LinearInterpolationTable
 
   
   public double getRobotToTargetDistance() {
-		return (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
-             / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + Get_ty()));
+		return (GoalConstants.LL_UPPER_HUB_HEIGHT - LimelightConstants.LL_MOUNT_HEIGHT)
+             / Math.tan(Math.toRadians(LimelightConstants.LL_MOUNT_ANGLE + Get_ty()));
 	}
 
   public OptionalDouble getRobotToTargetDistance_Opt(){
     distancetoTarget = OptionalDouble.of(
-      (Constants.LL_UPPER_HUB_HEIGHT - Constants.LL_MOUNT_HEIGHT)
-      / Math.tan(Math.toRadians(Constants.LL_MOUNT_ANGLE + Get_ty())));
+      (GoalConstants.LL_UPPER_HUB_HEIGHT - LimelightConstants.LL_MOUNT_HEIGHT)
+      / Math.tan(Math.toRadians(LimelightConstants.LL_MOUNT_ANGLE + Get_ty())));
     return distancetoTarget;
   }
 

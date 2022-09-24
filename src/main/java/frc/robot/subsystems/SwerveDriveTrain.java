@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.GlobalConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.lib.team1706.FieldRelativeAccel;
 import frc.robot.lib.team1706.FieldRelativeSpeed;
 import io.github.pseudoresonance.pixy2api.*;
@@ -66,15 +67,15 @@ public class SwerveDriveTrain extends SubsystemBase {
 
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
-        new Translation2d( Constants.kLength / 2,  Constants.kWidth / 2),//front left
-        new Translation2d( Constants.kLength / 2, -Constants.kWidth / 2),//front right
-        new Translation2d(-Constants.kLength / 2,  Constants.kWidth / 2),//back left
-        new Translation2d(-Constants.kLength / 2, -Constants.kWidth / 2)//back right
+        new Translation2d( SwerveConstants.kLength / 2,  SwerveConstants.kWidth / 2),//front left
+        new Translation2d( SwerveConstants.kLength / 2, -SwerveConstants.kWidth / 2),//front right
+        new Translation2d(-SwerveConstants.kLength / 2,  SwerveConstants.kWidth / 2),//back left
+        new Translation2d(-SwerveConstants.kLength / 2, -SwerveConstants.kWidth / 2)//back right
   );
 
   public SwerveDriveOdometry odometry_ =
       new SwerveDriveOdometry(
-        Constants.swerveKinematics,
+        SwerveConstants.swerveKinematics,
         new Rotation2d(0),
         new Pose2d()
   );
@@ -82,7 +83,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   public SwerveDriveTrain() {
 
     addShuffleboardDebug();
-    gyro = new PigeonIMU(Constants.PigeonIMUPort);
+    gyro = new PigeonIMU(SwerveConstants.PigeonIMUPort);
 
     // The coordinate system may be wrong 
     swerve_modules_[0] = new SwerveModule(1, 2, false,  false, 2510, true, true);//front left
@@ -108,14 +109,14 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public void Drive(Translation2d translation,double omega,boolean fieldRelative,boolean isOpenloop){
-    var states = Constants.swerveKinematics.toSwerveModuleStates(
+    var states = SwerveConstants.swerveKinematics.toSwerveModuleStates(
       fieldRelative ? 
       ChassisSpeeds.fromFieldRelativeSpeeds(
         translation.getX(), translation.getY(), omega, GetGyroRotation2d())
       : new ChassisSpeeds(translation.getX() , translation.getY(), omega)
     );
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.kMaxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, SwerveConstants.kMaxSpeed);
       
     for(int i = 0;i < swerve_modules_.length;i++ ){
       swerve_modules_[i].SetDesiredState(states[i],isOpenloop);
@@ -123,7 +124,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   }
 
   public void SetModuleStates(SwerveModuleState[] desiredStates){
-      SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.kMaxSpeed);
+      SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.kMaxSpeed);
       for(int i = 0;i < swerve_modules_.length;i++){
         swerve_modules_[i].SetDesiredState(desiredStates[i], true);
       }  
@@ -196,7 +197,7 @@ public class SwerveDriveTrain extends SubsystemBase {
     */
   public void setChassisSpeeds (ChassisSpeeds speeds) {
     SwerveModuleState[] moduleStates = kDriveKinematics.toSwerveModuleStates(speeds); //Generate the swerve module states
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.kMaxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, SwerveConstants.kMaxSpeed);
     SetModuleStates(moduleStates);
   }
 
@@ -405,10 +406,6 @@ public class SwerveDriveTrain extends SubsystemBase {
     swerveDriveTab.addNumber("rot radians", () ->this.getPose().getRotation().getDegrees())
     .withPosition(1, 2)
     .withSize(1, 1);  
-
-    swerveDriveTab.addBoolean("isOpenloop", () ->this.isOpenLoop)
-    .withPosition(1, 3)
-    .withSize(1, 1);
     
     swerveDriveTab.addNumber("FieldRelativeSpeedX", () ->this.getFieldRelativeXVelocity())
     .withPosition(2, 0)

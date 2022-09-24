@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.lib.team1678.math.Conversions;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,15 +30,15 @@ public class Turret extends SubsystemBase {
     LimelightSubsystem limelight = LimelightSubsystem.getInstance();
 
     public Turret() {
-        mTurretMotor = new WPI_TalonSRX(Constants.turretID);
+        mTurretMotor = new WPI_TalonSRX(TurretConstants.turretID);
         // mTurretMotor.configFactoryDefault();
         mTurretMotor.setInverted(false);
         mTurretMotor.setSensorPhase(false);
         setBrakeMode(false);
 
         configurationOne();
-        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMaxSoftLimitAngle)+offset, 10); // TODO
-        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(Constants.TurretMinSoftLimitAngle)+offset, 10); // TODO
+        mTurretMotor.configForwardSoftLimitThreshold(turretAngleToEncUnits(TurretConstants.TurretMaxSoftLimitAngle)+offset, 10); // TODO
+        mTurretMotor.configReverseSoftLimitThreshold(turretAngleToEncUnits(TurretConstants.TurretMinSoftLimitAngle)+offset, 10); // TODO
         mTurretMotor.configForwardSoftLimitEnable(true, 10);
         mTurretMotor.configReverseSoftLimitEnable(true, 10);
 
@@ -112,21 +114,21 @@ public class Turret extends SubsystemBase {
 
     // here angle is  degrees
     public void setTurretAngle(double angle) {
-        if (angle <= Constants.TurretMinSoftLimitAngle) {
-            desiredTurretAngle = Constants.TurretMinSoftLimitAngle;
-        }else if (angle >= Constants.TurretMaxSoftLimitAngle) {
-            desiredTurretAngle = Constants.TurretMaxSoftLimitAngle;
+        if (angle <= TurretConstants.TurretMinSoftLimitAngle) {
+            desiredTurretAngle = TurretConstants.TurretMinSoftLimitAngle;
+        }else if (angle >= TurretConstants.TurretMaxSoftLimitAngle) {
+            desiredTurretAngle = TurretConstants.TurretMaxSoftLimitAngle;
         }else{
             desiredTurretAngle = angle;
         }
     }
 
     public double encUnitsToTurretAngle(int encUnits) {
-        return Conversions.talonToDegrees((double) encUnits, Constants.TURRET_GEAR_RATIO);// TODO
+        return Conversions.talonToDegrees((double) encUnits, TurretConstants.TURRET_GEAR_RATIO);// TODO
     }
 
     public int turretAngleToEncUnits(double mTurretMotorAngle) {
-        return (int) Conversions.degreesToTalon(mTurretMotorAngle ,Constants.TURRET_GEAR_RATIO);// Todo
+        return (int) Conversions.degreesToTalon(mTurretMotorAngle ,TurretConstants.TURRET_GEAR_RATIO);// Todo
     }
 
     public void readPeriodicInputs() {
@@ -142,7 +144,7 @@ public class Turret extends SubsystemBase {
 
     public void writePeriodicOutputs() {
         if (currentState == TurretControlState.HOME) { 
-            desiredTurretAngle = Constants.kTurretStartingAngle;   //TODO  what is home angle?
+            desiredTurretAngle = TurretConstants.kTurretStartingAngle;   //TODO  what is home angle?
         } 
         if (currentState == TurretControlState.STOP) {
             desiredTurretAngle = getTurretAngleDeg();
@@ -157,11 +159,11 @@ public class Turret extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        if (Constants.kOutputTelemetry) {
+        if (TurretConstants.kOutputTelemetry) {
             SmartDashboard.putNumber("Debug/Turret/Encoder", periodicIO.position);
             SmartDashboard.putNumber("Debug/Turret/Demand", periodicIO.demand);
             SmartDashboard.putNumber("Debug/Turret/Error",
-                    Conversions.talonToDegrees(mTurretMotor.getClosedLoopError(0), Constants.TURRET_GEAR_RATIO));
+                    Conversions.talonToDegrees(mTurretMotor.getClosedLoopError(0), TurretConstants.TURRET_GEAR_RATIO));
             if (mTurretMotor.getControlMode() == ControlMode.MotionMagic)
                 SmartDashboard.putNumber("Debug/Turret/Setpoint", mTurretMotor.getClosedLoopTarget(0));
         }
@@ -226,7 +228,7 @@ public class Turret extends SubsystemBase {
     }
     
     public boolean visionAligned() {
-        if (limelight.isTargetVisible() && Math.abs(limelight.Get_tx()) < Constants.kTrackTolerance) {
+        if (limelight.isTargetVisible() && Math.abs(limelight.Get_tx()) < LimelightConstants.kTrackTolerance) {
           return true;
         } else {
           return false;
@@ -234,7 +236,7 @@ public class Turret extends SubsystemBase {
       }
     
     public boolean atDesiredAngle() {
-        return Math.abs(desiredTurretAngle - Math.toDegrees(getMeasurement())) <= Constants.kTolerance;
+        return Math.abs(desiredTurretAngle - Math.toDegrees(getMeasurement())) <= TurretConstants.kTolerance;
     }
     
 }
