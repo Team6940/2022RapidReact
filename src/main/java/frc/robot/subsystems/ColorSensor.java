@@ -92,7 +92,7 @@ public class ColorSensor extends SubsystemBase {
         }
     }
 
-    public void DotestMode(){
+    public void DoWrongBallTest(){
         testMode1 = (testMode1 == 0) ? 1:0;
     }
 

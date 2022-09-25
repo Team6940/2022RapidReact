@@ -134,13 +134,13 @@ public class Intake extends SubsystemBase {
     public void runIntaker() {
         setIntakeSolState(IntakeSolState.OPEN);
         setWantedIntakeState(IntakeState.INTAKE);
-        Hopper.getInstance().setHopperState(HopperState.ON);
+        //Hopper.getInstance().setHopperState(HopperState.ON);
     }
 
     public void stopIntaker(){
         setIntakeSolState(IntakeSolState.CLOSE);
         setWantedIntakeState(IntakeState.OFF);
-        Hopper.getInstance().setHopperState(HopperState.OFF);
+        //Hopper.getInstance().setHopperState(HopperState.OFF);
     }    
 
     private int cnt = 0;
@@ -157,5 +157,9 @@ public class Intake extends SubsystemBase {
             Hopper.getInstance().setHopperState(HopperState.OFF);
         }
         cnt++;
+    }
+
+    public boolean isIntakerOn(){
+        return getWantedIntakeState() == IntakeState.INTAKE ?true:false;
     }
 }

@@ -19,7 +19,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveDriveTrain;
 import frc.robot.auto.actions.SwervePathAction;
-import frc.robot.auto.actions.ShootAction2;
 import frc.robot.auto.actions.IntakeAndHopperAction;
 import frc.robot.commands.Limelight.AutoAim;
 
@@ -73,7 +72,7 @@ public class SixBallMode2 extends SequentialCommandGroup {
       new SwervePathAction(mSixBallTrajectoryFour).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new ShootAction2().withTimeout(1),
+      new AutoAim().withTimeout(1),
 
       new SwervePathAction(mSixBallTrajectoryFive).deadlineWith(
         new IntakeAndHopperAction()

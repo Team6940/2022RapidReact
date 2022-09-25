@@ -13,6 +13,7 @@ import frc.robot.subsystems.AimManager;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ClimberNew;
 import frc.robot.subsystems.ColorSensor;
+import frc.robot.subsystems.FeedManager;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LedSubsystem;
@@ -22,6 +23,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDriveTrain;
 //import frc.robot.subsystems.VisionManager;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.FeedManager.FeedManagerState;
 import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -55,6 +57,7 @@ public class RobotContainer {
   public static Hopper m_hopper;
   public static Intake m_intake;
   public static ColorSensor m_colorsensor;
+  public static FeedManager m_feedmanager;
   public static int autoShootMode = 1;
   private final AutonomousSelector autonomousSelector;
 
@@ -67,13 +70,15 @@ public class RobotContainer {
   public double triggerRght;
 
   // Operator's buttons
-  public static JoystickButton HopperButton;
+  public static JoystickButton IntakeButton;
   public static JoystickButton BlockerButton;
   public static JoystickButton ClimberButton;
   public static JoystickButton ShooterSwitchModeButton;
   //public static JoystickButton DontShootButton;
+  public static JoystickButton feederButton;
   public static JoystickButton ShootParaButton;
-  public static JoystickButton testHasBallButton;
+  public static JoystickButton testTopBallButton;
+  public static JoystickButton testBottomBallButton;
   public static JoystickButton testWrongBallButton;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -94,6 +99,7 @@ public class RobotContainer {
     m_colorsensor = ColorSensor.getInstance();
     m_hopper = Hopper.getInstance();
     m_intake = Intake.getInstance();
+    m_feedmanager = FeedManager.getInstance();
 
     // The Swerve Driver's buttons
     limelightButton = new JoystickButton(m_driverController, 6);
@@ -103,14 +109,16 @@ public class RobotContainer {
     triggerRght = m_driverController.getRightTriggerAxis();
 
     // The operator's buttons
-    HopperButton = new JoystickButton(m_operatorController, 1);
+    IntakeButton = new JoystickButton(m_operatorController, 1);
     BlockerButton = new JoystickButton(m_operatorController, 2);
     ClimberButton = new JoystickButton(m_operatorController, 3);
     //ShooterSwitchModeButton = new JoystickButton(m_operatorController, 9);
     //DontShootButton = new JoystickButton(m_operatorController, 7);
+    feederButton = new JoystickButton(m_operatorController, 7);
     ShootParaButton = new JoystickButton(m_operatorController, 4);
     if (RobotBase.isSimulation()){    
-      testHasBallButton = new JoystickButton(m_operatorController, 9);
+      testBottomBallButton = new JoystickButton(m_operatorController, 5);
+      testTopBallButton = new JoystickButton(m_operatorController, 9);
       testWrongBallButton  = new JoystickButton(m_operatorController, 10);
     }
 
@@ -133,8 +141,8 @@ public class RobotContainer {
     limelightButton.whenHeld(new AutoAim());
   
     // Hopper button
-    HopperButton.whenHeld(new InstantCommand(() ->m_hopper.setHopperState(HopperState.ON)));
-    HopperButton.whenReleased(new InstantCommand(() -> m_hopper.setHopperState(HopperState.OFF)));
+    IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
+    IntakeButton.whenReleased(new InstantCommand(() ->m_intake.stopIntaker()));
 
     // Blocker button
     BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
@@ -156,10 +164,12 @@ public class RobotContainer {
 
     // simulation test Button
     if (RobotBase.isSimulation()){    
-      testHasBallButton.whenPressed(new InstantCommand(() -> m_hopper.DotestMode()));
-      testWrongBallButton.whenPressed(new InstantCommand(() -> m_colorsensor.DotestMode()));
+      testBottomBallButton.whenPressed(new InstantCommand(() -> m_hopper.DoBottomBallTest()));
+      testTopBallButton.whenPressed(new InstantCommand(() -> m_hopper.DoTopBallTest()));
+      testWrongBallButton.whenPressed(new InstantCommand(() -> m_colorsensor.DoWrongBallTest()));
     }
     
+    feederButton.whenPressed(new InstantCommand(() -> m_feedmanager.switchFeederMode()));
     /**
      * Below are the buttons when we use a turret
      */

@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.auto.actions.ShootAction2;
 import frc.robot.auto.actions.IntakeAndHopperAction;
 import frc.robot.auto.actions.SwervePathAction;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -51,10 +50,10 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       new SwervePathAction(mFiveBallTrajectoryOne).deadlineWith(
            new IntakeAndHopperAction()
            ),
-      new WaitCommand(0.5),
+      new WaitCommand(0.1),
 
       new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(
-        new IntakeAndHopperAction()
+        //new IntakeAndHopperAction()
         ),
       //new ShootAction2().withTimeout(1),
       new AutoAim().withTimeout(1),
@@ -63,18 +62,19 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new WaitCommand(0.5),
+      new WaitCommand(0.1),
       //new ShootAction2().withTimeout(1),
-      new AutoAim().withTimeout(1),
+      new AutoAim().withTimeout(1), //TODO redraw heading path
 
       new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(
-        new IntakeAndHopperAction() 
+        new InstantCommand(() -> Intake.getInstance().runIntaker())
         ),
       new WaitCommand(2),
+      new InstantCommand(() -> Intake.getInstance().stopIntaker()), 
       //new WaitCommand(0.5),
 
       new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(
-        new IntakeAndHopperAction()  
+        /*new IntakeAndHopperAction()*/  
         ),
       //new ShootAction2().withTimeout(1),
       new AutoAim().withTimeout(1),

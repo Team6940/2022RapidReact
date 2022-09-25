@@ -100,8 +100,11 @@ public final class Hopper extends SubsystemBase  {
         return !bottomIRSensor.get();
     }
 
-    public void DotestMode(){
+    public void DoTopBallTest(){
         testMode1 = (testMode1 == 0) ? 1:0;
     }
 
+    public void DoBottomBallTest(){
+        testMode2 = (testMode2 == 0) ? 1:0;
+    }
 }

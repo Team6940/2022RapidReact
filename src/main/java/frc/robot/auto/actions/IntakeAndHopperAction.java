@@ -29,7 +29,7 @@ public class IntakeAndHopperAction extends CommandBase {
   public void initialize() {
     mIntake.setIntakeSolState(IntakeSolState.OPEN);
     mIntake.setWantedIntakeState(IntakeState.INTAKE);
-    mHopper.setHopperState(HopperState.ON);
+    //mHopper.setHopperState(HopperState.ON);
     LimelightSubsystem.getInstance().reloadLimeLightSimu();
   }
 
@@ -40,6 +40,8 @@ public class IntakeAndHopperAction extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    //mHopper.setHopperState(HopperState.OFF);
+    mIntake.setWantedIntakeState(IntakeState.OFF);
   }
 
   // Returns true when the command should end.
