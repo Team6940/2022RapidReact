@@ -29,10 +29,11 @@ public class AimManager extends SubsystemBase {
     SwerveDriveTrain driveDrain = SwerveDriveTrain.getInstance();
     Hopper hooper = Hopper.getInstance();
     Intake intake = Intake.getInstance();
+    FeedManager feeder = FeedManager.getInstance();
     ColorSensor colorsensor = ColorSensor.getInstance();
     private static LinearInterpolationTable m_hoodTable = ShooterConstants.kHoodTable;
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
-    boolean enanbleTelemetry = false;
+    boolean enanbleTelemetry = true;
     boolean wrongBall = false ;
     boolean topHasBall = false; 
     boolean bottomHasBall = false;
@@ -106,8 +107,10 @@ public class AimManager extends SubsystemBase {
 
     public void startAimShoot() {
         currentState = AimManagerState.AIM_SHOOT;
+        feeder.setAimFeed();
     }
     public void startAimForce() {
+        feeder.setAimFeed();;
         currentState = AimManagerState.AIM_FORCE;
     }    
 
@@ -134,15 +137,11 @@ public class AimManager extends SubsystemBase {
         //wrongBall = false;
         topHasBall = hooper.isHasTopBall();
         //topHasBall = true;
-        //bottomHasBall = hooper.isHasBottomBall();
+        bottomHasBall = hooper.isHasBottomBall();
 
-        if (bottomHasBall) {
-            hooper.setHopperState(HopperState.ON);
-            //topHasBall = hooper.isHasTopBall();
-        }
-
-        if (/*topHasBall && */wrongBall) {
+        if (topHasBall && wrongBall) {
             //saveShootStat = currentState;
+            feeder.setAimFeed();
             currentState = AimManagerState.AIM_WRONGBALL;
         }
 
@@ -174,6 +173,7 @@ public class AimManager extends SubsystemBase {
         if (currentState == AimManagerState.STOP) {
             startBallShooting = false;
             shotBallTime = Double.NEGATIVE_INFINITY;
+            feeder.setAutoFeed();
             //shooter.setShooterToStop();
             //shooter.setFiring(false);
         }
@@ -269,6 +269,7 @@ public class AimManager extends SubsystemBase {
         SmartDashboard.putString("Debug/AimManager/AimState", getAimManagerState().name());
         SmartDashboard.putString("Debug/AimManager/ShooterState", shooter.getShooterState().name()); 
         SmartDashboard.putBoolean("Debug/AimManager/hasBallShooting", startBallShooting); 
+        SmartDashboard.putBoolean("Debug/AimManager/BottomHasBall", bottomHasBall);        
         SmartDashboard.putBoolean("Debug/AimManager/topHasBall", topHasBall);        
         SmartDashboard.putBoolean("Debug/AimManager/wrongBall",wrongBall); 
         SmartDashboard.putBoolean("Debug/AimManager/hasWrongBallShooting",hasWrongBallShooting); 
@@ -279,6 +280,7 @@ public class AimManager extends SubsystemBase {
         SmartDashboard.putString("Debug/AimManager/HooperState",hooper.getHopperState().name());
         SmartDashboard.putString("Debug/AimManager/IntakeState",intake.getWantedIntakeState().name());
         SmartDashboard.putString("Debug/AimManager/IntakeSolState",intake.getIntakeSolState().name());
+        SmartDashboard.putString("Debug/AimManager/feederState",feeder.getFeederState().name());
     }
 
     public enum AimManagerState {
@@ -391,6 +393,10 @@ public class AimManager extends SubsystemBase {
         summaryTab.addString("IntakeSolState", () ->intake.getIntakeSolState().name())
             .withPosition(2, 3)
                 .withSize(1, 1);
+        summaryTab.addString("FeederState", () ->feeder.getFeederState().name())
+            .withPosition(2, 4)
+                .withSize(1, 1);
+    
         summaryTab.addNumber("ShooterVelocityUnit", () ->shooter.getShooterVelocityUnit())
             .withPosition(3, 0)
             .withSize(1, 1);

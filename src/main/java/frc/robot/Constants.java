@@ -85,7 +85,7 @@ public final class Constants {
         public static double kShooterTolerance = 20; //RPM //TODO
         public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
         public static double kShootOneBallTime = 0.2; //TODO every one shooting ball time(seconds)
-        public static double kShootTestTime = 60;
+        public static double kShootTestTime = 1;
         public static double kShootOneWrongBallTime = 0.5 ; //TODO every one shooting ball time(seconds)
     
         public static final double [] angleCoefficients = {-0.00074772,	0.00107806,	-0.00056204, -0.000010622,

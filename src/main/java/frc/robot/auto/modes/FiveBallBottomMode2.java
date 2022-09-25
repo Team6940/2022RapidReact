@@ -67,13 +67,14 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       new AutoAim().withTimeout(1), //TODO redraw heading path
 
       new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(
-        new IntakeAndHopperAction() 
+        new InstantCommand(() -> Intake.getInstance().runIntaker())
         ),
       new WaitCommand(2),
+      new InstantCommand(() -> Intake.getInstance().stopIntaker()), 
       //new WaitCommand(0.5),
 
       new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(
-        new IntakeAndHopperAction()  
+        /*new IntakeAndHopperAction()*/  
         ),
       //new ShootAction2().withTimeout(1),
       new AutoAim().withTimeout(1),
