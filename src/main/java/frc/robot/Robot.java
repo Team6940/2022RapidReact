@@ -103,7 +103,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(!RobotBase.isSimulation()){  
-      if (m_robotContainer.triggerLeft > 0 || m_robotContainer.triggerRght > 0) {
+      if (m_robotContainer.m_driverController.getLeftTriggerAxis() > 0 || m_robotContainer.m_driverController.getRightTriggerAxis() > 0) {
       Intake.getInstance().runIntaker();
       } else {
         Intake.getInstance().stopIntaker();

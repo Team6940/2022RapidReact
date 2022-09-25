@@ -105,11 +105,11 @@ public class RobotContainer {
     limelightButton = new JoystickButton(m_driverController, 6);
     resetyawButton = new JoystickButton(m_driverController, 2);
     resetOdometryButton = new JoystickButton(m_driverController, 3);
+    IntakeButton = new JoystickButton(m_driverController, 5);
     triggerLeft = m_driverController.getLeftTriggerAxis();
     triggerRght = m_driverController.getRightTriggerAxis();
 
     // The operator's buttons
-    IntakeButton = new JoystickButton(m_operatorController, 1);
     BlockerButton = new JoystickButton(m_operatorController, 2);
     ClimberButton = new JoystickButton(m_operatorController, 3);
     //ShooterSwitchModeButton = new JoystickButton(m_operatorController, 9);
@@ -141,8 +141,8 @@ public class RobotContainer {
     limelightButton.whenHeld(new AutoAim());
   
     // Hopper button
-    IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
-    IntakeButton.whenReleased(new InstantCommand(() ->m_intake.stopIntaker()));
+    //IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
+    IntakeButton.whenPressed(new InstantCommand(() ->m_intake.stopSolenoid()));
 
     // Blocker button
     BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));

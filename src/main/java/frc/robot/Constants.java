@@ -33,12 +33,12 @@ public final class Constants {
         
         private static final Point2D[] kHoodPoints = new Point2D.Double[] {
             // (distance, ty-angle)
-            new Point2D.Double(2.386/*90*/, 0), //
-            new Point2D.Double(2.887/*105*/, 7.00), //
-            new Point2D.Double(3.349/*120*/, 12.00), //
-            new Point2D.Double(3.914/*135*/, 15.00), //
-            //new Point2D.Double(3.810/*150*/, 29.0), //
-            //new Point2D.Double(4.191/*165*/, 30.5), //
+            new Point2D.Double(2.433/*90*/, 0), //
+            new Point2D.Double(2.975/*105*/, 0.00), //
+            new Point2D.Double(3.597/*120*/, 6.00), //
+            new Point2D.Double(4.100/*135*/, 8.00), //
+            new Point2D.Double(4.674/*150*/, 10.0), //
+            new Point2D.Double(5.360/*165*/, 12.0), //
             //new Point2D.Double(4.572/*180*/, 32.0), //
             //new Point2D.Double(4.953/*195*/, 36.0), //
             //new Point2D.Double(5.334/*210*/, 37.0), //
@@ -48,12 +48,12 @@ public final class Constants {
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (distance, shooterSpeedRPM)
-            new Point2D.Double(2.396/*90*/, 2305), //
-            new Point2D.Double(2.887/*135*/, 2360), //
-            new Point2D.Double(3.349/*150*/, 2405), //
-            new Point2D.Double(3.914/*165*/, 2460), //
-            //new Point2D.Double(4.572/*180*/, 3040), //
-            //new Point2D.Double(4.953/*195*/, 3185), //
+            new Point2D.Double(2.433/*90*/, 2150), //
+            new Point2D.Double(2.975/*135*/, 2240), //
+            new Point2D.Double(3.597/*150*/, 2320), //
+            new Point2D.Double(4.100/*165*/, 2370), //
+            new Point2D.Double(4.674/*180*/, 2420), //
+            new Point2D.Double(5.360/*195*/, 2470), //
             //new Point2D.Double(5.334/*210*/, 3315), //
             //new Point2D.Double(5.715/*225*/, 3500), //
             //new Point2D.Double(6.096/*240*/, 3700),

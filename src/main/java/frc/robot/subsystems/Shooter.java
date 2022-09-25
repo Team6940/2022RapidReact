@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
     // for hood
     private WPI_TalonSRX mHoodmotor;//hood一号电机
     private WPI_TalonFX mHoodmotor2;//hood二号电机
-    private int offset = 622;//TODO encoder的偏移量
+    private int offset = 3063;//TODO encoder的偏移量
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();//新定义一个shooter状态类
     private double desiredHoodAngle;//目标hood角度
     HoodControlState hoodstate = HoodControlState.HOME;//hood状态，默认归零
@@ -71,34 +71,34 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.setInverted(true);//TODO 电机是否反转
         //mShooterLeft.configAllSettings(lMasterConfig);//将pid参数注入到电机中
         mShooterLeft.setNeutralMode(NeutralMode.Coast);//???
-        mShooterLeft.config_kP(0, 0.1);
+        mShooterLeft.config_kP(0, 0.01);
         mShooterLeft.config_kI(0, 0);
-        mShooterLeft.config_kD(0, 0);
-        mShooterLeft.config_kF(0, 0.057);
+        mShooterLeft.config_kD(0, 2);
+        mShooterLeft.config_kF(0, 0.05);
         mShooterLeft.configPeakOutputForward(1);
         mShooterLeft.configPeakOutputReverse(-1);
         mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);//设定反馈传感器???
         mShooterLeft.configVoltageCompSaturation(12);
         mShooterLeft.enableVoltageCompensation(true);
         mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
-        mShooterLeft.configVelocityMeasurementWindow(64);
+        mShooterLeft.configVelocityMeasurementWindow(10);
         //右电机，同上
         mShooterRght = new WPI_TalonFX(ShooterConstants.SHOOT_R_MASTER_ID);
         mShooterRght.setInverted(false);//TODO
         mShooterRght.follow(mShooterLeft);
         //mShooterRght.configAllSettings(lMasterConfig);
         mShooterRght.setNeutralMode(NeutralMode.Coast);
-        mShooterRght.config_kP(0, 0.1);//0.0000005
+        mShooterRght.config_kP(0, 0.01);//0.0000005
         mShooterRght.config_kI(0, 0);
-        mShooterRght.config_kD(0, 0);
-        mShooterRght.config_kF(0, 0.057);//0.05
+        mShooterRght.config_kD(0, 2);
+        mShooterRght.config_kF(0, 0.05);//0.05
         mShooterRght.configPeakOutputForward(1.0);
         mShooterRght.configPeakOutputReverse(-1.0);
         mShooterRght.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
         mShooterRght.configVoltageCompSaturation(12);
         mShooterRght.enableVoltageCompensation(true);
         mShooterRght.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
-        mShooterRght.configVelocityMeasurementWindow(64);
+        mShooterRght.configVelocityMeasurementWindow(10);
     }
 
     private void configHood(){//设定hood参数

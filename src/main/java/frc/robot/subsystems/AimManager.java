@@ -247,10 +247,10 @@ public class AimManager extends SubsystemBase {
             if (!startForceBallShooting) {
                 shotBallTime = currentTime;
                 //startForceBallShooting = true;
-                hooper.setHopperState(HopperState.ON);
                 if (CanShot()) {
                     shooter.setFiring(true);
                     startForceBallShooting = true;
+                    //hooper.setHopperState(HopperState.ON);
                 }
             } else if (startForceBallShooting
                     && currentTime < shotBallTime + ShooterConstants.kShootTestTime) {
