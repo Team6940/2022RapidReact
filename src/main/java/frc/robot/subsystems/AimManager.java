@@ -8,9 +8,14 @@ import frc.robot.RobotContainer;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.controller.PIDController;
+import frc.robot.lib.team1678.math.Conversions;
+import frc.robot.lib.team1706.FieldRelativeAccel;
+import frc.robot.lib.team1706.FieldRelativeSpeed;
 import frc.robot.lib.team1706.LinearInterpolationTable;
+import frc.robot.lib.team503.util.Util;
 import frc.robot.subsystems.Hopper.HopperState;
 import frc.robot.subsystems.Shooter.ShooterControlState;
+import frc.robot.Constants.GoalConstants;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TurretConstants;
@@ -82,7 +87,12 @@ public class AimManager extends SubsystemBase {
 
     Translation2d translation;
     
-
+    private double m_wrongBallTime;
+    private double radialVelocity = 0;
+    private double tangentialVelocity = 0;
+    private double angleToGoal = 0;
+    private double futureDist = 0;
+    public double tXoffset = 0;
 
     public AimManager() {     
         addShuffleboardDebug();
@@ -196,6 +206,7 @@ public class AimManager extends SubsystemBase {
                 }
                 shooter.setShooterSpeed(speed);
                 shooter.setHoodAngle(angle);
+                //SetMovingShootParams();
                 if (!startBallShooting) {
                     shotBallTime = currentTime;
                     hooper.setHopperState(HopperState.ON);
@@ -289,6 +300,7 @@ public class AimManager extends SubsystemBase {
 
     @Override
     public void periodic() {
+        //SmartShooter();
         writePeriodicOutputs();
         if(enanbleTelemetry){
             outputTelemetry();       
@@ -362,6 +374,109 @@ public class AimManager extends SubsystemBase {
     
     public double getRotationSpeed(){
         return rotationSpeed;
+    }
+
+    public void SetMovingShootParams() {
+        double angle = m_hoodTable.getOutput(futureDist);
+        double speed = m_rpmTable.getOutput(futureDist);
+        double[] mShotParams = new double [3];
+        mShotParams = GetMovingShotParams(
+                Conversions.RPMToMPS(speed, ShooterConstants.kFlyWheelCircumference), // Shot Speed
+                angle,                                                         // Hood Angle
+                angleToGoal,         // Turret target angle (The same coordinate system with swerve)
+                driveDrain.getFieldRelativeSpeed().vx,              // Swerve speed in X axis (field-oriented)
+                driveDrain.getFieldRelativeSpeed().vy);             // Swerve speed in Y axis (field-oriented)
+        double targetVelocity = Conversions.MPSToRPM(mShotParams[2], ShooterConstants.kFlyWheelCircumference);
+        double targetHoodAngle = mShotParams[1];
+        if( Math.abs(targetVelocity - lastShooterRPM) < ShooterConstants.kShooterTolerance ){
+            targetVelocity = lastShooterRPM;
+        }else{
+            lastShooterRPM = targetVelocity;
+        }
+        if( Math.abs(targetHoodAngle - lastHoodAngle) < Constants.HoodConstants.kHoodTolerance){
+            targetHoodAngle = lastHoodAngle;
+        }else{
+            lastHoodAngle = targetHoodAngle;
+        }
+        tXoffset = Util.boundAngleNeg180to180Degrees(
+                        mShotParams[0] - driveDrain.GetHeading_Deg());
+        //double MoveOffset = targetTurretAngle - turret.getTurretAngleDeg();
+        shooter.setShooterSpeed(targetVelocity);
+        shooter.setHoodAngle(targetHoodAngle);
+    }
+
+    public double[] GetMovingShotParams(double V, double phi_v, double phi_h, double vx, double vy){
+        double phi_v_rad = Math.toRadians(phi_v);
+        double phi_h_rad = Math.toRadians(phi_h);
+
+        double theta_h_rad = Math.atan2((V*Math.cos(phi_v_rad)*Math.sin(phi_h_rad) - vy) ,
+                                    (V*Math.cos(phi_v_rad)*Math.cos(phi_h_rad) - vx));
+        double theta_v_rad = Math.atan(1/((V*Math.cos(phi_v_rad)*Math.cos(phi_h_rad) -
+                                        vx) / (V*Math.sin(phi_v_rad)*Math.cos(theta_h_rad))));
+        double vs = V*Math.sin(phi_v_rad)/Math.sin(theta_v_rad);
+
+        double theta_h = Math.toDegrees(theta_h_rad);
+        double theta_v = Math.toDegrees(theta_v_rad);
+
+        double[] myShootParams = new double [3];
+        myShootParams[0] = theta_h;
+        myShootParams[1] = theta_v;
+        myShootParams[2] = vs;
+
+        return myShootParams;
+    }
+
+    public void SmartShooter() {
+        Translation2d drivePose = SwerveDriveTrain.getInstance().getPose().getTranslation();
+        double currentTime = m_timer.get();
+        boolean wrongBall = colorsensor.isWrongBall();
+        if (wrongBall) {
+            m_wrongBallTime = currentTime;
+        }
+        SmartDashboard.putNumber("Current Time", currentTime);
+
+        SmartDashboard.putBoolean("Wrong Ball", wrongBall);
+
+        SmartDashboard.putBoolean("Shooter Running", true);
+
+        FieldRelativeSpeed robotVel = SwerveDriveTrain.getInstance().getFieldRelativeSpeed();
+        FieldRelativeAccel robotAccel = SwerveDriveTrain.getInstance().getFieldRelativeAccel();
+
+        Translation2d target = GoalConstants.kGoalLocation;
+
+        if (currentTime <= m_wrongBallTime + 0.100) {
+            target = GoalConstants.kWrongBallGoal;
+        }
+
+        Translation2d robotToGoal = target.minus(drivePose);
+        double dist = robotToGoal.getDistance(new Translation2d());
+
+        SmartDashboard.putNumber("Calculated (in)", dist);
+
+        double fixedShotTime = ShooterConstants.kShootOneBallTime;//TODO
+        double robotVelX = robotVel.vx + robotAccel.ax * ShooterConstants.kAccelCompFactor;
+        double robotVelY = robotVel.vy + robotAccel.ay * ShooterConstants.kAccelCompFactor;
+
+        double virtualDriveX = drivePose.getX()
+                + fixedShotTime * robotVelX;
+        double virtualDriveY = drivePose.getY()
+                + fixedShotTime * robotVelY;
+
+        SmartDashboard.putNumber("Drive X", virtualDriveX);
+        SmartDashboard.putNumber("Drive Y", virtualDriveY);
+
+        Translation2d movingDriveLocation = new Translation2d(virtualDriveX, virtualDriveY);
+
+        Translation2d toMovingDrive = movingDriveLocation.minus(target);
+
+        futureDist = toMovingDrive.getDistance(new Translation2d());
+        angleToGoal = Math.atan2(toMovingDrive.getY(), toMovingDrive.getX());
+        radialVelocity = (robotVelY * Math.cos(angleToGoal) - (robotVelX * Math.sin(angleToGoal)));
+        tangentialVelocity = (robotVelX * Math.sin(angleToGoal) + (robotVelY * Math.cos(angleToGoal)));
+    }
+    
+    public double getTxOffset() {
+        return tXoffset;
     }
 
     private void addShuffleboardDebug(){

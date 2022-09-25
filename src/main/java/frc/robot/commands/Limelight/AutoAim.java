@@ -140,7 +140,9 @@ public class AutoAim extends CommandBase {
 
         // Also calculate angular power
         // -1.0 required to ensure positive PID controller effort _increases_ yaw
-        rotationSpeed = -1.0 * turnController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
+        rotationSpeed = -1.0 * turnController.calculate(
+            RobotContainer.m_limelight.Get_tx() + AimManager.getInstance().getTxOffset(),
+            0);
       } else {
           // If we have no targets, stay still.
           forwardSpeed = 0;
