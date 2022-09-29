@@ -6,9 +6,8 @@ import frc.robot.subsystems.Hopper.HopperState;
 
 public final class FeedManager extends SubsystemBase  {
 
-    private static FeedManager instance ;
-    Intake intake = Intake.getInstance();
-    Hopper hooper = Hopper.getInstance();
+    private static FeedManager instance = null;
+
     private Timer m_timer = new Timer();
     double topBallHoldTime = 0;
     double noneBallTime = 0;
@@ -53,6 +52,10 @@ public final class FeedManager extends SubsystemBase  {
     }
 
     private void writePeriodicOutputs(){
+        Intake intake = Intake.getInstance();
+        Hopper hooper = Hopper.getInstance();
+        Shooter shooter = Shooter.getInstance();
+        AimManager aim = AimManager.getInstance();
         double currentTime = m_timer.get();
         boolean topHasBall = hooper.isHasTopBall();
         boolean bottomHasBall = hooper.isHasBottomBall();
@@ -62,6 +65,14 @@ public final class FeedManager extends SubsystemBase  {
         
         // intake=off && bottom =false & top=false ,2s: stop
         if (fmState == FeedManagerState.AUTO_FEED) {
+            if(aim.isAimShoot() &&aim.isTargetLocked() && aim.CanShot()){
+                hooper.setHopperState(HopperState.ON);
+                shooter.setFiring(true);
+                return;
+            }else{
+                shooter.setFiring(false);
+            }            
+
             if( !intakeOn && !bottomHasBall && !topHasBall){
                 if( (currentTime - noneBallTime) > 2.0 ){
                     hooper.setHopperState(HopperState.OFF);
