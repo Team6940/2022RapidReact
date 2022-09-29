@@ -33,31 +33,33 @@ public final class Constants {
         
         private static final Point2D[] kHoodPoints = new Point2D.Double[] {
             // (distance, ty-angle)
-            new Point2D.Double(2.433/*90*/, 0), //
-            new Point2D.Double(2.975/*105*/, 0.00), //
-            new Point2D.Double(3.597/*120*/, 6.00), //
-            new Point2D.Double(4.100/*135*/, 8.00), //
-            new Point2D.Double(4.674/*150*/, 10.0), //
-            new Point2D.Double(5.360/*165*/, 12.0), //
-            //new Point2D.Double(4.572/*180*/, 32.0), //
-            //new Point2D.Double(4.953/*195*/, 36.0), //
-            //new Point2D.Double(5.334/*210*/, 37.0), //
-            //new Point2D.Double(5.715/*225*/, 38.0)//
+            new Point2D.Double(2.490/*90*/, 0.00), //
+            new Point2D.Double(2.976/*105*/, 0.00), //
+            new Point2D.Double(3.494/*120*/, 0.00), //
+            new Point2D.Double(3.836/*135*/, 0.00), //
+            new Point2D.Double(4.210/*150*/, 3.00), //
+            new Point2D.Double(4.755/*165*/, 5.00), //
+            new Point2D.Double(5.228/*180*/, 7.00), //
+            new Point2D.Double(5.677/*195*/, 9.00), //
+            new Point2D.Double(6.450/*210*/, 10.0), //
+            new Point2D.Double(7.380/*225*/, 12.0),//
+            new Point2D.Double(8.068/*270*/, 14.0),
         };
         public static final LinearInterpolationTable kHoodTable = new LinearInterpolationTable(kHoodPoints);
     
         private static final Point2D[] kRPMPoints = new Point2D.Double[] {
             // (distance, shooterSpeedRPM)
-            new Point2D.Double(2.433/*90*/, 2150), //
-            new Point2D.Double(2.975/*135*/, 2240), //
-            new Point2D.Double(3.597/*150*/, 2320), //
-            new Point2D.Double(4.100/*165*/, 2370), //
-            new Point2D.Double(4.674/*180*/, 2420), //
-            new Point2D.Double(5.360/*195*/, 2470), //
-            //new Point2D.Double(5.334/*210*/, 3315), //
-            //new Point2D.Double(5.715/*225*/, 3500), //
-            //new Point2D.Double(6.096/*240*/, 3700),
-            //new Point2D.Double(6.858/*270*/, 4000),
+            new Point2D.Double(2.490/*90*/, 2200), //
+            new Point2D.Double(2.976/*135*/, 2240), //
+            new Point2D.Double(3.494/*150*/, 2290), //
+            new Point2D.Double(3.836/*165*/, 2350), //
+            new Point2D.Double(4.210/*180*/, 2370), //
+            new Point2D.Double(4.755/*195*/, 2440), //
+            new Point2D.Double(5.228/*210*/, 2530), //
+            new Point2D.Double(5.677/*225*/, 2660), //
+            new Point2D.Double(6.450/*240*/, 2710),
+            new Point2D.Double(7.380/*270*/, 2810),
+            new Point2D.Double(8.068/*270*/, 2900),
         };        
         public static final LinearInterpolationTable kRPMTable = new LinearInterpolationTable(kRPMPoints);
 
@@ -82,9 +84,10 @@ public final class Constants {
         public static double kFlyWheelEncoderReductionRatio =  1 ;  //TODO
         public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
         public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
-        public static double kShooterTolerance = 20; //RPM //TODO
+        public static double kShooterTolerance = 30; //RPM //TODO
         public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
-        public static double kShootOneBallTime = 0.2; //TODO every one shooting ball time(seconds)
+        public static double kShootOneBallTime = 1.5; //TODO every one shooting ball time(seconds)
+        public static double kWaitBallTime = 0.5;
         public static double kShootTestTime = 1;
         public static double kShootOneWrongBallTime = 0.5 ; //TODO every one shooting ball time(seconds)
     
@@ -426,20 +429,20 @@ public final class Constants {
 		public static final double kFastMaxSpeedMetersPerSecond = 4;
 		public static final double kFastMaxAccelerationMetersPerSecondSquared = 3;
 		
-        public static final double kPXController = 1;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 2;
+        public static final double kPXController = 5;
+        public static final double kPYController = 5;
+        public static final double kPThetaController = 6;
         public static final double kIThetaController = 0;
         public static final double kDThetaController = 0;
     
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
-                        3 * Math.PI, 3 * Math.PI);
+                        5 * Math.PI, 5 * Math.PI);
                 
-                        public static final TrapezoidProfile.Constraints kThetaAimControllerConstraints =
-                        new TrapezoidProfile.Constraints(
-                            Math.PI, Math.PI);
+        public static final TrapezoidProfile.Constraints kThetaAimControllerConstraints =
+            new TrapezoidProfile.Constraints(
+                        Math.PI, Math.PI);
     }
     /* new colorSensor */
     public static final class ColorConstants{

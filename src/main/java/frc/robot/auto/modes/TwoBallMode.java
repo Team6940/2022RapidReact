@@ -31,8 +31,8 @@ public class TwoBallMode extends SequentialCommandGroup {
   public TwoBallMode(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory mTwoBallTrajectoryOne = PathPlanner.loadPath("TwoBall-1", 2, 2);
-    PathPlannerTrajectory mTwoBallTrajectoryTwo = PathPlanner.loadPath("TwoBall-2", 2, 2);
+    PathPlannerTrajectory mTwoBallTrajectoryOne = PathPlanner.loadPath("TwoBall-1", 4, 4);
+    PathPlannerTrajectory mTwoBallTrajectoryTwo = PathPlanner.loadPath("TwoBall-2", 4, 4);
 
 
     addCommands(

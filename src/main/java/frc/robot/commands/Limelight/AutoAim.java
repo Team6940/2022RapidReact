@@ -108,7 +108,7 @@ public class AutoAim extends CommandBase {
     double translationY = -inputTransform(RobotContainer.m_driverController.getLeftX());
     //double rotationNew = -inputTransform(RobotContainer.m_driverController.getRightX());
     double lastz = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getRightX());
-    double llastz = lastz * DriveConstants.kMaxAngularSpeed;
+    double llastz = lastz * 5;
 
     Translation2d translation = new Translation2d(m_slewX.calculate(
       translationX) * SwerveConstants.kMaxSpeed,
@@ -152,7 +152,7 @@ public class AutoAim extends CommandBase {
         } 
 
       totalforwardSpeed = /*forwardSpeed * Constants.kMaxSpeed*/ + translationX;
-      totalrotationSpeed = rotationSpeed * DriveConstants.kMaxAngularSpeed + llastz;
+      totalrotationSpeed = rotationSpeed * 5 + llastz;
 
       // Use our forward/turn speeds to control the drivetrain
       //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
