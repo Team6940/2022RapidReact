@@ -30,12 +30,12 @@ public class SixBallMode2 extends SequentialCommandGroup {
   public SixBallMode2(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory mSixBallTrajectoryOne = PathPlanner.loadPath("SixBallBottom-1", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectoryTwo = PathPlanner.loadPath("SixBallBottom-2", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectoryThree = PathPlanner.loadPath("SixBallBottom-3", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectoryFour = PathPlanner.loadPath("SixBallBottom-4", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectoryFive = PathPlanner.loadPath("SixBallBottom-5", 2, 2);
-    PathPlannerTrajectory mSixBallTrajectorySix = PathPlanner.loadPath("SixBallBottom-6", 2, 2);
+    PathPlannerTrajectory mSixBallTrajectoryOne = PathPlanner.loadPath("SixBallBottom-1", 4, 4);
+    PathPlannerTrajectory mSixBallTrajectoryTwo = PathPlanner.loadPath("SixBallBottom-2", 4, 4);
+    PathPlannerTrajectory mSixBallTrajectoryThree = PathPlanner.loadPath("SixBallBottom-3", 4, 4);
+    PathPlannerTrajectory mSixBallTrajectoryFour = PathPlanner.loadPath("SixBallBottom-4", 4, 4);
+    PathPlannerTrajectory mSixBallTrajectoryFive = PathPlanner.loadPath("SixBallBottom-5", 4, 4);
+    PathPlannerTrajectory mSixBallTrajectorySix = PathPlanner.loadPath("SixBallBottom-6", 4, 4);
 
     addCommands(
       new InstantCommand(() -> LimelightSubsystem.getInstance().setLightMode(3)),

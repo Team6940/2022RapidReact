@@ -38,13 +38,14 @@ public class AimManager extends SubsystemBase {
     ColorSensor colorsensor = ColorSensor.getInstance();
     private static LinearInterpolationTable m_hoodTable = ShooterConstants.kHoodTable;
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
-    boolean enanbleTelemetry = true;
+    boolean enanbleTelemetry = false;
     boolean wrongBall = false ;
     boolean topHasBall = false; 
     boolean bottomHasBall = false;
     boolean startBallShooting = false;
     boolean startForceBallShooting = false;
     double shotBallTime = Double.NEGATIVE_INFINITY;
+    double WaitBallTime = Double.NEGATIVE_INFINITY;
     double shotWrongBallTime = Double.NEGATIVE_INFINITY;
     boolean hasWrongBallShooting = false;
     int shootBallCnt = 0;
@@ -189,12 +190,12 @@ public class AimManager extends SubsystemBase {
         }
 
         if (currentState == AimManagerState.AIM_SHOOT) {
-            if (topHasBall && isTargetLocked()) {
+            if (/*topHasBall &&*/ isTargetLocked()) {
                 double dist = limelight.getRobotToTargetDistance(); 
                 //double dist = limelight.getDistance();
                 double speed = m_rpmTable.getOutput(dist);
                 double angle = m_hoodTable.getOutput(dist);
-                if( Math.abs(speed - lastShooterRPM) < ShooterConstants.kShooterTolerance ){
+                /*if( Math.abs(speed - lastShooterRPM) < ShooterConstants.kShooterTolerance ){
                     speed = lastShooterRPM;
                 }else{
                     lastShooterRPM = speed;
@@ -203,7 +204,7 @@ public class AimManager extends SubsystemBase {
                     angle = lastHoodAngle;
                 }else{
                     lastHoodAngle = angle;
-                }
+                }*/
                 shooter.setShooterSpeed(speed);
                 shooter.setHoodAngle(angle);
                 //SetMovingShootParams();
@@ -217,7 +218,7 @@ public class AimManager extends SubsystemBase {
                 } else if (startBallShooting
                         && currentTime < shotBallTime + ShooterConstants.kShootOneBallTime) {
                     hooper.setHopperState(HopperState.ON);
-                    if (CanShot()) {
+                    if (CanShot() /*&& currentTime > shotBallTime + ShooterConstants.kWaitBallTime*/) {
                         shooter.setFiring(true);
                     }
                 } else {
@@ -231,7 +232,7 @@ public class AimManager extends SubsystemBase {
             } else if (topHasBall){
                 startBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
-                shooter.setFiring(false);
+                shooter.setFiring(false); 
                 shooter.setShooterToPrepare();
             }
             else {
@@ -247,10 +248,10 @@ public class AimManager extends SubsystemBase {
             if (!startForceBallShooting) {
                 shotBallTime = currentTime;
                 //startForceBallShooting = true;
-                hooper.setHopperState(HopperState.ON);
                 if (CanShot()) {
                     shooter.setFiring(true);
                     startForceBallShooting = true;
+                    //hooper.setHopperState(HopperState.ON);
                 }
             } else if (startForceBallShooting
                     && currentTime < shotBallTime + ShooterConstants.kShootTestTime) {
@@ -325,7 +326,7 @@ public class AimManager extends SubsystemBase {
         shooter.setShooterSpeed(ShooterConstants.SHOOTER_EJECT_SPEED);
         shooter.setHoodAngle(HoodConstants.HOOD_EJECT_ANGLE);
         hooper.setHopperState(HopperState.ON);
-        SwerveDriveTrain.getInstance().Drive(new Translation2d(0, 0), 1, true, true);
+        //SwerveDriveTrain.getInstance().Drive(new Translation2d(0, 0), 1, true, true);
     }
 
     public double readShooterSpeedFromShuffleBoard(){

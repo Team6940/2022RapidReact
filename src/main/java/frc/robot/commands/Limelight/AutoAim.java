@@ -106,7 +106,9 @@ public class AutoAim extends CommandBase {
 
     double translationX = -inputTransform(RobotContainer.m_driverController.getLeftY());
     double translationY = -inputTransform(RobotContainer.m_driverController.getLeftX());
-    double rotationNew = -inputTransform(RobotContainer.m_driverController.getRightX());
+    //double rotationNew = -inputTransform(RobotContainer.m_driverController.getRightX());
+    double lastz = RobotContainer.m_swerve.deadband(RobotContainer.m_driverController.getRightX());
+    double llastz = lastz * 5;
 
     Translation2d translation = new Translation2d(m_slewX.calculate(
       translationX) * SwerveConstants.kMaxSpeed,
@@ -141,7 +143,7 @@ public class AutoAim extends CommandBase {
         // Also calculate angular power
         // -1.0 required to ensure positive PID controller effort _increases_ yaw
         rotationSpeed = -1.0 * turnController.calculate(
-            RobotContainer.m_limelight.Get_tx() + AimManager.getInstance().getTxOffset(),
+            RobotContainer.m_limelight.Get_tx() /*+ AimManager.getInstance().getTxOffset()*/,
             0);
       } else {
           // If we have no targets, stay still.
@@ -150,7 +152,7 @@ public class AutoAim extends CommandBase {
         } 
 
       totalforwardSpeed = /*forwardSpeed * Constants.kMaxSpeed*/ + translationX;
-      totalrotationSpeed = rotationSpeed + rotationNew;
+      totalrotationSpeed = rotationSpeed * 5 + llastz;
 
       // Use our forward/turn speeds to control the drivetrain
       //RobotContainer.m_swerve.Drive(forwardSpeed, 0, rotationSpeed, false);
@@ -172,13 +174,15 @@ public class AutoAim extends CommandBase {
       }
       
       double rotationSpeed2 = thetaController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
+
+      RobotContainer.m_swerve.Drive(translation, -totalrotationSpeed, true, true);
       
       // Goal-Centric
-      RobotContainer.m_swerve.Drive(
-          translation,
-          m_slewRot.calculate(totalrotationSpeed) * DriveConstants.kMaxAngularSpeed, //If it does work well, remove the rotation slew rate limiter
-          true,
-          true);//Use feedback control when auto aiming.
+      //RobotContainer.m_swerve.Drive(
+      //    translation,
+      //    -totalrotationSpeed * DriveConstants.kMaxAngularSpeed, //If it does work well, remove the rotation slew rate limiter
+      //    true,
+      //    true);//Use feedback control when auto aiming.
       //RobotContainer.m_swerve.Drive(translation, -rotationalVelocity, true, true);//Use feedback control when auto aiming.
       //RobotContainer.m_swerve.Drive(translation, - rotationSpeed2, true, true);//Use feedback control when auto aiming.
 
@@ -188,7 +192,7 @@ public class AutoAim extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.m_limelight.setLightMode(1);
+    //RobotContainer.m_limelight.setLightMode(1);
     RobotContainer.m_aimManager.Stop();
     RobotContainer.m_shooter.setFiring(false);
     RobotContainer.m_shooter.setShooterToStop();

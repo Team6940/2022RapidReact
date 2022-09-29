@@ -137,11 +137,15 @@ public class Intake extends SubsystemBase {
         //Hopper.getInstance().setHopperState(HopperState.ON);
     }
 
-    public void stopIntaker(){
-        setIntakeSolState(IntakeSolState.CLOSE);
+    public void stopIntaker() {
+        //setIntakeSolState(IntakeSolState.CLOSE);
         setWantedIntakeState(IntakeState.OFF);
         //Hopper.getInstance().setHopperState(HopperState.OFF);
-    }    
+    }
+    
+    public void stopSolenoid() {
+        setIntakeSolState(IntakeSolState.CLOSE);
+    }
 
     private int cnt = 0;
     public void autoturnintaker()//用cnt周期性地控制intake状态
