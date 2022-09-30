@@ -118,8 +118,14 @@ public class AimManager extends SubsystemBase {
 
     public void startAimShoot() {
         currentState = AimManagerState.AIM_SHOOT;
-        feeder.setAimFeed();
+        //feeder.setAimFeed();
+        feeder.setAutoFeed();
     }
+
+    public boolean isAimShoot(){
+          return currentState == AimManagerState.AIM_SHOOT;
+    }
+
     public void startAimForce() {
         feeder.setAimFeed();;
         currentState = AimManagerState.AIM_FORCE;
@@ -208,6 +214,7 @@ public class AimManager extends SubsystemBase {
                 shooter.setShooterSpeed(speed);
                 shooter.setHoodAngle(angle);
                 //SetMovingShootParams();
+/*
                 if (!startBallShooting) {
                     shotBallTime = currentTime;
                     hooper.setHopperState(HopperState.ON);
@@ -218,7 +225,7 @@ public class AimManager extends SubsystemBase {
                 } else if (startBallShooting
                         && currentTime < shotBallTime + ShooterConstants.kShootOneBallTime) {
                     hooper.setHopperState(HopperState.ON);
-                    if (CanShot() /*&& currentTime > shotBallTime + ShooterConstants.kWaitBallTime*/) {
+                    if (CanShot() ) { //&& currentTime > shotBallTime + ShooterConstants.kWaitBallTime
                         shooter.setFiring(true);
                     }
                 } else {
@@ -229,17 +236,18 @@ public class AimManager extends SubsystemBase {
                     //hooper.setHopperState(HopperState.OFF);
                     shootBallCnt++;
                 }
+*/                
             } else if (topHasBall){
                 startBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
-                shooter.setFiring(false); 
+//                shooter.setFiring(false); 
                 shooter.setShooterToPrepare();
             }
             else {
                 currentState = AimManagerState.STOP;
                 startBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
-                shooter.setFiring(false);
+//                shooter.setFiring(false);
                 shooter.setShooterToStop();
             }
         }
