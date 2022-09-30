@@ -201,7 +201,7 @@ public class AimManager extends SubsystemBase {
                 //double dist = limelight.getDistance();
                 double speed = m_rpmTable.getOutput(dist);
                 double angle = m_hoodTable.getOutput(dist);
-                /*if( Math.abs(speed - lastShooterRPM) < ShooterConstants.kShooterTolerance ){
+                if( Math.abs(speed - lastShooterRPM) < ShooterConstants.kShooterTolerance ){
                     speed = lastShooterRPM;
                 }else{
                     lastShooterRPM = speed;
@@ -210,7 +210,7 @@ public class AimManager extends SubsystemBase {
                     angle = lastHoodAngle;
                 }else{
                     lastHoodAngle = angle;
-                }*/
+                }
                 shooter.setShooterSpeed(speed);
                 shooter.setHoodAngle(angle);
                 //SetMovingShootParams();

@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.math.controller.PIDController;
@@ -33,7 +34,8 @@ public class SwerveDriveTrain extends SubsystemBase {
   /** Creates a new SwerveDriveTrain. */
   private SwerveModule swerve_modules_[] = new SwerveModule[4];
 
-  public PigeonIMU gyro;
+  //public PigeonIMU gyro;
+  public WPI_PigeonIMU gyro;
  // public PixyCamSPI mPixy;
   //byte PixySignature;
 
@@ -83,7 +85,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   public SwerveDriveTrain() {
 
     addShuffleboardDebug();
-    gyro = new PigeonIMU(SwerveConstants.PigeonIMUPort);
+    gyro = new WPI_PigeonIMU(SwerveConstants.PigeonIMUPort);
 
     // The coordinate system may be wrong 
     swerve_modules_[0] = new SwerveModule(1, 2, false,  false, 2510, true, true);//front left
@@ -285,7 +287,8 @@ public class SwerveDriveTrain extends SubsystemBase {
     //return ahrs.getRotation2d();
 
     //Pigeon Version
-    return Rotation2d.fromDegrees(gyro.getFusedHeading());
+    //return Rotation2d.fromDegrees(gyro.getFusedHeading());
+    return Rotation2d.fromDegrees(gyro.getRotation2d().getDegrees());
   }
 
   public double deadband(double x){
