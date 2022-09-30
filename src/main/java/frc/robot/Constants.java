@@ -148,7 +148,7 @@ public final class Constants {
     
     public static final class BlockerConstants {
         public static final int kBlockerID = 9;//TODO
-        public static final double kFireSpeed = 0.8;
+        public static final double kFireSpeed = 1;
         public static final double kStopSpeed = 0;
     }
 
@@ -413,8 +413,12 @@ public final class Constants {
     
         public static final double MAX_SPEED_METERSperSECOND = 21900/0.1/(driveGearRatio*2048)*wheelCircumference;
         public static final double METERSperROBOT_REVOLUTION =  2*Math.PI*(kWidth/2*1.414213);//Math.sqrt(2)
-        public static final double MAX_SPEED_RADIANSperSECOND = MAX_SPEED_METERSperSECOND/METERSperROBOT_REVOLUTION*(2*Math.PI);
-    
+        public static final double MAX_SPEED_RADIANSperSECOND = MAX_SPEED_METERSperSECOND / METERSperROBOT_REVOLUTION
+                * (2 * Math.PI);
+        
+        public static final int SWERVE_MOTOR_CURRENT_LIMIT = 15;
+        public static final int SWERVE_DRIVE_MOTOR_CURRENT_LIMIT = 15;
+        public static final int SWERVE_DRIVE_VOLTAGE_LIMIT = 12;
     }
 
     public static final class AutoConstants {
@@ -429,16 +433,16 @@ public final class Constants {
 		public static final double kFastMaxSpeedMetersPerSecond = 4;
 		public static final double kFastMaxAccelerationMetersPerSecondSquared = 3;
 		
-        public static final double kPXController = 5;
-        public static final double kPYController = 5;
-        public static final double kPThetaController = 6;
+        public static final double kPXController = 3;
+        public static final double kPYController = 3;
+        public static final double kPThetaController = 3;
         public static final double kIThetaController = 0;
         public static final double kDThetaController = 0;
     
         // Constraint for the motion profilied robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
-                        5 * Math.PI, 5 * Math.PI);
+                        Math.PI, Math.PI);
                 
         public static final TrapezoidProfile.Constraints kThetaAimControllerConstraints =
             new TrapezoidProfile.Constraints(

@@ -38,7 +38,7 @@ public class AimManager extends SubsystemBase {
     ColorSensor colorsensor = ColorSensor.getInstance();
     private static LinearInterpolationTable m_hoodTable = ShooterConstants.kHoodTable;
     private static LinearInterpolationTable m_rpmTable = ShooterConstants.kRPMTable;
-    boolean enanbleTelemetry = false;
+    boolean enanbleTelemetry = true;
     boolean wrongBall = false ;
     boolean topHasBall = false; 
     boolean bottomHasBall = false;
@@ -243,13 +243,16 @@ public class AimManager extends SubsystemBase {
 //                shooter.setFiring(false); 
                 shooter.setShooterToPrepare();
             }
-            else {
+            else{
+                shooter.setShooterToStop();
+            }
+/*            else {
                 currentState = AimManagerState.STOP;
                 startBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
 //                shooter.setFiring(false);
                 shooter.setShooterToStop();
-            }
+            }*/
         }
 
         if (currentState == AimManagerState.AIM_FORCE) {
@@ -286,7 +289,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public void outputTelemetry() {
-        SmartDashboard.putString("Debug/AimManager/AimState", getAimManagerState().name());
+        /*SmartDashboard.putString("Debug/AimManager/AimState", getAimManagerState().name());
         SmartDashboard.putString("Debug/AimManager/ShooterState", shooter.getShooterState().name()); 
         SmartDashboard.putBoolean("Debug/AimManager/hasBallShooting", startBallShooting); 
         SmartDashboard.putBoolean("Debug/AimManager/BottomHasBall", bottomHasBall);        
@@ -300,7 +303,10 @@ public class AimManager extends SubsystemBase {
         SmartDashboard.putString("Debug/AimManager/HooperState",hooper.getHopperState().name());
         SmartDashboard.putString("Debug/AimManager/IntakeState",intake.getWantedIntakeState().name());
         SmartDashboard.putString("Debug/AimManager/IntakeSolState",intake.getIntakeSolState().name());
-        SmartDashboard.putString("Debug/AimManager/feederState",feeder.getFeederState().name());
+        SmartDashboard.putString("Debug/AimManager/feederState", feeder.getFeederState().name());*/
+
+        SmartDashboard.putBoolean("CanShot",this.CanShot()); 
+        
     }
 
     public enum AimManagerState {
@@ -523,7 +529,11 @@ public class AimManager extends SubsystemBase {
     
         summaryTab.addNumber("ShooterVelocityUnit", () ->shooter.getShooterVelocityUnit())
             .withPosition(3, 0)
-            .withSize(1, 1);
+                .withSize(1, 1);
+            
+        //summaryTab.addBoolean("CanShot", () -> this.CanShot())
+        //    .withPosition(3, 2)
+        //    .withSize(1, 1);
 
         AimTab.addNumber("distance", () -> this.limelight.getRobotToTargetDistance())
             .withPosition(2,0)

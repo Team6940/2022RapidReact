@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -14,6 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.BlockerConstants;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team1678.math.Conversions;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -36,7 +40,7 @@ public class Shooter extends SubsystemBase {
     // for hood
     private WPI_TalonSRX mHoodmotor;//hood一号电机
     private WPI_TalonFX mHoodmotor2;//hood二号电机
-    private int offset = -571;//TODO encoder的偏移量
+    private int offset = 0;//TODO -571
     HoodPeriodicIO HoodPeriodicIO = new HoodPeriodicIO();//新定义一个shooter状态类
     private double desiredHoodAngle;//目标hood角度
     HoodControlState hoodstate = HoodControlState.HOME;//hood状态，默认归零
@@ -74,13 +78,13 @@ public class Shooter extends SubsystemBase {
         mShooterLeft.config_kP(0, 0.1);
         mShooterLeft.config_kI(0, 0);
         mShooterLeft.config_kD(0, 0);
-        mShooterLeft.config_kF(0, 0.05);
+        mShooterLeft.config_kF(0, 0.063);
         mShooterLeft.configPeakOutputForward(1);
         mShooterLeft.configPeakOutputReverse(-1);
         mShooterLeft.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);//设定反馈传感器???
-        mShooterLeft.configVoltageCompSaturation(12);
+        mShooterLeft.configVoltageCompSaturation(10);
         mShooterLeft.enableVoltageCompensation(true);
-        mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_20Ms);
+        mShooterLeft.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
         mShooterLeft.configVelocityMeasurementWindow(1);
         //右电机，同上
         mShooterRght = new WPI_TalonFX(ShooterConstants.SHOOT_R_MASTER_ID);
@@ -91,14 +95,24 @@ public class Shooter extends SubsystemBase {
         mShooterRght.config_kP(0, 0.1);//0.0000005
         mShooterRght.config_kI(0, 0);
         mShooterRght.config_kD(0, 0);
-        mShooterRght.config_kF(0, 0.05);//0.05
+        mShooterRght.config_kF(0, 0.063);//0.05
         mShooterRght.configPeakOutputForward(1.0);
         mShooterRght.configPeakOutputReverse(-1.0);
         mShooterRght.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        mShooterRght.configVoltageCompSaturation(12);
+        mShooterRght.configVoltageCompSaturation(10);
         mShooterRght.enableVoltageCompensation(true);
-        mShooterRght.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_20Ms);
+        mShooterRght.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
         mShooterRght.configVelocityMeasurementWindow(1);
+
+        //mShooterLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 19);
+        //mShooterLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 19);
+        //mShooterLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 253);
+        //mShooterLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 59);
+
+        //mShooterRght.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 19);
+        //mShooterRght.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 19);
+        //mShooterRght.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 253);
+        //mShooterRght.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 59);
     }
 
     private void configHood(){//设定hood参数
@@ -121,11 +135,11 @@ public class Shooter extends SubsystemBase {
         // mHoodmotor.configMotionSCurveStrength(6);
 
         mHoodmotor.configForwardSoftLimitThreshold(Conversions.degreesToTalon(HoodConstants.HOOD_MAX_ANGLE, HoodConstants.HOOD_GEAR_RATIO) + offset, 10); //TODO
-        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(HoodConstants.HOOD_MIN_ANGLE, HoodConstants.HOOD_GEAR_RATIO), 10); //TODO
+        mHoodmotor.configReverseSoftLimitThreshold(Conversions.degreesToTalon(HoodConstants.HOOD_MIN_ANGLE, HoodConstants.HOOD_GEAR_RATIO) + offset, 10); //TODO
         mHoodmotor.configForwardSoftLimitEnable(true, 10);
         mHoodmotor.configReverseSoftLimitEnable(true, 10);
     
-        mHoodmotor.configVoltageCompSaturation(12);
+        mHoodmotor.configVoltageCompSaturation(10);
         mHoodmotor.enableVoltageCompensation(true);
     
         mHoodmotor.configPeakOutputForward(0.50, 10);//TODO
@@ -143,11 +157,26 @@ public class Shooter extends SubsystemBase {
         mHoodmotor2.configMotionCruiseVelocity(3000);
 
         mHoodmotor2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
-        mHoodmotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+        mHoodmotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 10);
+
+        //mHoodmotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 19);
+        //mHoodmotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 19);
+        //mHoodmotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 253);
+        //mHoodmotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 59);
     }
 
     private void configBlocker(){
         blockerMotor = new WPI_TalonFX(BlockerConstants.kBlockerID);
+
+        //blockerMotor.configVoltageCompSaturation(10);
+        //blockerMotor.enableVoltageCompensation(true);
+        
+        //blockerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 19);
+        //blockerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 19);
+        //blockerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 253);
+        //blockerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 59);
+        //blockerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
+        //SwerveConstants.SWERVE_MOTOR_CURRENT_LIMIT, SwerveConstants.SWERVE_MOTOR_CURRENT_LIMIT, 0));
     }
 
     public ShooterControlState getShooterState() {

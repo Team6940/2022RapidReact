@@ -32,8 +32,8 @@ public class Intake extends SubsystemBase {
     private Intake() {
         intakeMotor = new WPI_TalonFX(IntakeConstants.IntakerPort); //TODO 设定intake电机
         intakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, IntakeConstants.IntakerSolenoidPort); //TODO 设定气动杆
-        intakeMotor.configVoltageCompSaturation(12);
-        intakeMotor.enableVoltageCompensation(true);
+        //intakeMotor.configVoltageCompSaturation(10);
+        //intakeMotor.enableVoltageCompensation(true);
         //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 97); // Default is 10ms
         //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 101); // Default is 10ms
         //intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current, 103); // Default is 50ms
@@ -42,6 +42,14 @@ public class Intake extends SubsystemBase {
         //intakeMotor.setControlFramePeriod(ControlFrame.Control_6_MotProfAddTrajPoint, 547);
         //intakeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 70, 0), 1000);
         //intakeMotor.configOpenloopRamp(0.2, 1000);
+        //configStatusFramePeriods();
+    }
+
+    public void configStatusFramePeriods() {
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 19);
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 19);
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 253);
+        intakeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 59);
     }
 
     public void selfTest() {//自我测试，把intake打开旋转再关上停转

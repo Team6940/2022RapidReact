@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -55,7 +57,7 @@ public class SwerveModule extends SubsystemBase {
     //drive_motor_.configFactoryDefault();
     //pivot_motor_.configFactoryDefault();
     
-    drive_motor_.setNeutralMode(NeutralMode.Brake);
+    drive_motor_.setNeutralMode(NeutralMode.Coast);
     pivot_motor_.setNeutralMode(NeutralMode.Coast);
     drive_motor_.configPeakOutputForward( SwerveConstants.kDriveMotorMaxOutput);
     drive_motor_.configPeakOutputReverse(-SwerveConstants.kDriveMotorMaxOutput);
@@ -93,8 +95,20 @@ public class SwerveModule extends SubsystemBase {
     pivot_motor_.configVoltageCompSaturation(12);
     pivot_motor_.enableVoltageCompensation(true);
 
-    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_5Ms);
+    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_20Ms);
+    drive_motor_.configVelocityMeasurementWindow(1);
 
+    // Sets current limits for motors
+    //drive_motor_.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
+    //SwerveConstants.SWERVE_MOTOR_CURRENT_LIMIT, SwerveConstants.SWERVE_MOTOR_CURRENT_LIMIT, 0));
+
+    //pivot_motor_.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,
+    //SwerveConstants.SWERVE_DRIVE_MOTOR_CURRENT_LIMIT, SwerveConstants.SWERVE_DRIVE_MOTOR_CURRENT_LIMIT, 0));
+
+    //drive_motor_.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 50);
+    //drive_motor_.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 20);
+    //pivot_motor_.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 50);
+    //pivot_motor_.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 20);
 
     SetDriveMotorInverted(driveMotorInvert);
     SetPivotMotorInverted(pivotMotorInvert);

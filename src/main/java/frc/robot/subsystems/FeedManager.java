@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Hopper.HopperState;
 
 public final class FeedManager extends SubsystemBase  {
@@ -11,6 +12,7 @@ public final class FeedManager extends SubsystemBase  {
     private Timer m_timer = new Timer();
     double topBallHoldTime = 0;
     double noneBallTime = 0;
+    double shotBallTime = Double.NEGATIVE_INFINITY;
 
     public static FeedManager getInstance() {
         if (instance == null){
@@ -65,13 +67,18 @@ public final class FeedManager extends SubsystemBase  {
         
         // intake=off && bottom =false & top=false ,2s: stop
         if (fmState == FeedManagerState.AUTO_FEED) {
-            if(aim.isAimShoot() &&aim.isTargetLocked() && aim.CanShot()){
+            //shotBallTime = currentTime;
+            if (aim.isAimShoot() && aim.isTargetLocked() && aim.CanShot()) {
+                //if (currentTime < shotBallTime + ShooterConstants.kShootOneBallTime) {
+                //    hooper.setHopperState(HopperState.ON);
+                //    shooter.setFiring(true);
+                //}
                 hooper.setHopperState(HopperState.ON);
                 shooter.setFiring(true);
                 return;
             }else{
                 shooter.setFiring(false);
-            }            
+            }
 
             if( !intakeOn && !bottomHasBall && !topHasBall){
                 if( (currentTime - noneBallTime) > 2.0 ){

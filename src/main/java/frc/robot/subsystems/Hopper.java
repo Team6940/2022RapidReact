@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,11 +35,20 @@ public final class Hopper extends SubsystemBase  {
     private Hopper() {
         //super(Constants.HOPPER_PERIOD, 5);
         hopperMotor = new WPI_TalonFX(HopperConstants.HopperPort); //TODO
-        hopperMotor.configVoltageCompSaturation(12);
-        hopperMotor.enableVoltageCompensation(true);
+        //hopperMotor.configVoltageCompSaturation(10);
+        //hopperMotor.enableVoltageCompensation(true);
         topIRSensor = new DigitalInput(HopperConstants.HOPPER_TOP_BALL_IR_SENSOR); //TODO
         bottomIRSensor = new DigitalInput(HopperConstants.HOPPER_LOW_BALL_IR_SENSOR); //TODO
         hopperState = HopperState.OFF;
+        //configStatusFramePeriods();
+    }
+
+    public void configStatusFramePeriods() {
+        hopperMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 19);
+        hopperMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 19);
+        hopperMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 253);
+        hopperMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 59);
+        hopperMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(false, 40, 70, 0), 1000);
     }
 
     @Override

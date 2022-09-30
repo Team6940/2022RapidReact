@@ -30,11 +30,11 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
   public FiveBallBottomMode2(SwerveDriveTrain sSwerve) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory mFiveBallTrajectoryOne = PathPlanner.loadPath("FiveBallBottom-1", 4, 4);
-    PathPlannerTrajectory mFiveBallTrajectoryTwo = PathPlanner.loadPath("FiveBallBottom-2", 4, 4);
-    PathPlannerTrajectory mFiveBallTrajectoryThree = PathPlanner.loadPath("FiveBallBottom-3", 4, 4);
-    PathPlannerTrajectory mFiveBallTrajectoryFour = PathPlanner.loadPath("FiveBallBottom-4", 4, 4);
-    PathPlannerTrajectory mFiveBallTrajectoryFive = PathPlanner.loadPath("FiveBallBottom-5", 4, 4);
+    PathPlannerTrajectory mFiveBallTrajectoryOne = PathPlanner.loadPath("FiveBallBottom-1", 4, 8);
+    PathPlannerTrajectory mFiveBallTrajectoryTwo = PathPlanner.loadPath("FiveBallBottom-2", 4, 8);
+    PathPlannerTrajectory mFiveBallTrajectoryThree = PathPlanner.loadPath("FiveBallBottom-3", 4, 8);
+    PathPlannerTrajectory mFiveBallTrajectoryFour = PathPlanner.loadPath("FiveBallBottom-4", 4, 8);
+    PathPlannerTrajectory mFiveBallTrajectoryFive = PathPlanner.loadPath("FiveBallBottom-5", 4, 8);
     addCommands(
       new InstantCommand(() -> LimelightSubsystem.getInstance().setLightMode(3)),
 
@@ -50,21 +50,21 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       new SwervePathAction(mFiveBallTrajectoryOne).deadlineWith(
            new IntakeAndHopperAction()
            ),
-      new WaitCommand(0.1),
+      new WaitCommand(2),
 
-      new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(
+      /*new SwervePathAction(mFiveBallTrajectoryTwo).deadlineWith(
         //new IntakeAndHopperAction()
         ),
       //new ShootAction2().withTimeout(1),
-      new AutoAim().withTimeout(1),
+      new AutoAim().withTimeout(2),
       //new WaitCommand(0.5),
 
       new SwervePathAction(mFiveBallTrajectoryThree).deadlineWith(
         new IntakeAndHopperAction()
         ),
-      new WaitCommand(0.1),
+      new WaitCommand(2),
       //new ShootAction2().withTimeout(1),
-      new AutoAim().withTimeout(1), //TODO redraw heading path
+      new AutoAim().withTimeout(2), //TODO redraw heading path
 
       new SwervePathAction(mFiveBallTrajectoryFour).deadlineWith(
         new InstantCommand(() -> Intake.getInstance().runIntaker())
@@ -74,10 +74,10 @@ public class FiveBallBottomMode2 extends SequentialCommandGroup {
       //new WaitCommand(0.5),
 
       new SwervePathAction(mFiveBallTrajectoryFive).deadlineWith(
-        /*new IntakeAndHopperAction()*/  
+        ///new IntakeAndHopperAction()  
         ),
       //new ShootAction2().withTimeout(1),
-      new AutoAim().withTimeout(1),
+      new AutoAim().withTimeout(3),*/
 
       new InstantCommand(() -> Intake.getInstance().setIntakeSolState(IntakeSolState.CLOSE)),
       new InstantCommand(() -> Intake.getInstance().setWantedIntakeState(IntakeState.OFF)),
