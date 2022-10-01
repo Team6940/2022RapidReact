@@ -119,7 +119,7 @@ public class AimManager extends SubsystemBase {
     public void startAimShoot() {
         currentState = AimManagerState.AIM_SHOOT;
         //feeder.setAimFeed();
-        feeder.setAutoFeed();
+        //feeder.setAutoFeed();
     }
 
     public boolean isAimShoot(){
@@ -127,7 +127,7 @@ public class AimManager extends SubsystemBase {
     }
 
     public void startAimForce() {
-        feeder.setAimFeed();;
+        //feeder.setAimFeed();;
         currentState = AimManagerState.AIM_FORCE;
     }    
 
@@ -168,20 +168,20 @@ public class AimManager extends SubsystemBase {
                 doShooterEject();
                 if (CanShot()) {
                     hasWrongBallShooting = true;    
-                    //shooter.setFiring(true);
+                    shooter.setFiring(true);
                 }
             } else if (hasWrongBallShooting
                     && currentTime < shotWrongBallTime + ShooterConstants.kShootOneWrongBallTime) {
                 doShooterEject();
                 if (CanShot()) {
-                    //shooter.setFiring(true);
+                    shooter.setFiring(true);
                 }
             } else {
                 hasWrongBallShooting = false;
                 shotWrongBallTime = Double.NEGATIVE_INFINITY;
                 currentState = AimManagerState.STOP;
                 shootWrongBallCnt++;
-                //shooter.setFiring(false);
+                shooter.setFiring(false);
                 shooter.setShooterToStop();
                 hooper.setHopperState(HopperState.OFF);
             }
@@ -190,7 +190,7 @@ public class AimManager extends SubsystemBase {
         if (currentState == AimManagerState.STOP) {
             startBallShooting = false;
             shotBallTime = Double.NEGATIVE_INFINITY;
-            feeder.setAutoFeed();
+            //feeder.setAutoFeed();
             //shooter.setShooterToStop();
             //shooter.setFiring(false);
         }
@@ -266,7 +266,7 @@ public class AimManager extends SubsystemBase {
                 }
             } else if (startForceBallShooting
                     && currentTime < shotBallTime + ShooterConstants.kShootTestTime) {
-                hooper.setHopperState(HopperState.ON);
+                //hooper.setHopperState(HopperState.ON);
                 if (CanShot()) {
                     //shooter.setFiring(true);
                 }
@@ -275,7 +275,7 @@ public class AimManager extends SubsystemBase {
                 shotBallTime = Double.NEGATIVE_INFINITY;
                 //shooter.setFiring(false);
                 shooter.setShooterToStop();
-                hooper.setHopperState(HopperState.OFF);
+                //hooper.setHopperState(HopperState.OFF);
                 shootBallCnt++;
                 currentState = AimManagerState.STOP;
             }
@@ -285,7 +285,7 @@ public class AimManager extends SubsystemBase {
     public void StopAll() {
         shooter.setShooterToStop();
         //shooter.setFiring(false);
-        hooper.setHopperState(HopperState.OFF);
+        //hooper.setHopperState(HopperState.OFF);
     }
 
     public void outputTelemetry() {

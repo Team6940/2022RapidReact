@@ -161,12 +161,12 @@ public class Intake extends SubsystemBase {
         if(cnt % 2 == 0){
              setIntakeSolState(IntakeSolState.CLOSE);
              setWantedIntakeState(IntakeState.INTAKE);
-             Hopper.getInstance().setHopperState(HopperState.ON);
+             //Hopper.getInstance().setHopperState(HopperState.ON);
         }
         else{
             setIntakeSolState(IntakeSolState.OPEN);
             setWantedIntakeState(IntakeState.OFF);
-            Hopper.getInstance().setHopperState(HopperState.OFF);
+            //Hopper.getInstance().setHopperState(HopperState.OFF);
         }
         cnt++;
     }

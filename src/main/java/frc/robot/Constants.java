@@ -164,7 +164,8 @@ public final class Constants {
         public static double ACCEPT_SPEED = 1.0;
         public static double REJECT_SPEED = -1.0;
 
-        public static final double HOPPER_SPEED = 1;
+        public static final double HOPPER_SPEED = 0.5;
+        public static final double HOPPER_FIRESPEED = 0.7;
         public static final double HOPPER_SLOW_SPEED = HOPPER_SPEED / 2;
     }
     

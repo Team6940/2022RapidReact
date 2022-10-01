@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Hopper.HopperState;
+import frc.robot.subsystems.Shooter.HoodControlState;
 
 public final class FeedManager extends SubsystemBase  {
 
@@ -64,9 +65,21 @@ public final class FeedManager extends SubsystemBase  {
         boolean intakeOn = intake.isIntakerOn();
         
         // top = true, intake = off, bottom =false ,3s : stop
+
+        if (fmState == FeedManagerState.AUTO_FEED) {
+            if (bottomHasBall) {
+                hooper.setHopperState(HopperState.ON);
+            } else {
+                hooper.setHopperState(HopperState.OFF);
+            }
+        }
+        if (fmState == FeedManagerState.NORMAL_FEED) {
+            ;
+        }
+
         
         // intake=off && bottom =false & top=false ,2s: stop
-        if (fmState == FeedManagerState.AUTO_FEED) {
+        /*if (fmState == FeedManagerState.AUTO_FEED) {
             //shotBallTime = currentTime;
             if (aim.isAimShoot() && aim.isTargetLocked() && aim.CanShot()) {
                 //if (currentTime < shotBallTime + ShooterConstants.kShootOneBallTime) {
@@ -111,7 +124,7 @@ public final class FeedManager extends SubsystemBase  {
 
         if(fmState == FeedManagerState.NORMAL_FEED) {
             ;
-        }
+        }*/
     }
     
     @Override

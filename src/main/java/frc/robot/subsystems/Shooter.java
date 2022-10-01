@@ -20,6 +20,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.lib.team1678.math.Conversions;
+import frc.robot.subsystems.Hopper.HopperState;
 import edu.wpi.first.wpilibj.RobotBase;
 
 
@@ -382,6 +383,12 @@ public class Shooter extends SubsystemBase {
      */
     public void setFiring(boolean shoot) {//设定开火
         blockerState = shoot ? BlockerControlState.BALLLOCKER_ON : BlockerControlState.BALLLOCKER_OFF;
+        if(shoot){
+            FeedManager.getInstance().setAimFeed();
+            Hopper.getInstance().setHopperState(HopperState.FIRE);
+        }else{
+            FeedManager.getInstance().setAutoFeed();
+        }
     }
 
     public void setShooterMax() {

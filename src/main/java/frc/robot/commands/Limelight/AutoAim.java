@@ -196,7 +196,7 @@ public class AutoAim extends CommandBase {
     RobotContainer.m_aimManager.Stop();
     //RobotContainer.m_shooter.setFiring(false);
     RobotContainer.m_shooter.setShooterToStop();
-    RobotContainer.m_hopper.setHopperState(HopperState.OFF);
+    //RobotContainer.m_hopper.setHopperState(HopperState.OFF);
     RobotContainer.m_swerve.Drive(new Translation2d(0,0), 0, true, true);//TODO
   }
 

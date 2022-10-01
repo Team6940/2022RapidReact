@@ -27,7 +27,7 @@ public final class Hopper extends SubsystemBase  {
     }
 
     public enum HopperState {
-        ON, OFF, REVERSE, SLOW
+        ON, OFF, REVERSE, SLOW, FIRE
     }
     HopperState hopperState = HopperState.OFF;
 
@@ -67,6 +67,8 @@ public final class Hopper extends SubsystemBase  {
             case SLOW:
                 setHopperSpeed(HopperConstants.HOPPER_SLOW_SPEED);
                 break;
+            case FIRE:
+                setHopperSpeed(HopperConstants.HOPPER_FIRESPEED);
         } //TODO
 
         outputTelemetry();
