@@ -85,6 +85,7 @@ public final class Constants {
         public static double kFlyWheelWheelDiameter = 0.108;//The unit is meter //TODO
         public static double kFlyWheelWheelDefaultSpeed = 3.0;  //meters/s //TODO
         public static double kShooterTolerance = 30; //RPM //TODO
+        public static double kPreventShooterOscilliationRPM = 20;
         public static double kFlyWheelCircumference = Math.PI * kFlyWheelWheelDiameter;
         public static double kShootOneBallTime = 1.5; //TODO every one shooting ball time(seconds)
         public static double kWaitBallTime = 0.5;
@@ -307,7 +308,7 @@ public final class Constants {
         public static final int kTurretStep = 10;
         public static final boolean kOutputTelemetry = false;
         public static final double TURRET_GEAR_RATIO = 140.0 / 10.0;
-        public static final double TargetMinError = 5.0; //目标锁定的最小误差  //TODO 
+        public static final double TargetMinError = 2.0; //目标锁定的最小误差  //TODO 
         public static final double TurretMaxSoftLimitAngle = 180; // 度数 //TODO
         public static final double TurretMinSoftLimitAngle = -180; // TODO
         public static final double kTolerance = 2 * 2.0; // allowable angle error in degrees for the PIDSubsystem to

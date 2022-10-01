@@ -57,7 +57,7 @@ public class SwerveModule extends SubsystemBase {
     //drive_motor_.configFactoryDefault();
     //pivot_motor_.configFactoryDefault();
     
-    drive_motor_.setNeutralMode(NeutralMode.Coast);
+    drive_motor_.setNeutralMode(NeutralMode.Brake);
     pivot_motor_.setNeutralMode(NeutralMode.Coast);
     drive_motor_.configPeakOutputForward( SwerveConstants.kDriveMotorMaxOutput);
     drive_motor_.configPeakOutputReverse(-SwerveConstants.kDriveMotorMaxOutput);
@@ -95,7 +95,7 @@ public class SwerveModule extends SubsystemBase {
     pivot_motor_.configVoltageCompSaturation(12);
     pivot_motor_.enableVoltageCompensation(true);
 
-    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_20Ms);
+    drive_motor_.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_25Ms);
     drive_motor_.configVelocityMeasurementWindow(1);
 
     // Sets current limits for motors

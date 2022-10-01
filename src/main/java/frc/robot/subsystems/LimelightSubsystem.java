@@ -64,7 +64,7 @@ private static LinearInterpolationTable distTable = new LinearInterpolationTable
     return instance;
   }
   public double Get_tx(){
-    tx = m_limTable.getEntry("tx").getDouble(0);
+    tx = m_limTable.getEntry("tx").getDouble(0.0);
     if (RobotBase.isSimulation()){
       if(simTx >= 0.2){
         simTx = simTx-0.2;
@@ -76,7 +76,7 @@ private static LinearInterpolationTable distTable = new LinearInterpolationTable
   }
 
   public double Get_ty(){
-    ty = m_limTable.getEntry("ty").getDouble(0);
+    ty = m_limTable.getEntry("ty").getDouble(0.0);
     if (RobotBase.isSimulation()){
       if(simTy >= 0.2){
         simTy = simTy-0.2;
