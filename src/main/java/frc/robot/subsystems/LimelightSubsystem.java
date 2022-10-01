@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.OptionalDouble;
 
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public double simTv = constTv ;
   public int simuTxStop = 0;
   public OptionalDouble distancetoTarget = OptionalDouble.empty();
+  MedianFilter medianFilter = new MedianFilter(4);
 
   private static Point2D[] points = new Point2D.Double[] {
     // (ty-angle,distance)
@@ -148,6 +150,12 @@ private static LinearInterpolationTable distTable = new LinearInterpolationTable
 
   
   public double getRobotToTargetDistance() {
+    /**
+     * This method uses a medianFilter to prevent the Limelight oscilliation
+     */
+    //return medianFilter.calculate(GoalConstants.LL_UPPER_HUB_HEIGHT - LimelightConstants.LL_MOUNT_HEIGHT)
+    //   / Math.tan(Math.toRadians(LimelightConstants.LL_MOUNT_ANGLE + Get_ty()));
+
 		return (GoalConstants.LL_UPPER_HUB_HEIGHT - LimelightConstants.LL_MOUNT_HEIGHT)
              / Math.tan(Math.toRadians(LimelightConstants.LL_MOUNT_ANGLE + Get_ty()));
 	}
