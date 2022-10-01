@@ -65,7 +65,7 @@ public class SwerveDriveTrain extends SubsystemBase {
   private double lastGyroRoll = 0;
 
   ShuffleboardTab swerveDriveTab = Shuffleboard.getTab("Swerve");
-  boolean enanbleTelemetry = false;
+  boolean enanbleTelemetry = true;
 
   public final static SwerveDriveKinematics kDriveKinematics =
       new SwerveDriveKinematics(
