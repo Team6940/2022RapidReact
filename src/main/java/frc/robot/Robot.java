@@ -114,7 +114,7 @@ public class Robot extends TimedRobot {
         Intake.getInstance().stopIntaker();
       }
     }
-    if (AimManager.getInstance().CanShot()) {
+    if (AimManager.getInstance().CanShot() && AimManager.getInstance().isTargetLocked()) {
       m_robotContainer.m_operatorController.setRumble(RumbleType.kLeftRumble, 1.0);
       m_robotContainer.m_operatorController.setRumble(RumbleType.kRightRumble, 1.0);
     } else {

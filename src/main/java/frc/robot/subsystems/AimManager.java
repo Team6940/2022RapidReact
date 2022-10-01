@@ -168,20 +168,20 @@ public class AimManager extends SubsystemBase {
                 doShooterEject();
                 if (CanShot()) {
                     hasWrongBallShooting = true;    
-                    shooter.setFiring(true);
+                    //shooter.setFiring(true);
                 }
             } else if (hasWrongBallShooting
                     && currentTime < shotWrongBallTime + ShooterConstants.kShootOneWrongBallTime) {
                 doShooterEject();
                 if (CanShot()) {
-                    shooter.setFiring(true);
+                    //shooter.setFiring(true);
                 }
             } else {
                 hasWrongBallShooting = false;
                 shotWrongBallTime = Double.NEGATIVE_INFINITY;
                 currentState = AimManagerState.STOP;
                 shootWrongBallCnt++;
-                shooter.setFiring(false);
+                //shooter.setFiring(false);
                 shooter.setShooterToStop();
                 hooper.setHopperState(HopperState.OFF);
             }
@@ -260,7 +260,7 @@ public class AimManager extends SubsystemBase {
                 shotBallTime = currentTime;
                 //startForceBallShooting = true;
                 if (CanShot()) {
-                    shooter.setFiring(true);
+                    ///shooter.setFiring(true);
                     startForceBallShooting = true;
                     //hooper.setHopperState(HopperState.ON);
                 }
@@ -268,12 +268,12 @@ public class AimManager extends SubsystemBase {
                     && currentTime < shotBallTime + ShooterConstants.kShootTestTime) {
                 hooper.setHopperState(HopperState.ON);
                 if (CanShot()) {
-                    shooter.setFiring(true);
+                    //shooter.setFiring(true);
                 }
             } else {
                 startForceBallShooting = false;
                 shotBallTime = Double.NEGATIVE_INFINITY;
-                shooter.setFiring(false);
+                //shooter.setFiring(false);
                 shooter.setShooterToStop();
                 hooper.setHopperState(HopperState.OFF);
                 shootBallCnt++;
@@ -284,7 +284,7 @@ public class AimManager extends SubsystemBase {
     
     public void StopAll() {
         shooter.setShooterToStop();
-        shooter.setFiring(false);
+        //shooter.setFiring(false);
         hooper.setHopperState(HopperState.OFF);
     }
 

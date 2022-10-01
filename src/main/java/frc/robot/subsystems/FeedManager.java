@@ -74,10 +74,10 @@ public final class FeedManager extends SubsystemBase  {
                 //    shooter.setFiring(true);
                 //}
                 hooper.setHopperState(HopperState.ON);
-                shooter.setFiring(true);
+                //shooter.setFiring(true);
                 return;
             }else{
-                shooter.setFiring(false);
+                //shooter.setFiring(false);
             }
 
             if( !intakeOn && !bottomHasBall && !topHasBall){

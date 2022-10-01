@@ -173,6 +173,7 @@
       "/LiveWindow/Ungrouped/PIDController[92]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[93]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon IMU [17]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [11]": "Motor Controller",
