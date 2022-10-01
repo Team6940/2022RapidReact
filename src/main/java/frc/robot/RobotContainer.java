@@ -110,7 +110,7 @@ public class RobotContainer {
     triggerRght = m_driverController.getRightTriggerAxis();
 
     // The operator's buttons
-    BlockerButton = new JoystickButton(m_operatorController, 2);
+    BlockerButton = new JoystickButton(m_operatorController, 6);
     ClimberButton = new JoystickButton(m_operatorController, 3);
     //ShooterSwitchModeButton = new JoystickButton(m_operatorController, 9);
     //DontShootButton = new JoystickButton(m_operatorController, 7);

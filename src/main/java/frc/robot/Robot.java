@@ -6,12 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Hopper.HopperState;
 import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.AimManager;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 
@@ -104,12 +106,20 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(!RobotBase.isSimulation()){  
-      if (m_robotContainer.m_driverController.getLeftTriggerAxis() > 0 || m_robotContainer.m_driverController.getRightTriggerAxis() > 0) {
-      Intake.getInstance().runIntaker();
+    if (!RobotBase.isSimulation()) {
+      if (m_robotContainer.m_driverController.getLeftTriggerAxis() > 0
+          || m_robotContainer.m_driverController.getRightTriggerAxis() > 0) {
+        Intake.getInstance().runIntaker();
       } else {
         Intake.getInstance().stopIntaker();
       }
+    }
+    if (AimManager.getInstance().CanShot()) {
+      m_robotContainer.m_operatorController.setRumble(RumbleType.kLeftRumble, 1.0);
+      m_robotContainer.m_operatorController.setRumble(RumbleType.kRightRumble, 1.0);
+    } else {
+      m_robotContainer.m_operatorController.setRumble(RumbleType.kLeftRumble, 0.0);
+      m_robotContainer.m_operatorController.setRumble(RumbleType.kRightRumble, 0.0);
     }
   }
 
