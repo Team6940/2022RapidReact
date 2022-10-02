@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
+import frc.robot.commands.Limelight.RotateDrivetrainByLimelightAngle;
 import frc.robot.subsystems.AimManager;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ClimberNew;
@@ -38,6 +39,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private static RobotContainer instance ;
   // The robot's subsystems and commands are defined here...
   public static XboxController m_driverController = new XboxController(0);
   public static XboxController m_operatorController = new XboxController(1);
@@ -80,6 +82,13 @@ public class RobotContainer {
   public static JoystickButton testTopBallButton;
   public static JoystickButton testBottomBallButton;
   public static JoystickButton testWrongBallButton;
+
+  public static RobotContainer getInstance() {
+    if (instance == null){
+        instance = new RobotContainer();
+    }
+    return instance;
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -138,37 +147,38 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Limelight button
-    limelightButton.whenHeld(new AutoAim());
-  
+    //limelightButton.whenHeld(new AutoAim());
+    limelightButton.whileActiveContinuous(new RotateDrivetrainByLimelightAngle(true));
+
     // Hopper button
     //IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
-    IntakeButton.whenPressed(new InstantCommand(() ->m_intake.stopSolenoid()));
+    IntakeButton.whenPressed(new InstantCommand(() -> m_intake.stopSolenoid()));
 
     // Blocker button
-    BlockerButton.whenHeld(new InstantCommand(() ->m_shooter.setFiring(true)));
-    BlockerButton.whenReleased(new InstantCommand(() ->m_shooter.setFiring(false)));
+    BlockerButton.whenHeld(new InstantCommand(() -> m_shooter.setFiring(true)));
+    BlockerButton.whenReleased(new InstantCommand(() -> m_shooter.setFiring(false)));
 
     // Climber button
     ClimberButton.whenPressed(new InstantCommand(() -> m_climberNew.autoturnclimber()));
 
     // Reset Yaw button . Remember to protect it during the game!
     resetyawButton.whenPressed(new InstantCommand(() -> m_swerve.ZeroHeading()));
-    
+
     /* Use the method below if the head PID Control is wanted*/
     //resetyawButton.whenReleased(new InstantCommand(() -> m_swerve.WhetherStoreYaw()));
-    
+
     resetOdometryButton.whenPressed(new InstantCommand(() -> m_swerve.resetOdometry()));
-    
+
     // ShootPara debug Button 
     ShootParaButton.whenPressed(new InstantCommand(() -> m_aimManager.DebugShootParameter()));
 
     // simulation test Button
-    if (RobotBase.isSimulation()){    
+    if (RobotBase.isSimulation()) {
       testBottomBallButton.whenPressed(new InstantCommand(() -> m_hopper.DoBottomBallTest()));
       testTopBallButton.whenPressed(new InstantCommand(() -> m_hopper.DoTopBallTest()));
       testWrongBallButton.whenPressed(new InstantCommand(() -> m_colorsensor.DoWrongBallTest()));
     }
-    
+
     feederButton.whenPressed(new InstantCommand(() -> m_feedmanager.switchFeederMode()));
     /**
      * Below are the buttons when we use a turret
@@ -191,6 +201,14 @@ public class RobotContainer {
         new InstantCommand(() -> m_visionManager.startVisionFinding())
         )
       );*/
+  }
+  
+  public double getSpeedScaledDriverLeftX() {
+    return -m_driverController.getLeftX();
+  }
+
+  public double getSpeedScaledDriverLeftY() {
+    return -m_driverController.getLeftY();
   }
 
   /**

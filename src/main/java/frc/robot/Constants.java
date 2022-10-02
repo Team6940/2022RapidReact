@@ -448,7 +448,7 @@ public final class Constants {
                 
         public static final TrapezoidProfile.Constraints kThetaAimControllerConstraints =
             new TrapezoidProfile.Constraints(
-                        Math.PI, Math.PI);
+                        3 * Math.PI, 3 * Math.PI);
     }
     /* new colorSensor */
     public static final class ColorConstants{

@@ -78,7 +78,8 @@ public class AutoAim extends CommandBase {
     controller.setContinuous(true);
     controller.setIntegralRange(Math.toRadians(10.0));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.reset(0);
+    thetaController.setTolerance(Math.toRadians(1));
+    //thetaController.reset(0);
   }
 
   // Called when the command is initially scheduled.
@@ -173,9 +174,10 @@ public class AutoAim extends CommandBase {
         //}
       }
       
-      double rotationSpeed2 = thetaController.calculate(RobotContainer.m_limelight.Get_tx(), 0);
+      double rotationSpeed2 = thetaController.calculate(RobotContainer.m_limelight.Get_tx() * Math.PI / 180, 0);
 
       RobotContainer.m_swerve.Drive(translation, -totalrotationSpeed, true, true);
+            //RobotContainer.m_swerve.Drive(translation, - rotationSpeed2 * 5, true, true);
       
       // Goal-Centric
       //RobotContainer.m_swerve.Drive(
@@ -184,7 +186,7 @@ public class AutoAim extends CommandBase {
       //    true,
       //    true);//Use feedback control when auto aiming.
       //RobotContainer.m_swerve.Drive(translation, -rotationalVelocity, true, true);//Use feedback control when auto aiming.
-      //RobotContainer.m_swerve.Drive(translation, - rotationSpeed2, true, true);//Use feedback control when auto aiming.
+
 
       RobotContainer.m_aimManager.startAimShoot();
   }
