@@ -313,6 +313,14 @@ public class AimManager extends SubsystemBase {
         STOP, AIM_WRONGBALL,AIM_SHOOT,AIM_FORCE
     }
 
+    public boolean whetherAimShoot(){
+        if(currentState == AimManagerState.AIM_SHOOT){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     @Override
     public void periodic() {
         //SmartShooter();

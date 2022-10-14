@@ -25,7 +25,7 @@ public final class FeedManager extends SubsystemBase  {
     public enum FeedManagerState {
         AUTO_FEED, NORMAL_FEED
     }
-    FeedManagerState fmState = FeedManagerState.NORMAL_FEED;
+    FeedManagerState fmState = FeedManagerState.AUTO_FEED;
 
 
     private FeedManager() {
@@ -43,7 +43,7 @@ public final class FeedManager extends SubsystemBase  {
     }
 
     public boolean isNormalFeed(){
-        return  fmState ==  FeedManagerState.NORMAL_FEED;
+        return  fmState ==  FeedManagerState.AUTO_FEED;
     }
 
     public boolean isAutoFeed(){

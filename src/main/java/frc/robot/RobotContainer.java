@@ -147,8 +147,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Limelight button
-    //limelightButton.whenHeld(new AutoAim());
-    limelightButton.whileActiveContinuous(new RotateDrivetrainByLimelightAngle(true));
+    limelightButton.whenHeld(new AutoAim());
+    //slimelightButton.whileActiveContinuous(new RotateDrivetrainByLimelightAngle(true));
 
     // Hopper button
     //IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
