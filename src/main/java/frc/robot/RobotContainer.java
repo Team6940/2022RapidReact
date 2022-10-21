@@ -151,8 +151,8 @@ public class RobotContainer {
     // Limelight button
     //limelightButton.whenHeld(new AutoAim());
     //limelightButton.whileActiveContinuous(new AutoAimUsingProfliedPID(true));
-    limelightButton.whileActiveContinuous(new AimShootUsedTogetherWithPrifiledPID());
-    limelightButton.whileActiveContinuous(new AutoAimUsingProfliedPID(true));
+    limelightButton.whenHeld(new AimShootUsedTogetherWithPrifiledPID());
+    //limelightButton.whenHeld(new AutoAimUsingProfliedPID(true));
     // Hopper button
     //IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
     IntakeButton.whenPressed(new InstantCommand(() -> m_intake.stopSolenoid()));

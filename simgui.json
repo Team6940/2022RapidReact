@@ -237,12 +237,16 @@
       }
     },
     "Shuffleboard": {
+      "AimManager": {
+        "open": true
+      },
       "Shooter Speed": {
         "open": true
       },
       "Summary": {
         "open": true
-      }
+      },
+      "open": true
     },
     "SmartDashboard": {
       "Auto": {

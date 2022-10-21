@@ -35,7 +35,6 @@ import frc.robot.subsystems.Hopper.HopperState;
 public class AimShootUsedTogetherWithPrifiledPID extends CommandBase{
     public AimShootUsedTogetherWithPrifiledPID()
     {
-        addRequirements(RobotContainer.m_swerve);
         addRequirements(RobotContainer.m_limelight);
         addRequirements(RobotContainer.m_aimManager);
         addRequirements(RobotContainer.m_shooter);
@@ -59,5 +58,8 @@ public class AimShootUsedTogetherWithPrifiledPID extends CommandBase{
         //RobotContainer.m_hopper.setHopperState(HopperState.OFF);
         RobotContainer.m_swerve.Drive(new Translation2d(0,0), 0, true, true);//TODO
     }
-
+    @Override
+    public boolean isFinished() {
+      return false;
+    }
 }
