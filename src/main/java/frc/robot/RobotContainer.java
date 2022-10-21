@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.SwerveControl.SwerveControll;
 import frc.robot.auto.AutonomousSelector;
 import frc.robot.commands.Limelight.AutoAim;
-import frc.robot.commands.Limelight.RotateDrivetrainByLimelightAngle;
+import frc.robot.commands.Limelight.AimShootUsedTogetherWithPrifiledPID;
+import frc.robot.commands.Limelight.AutoAimUsingProfliedPID;
 import frc.robot.subsystems.AimManager;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ClimberNew;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.FeedManager.FeedManagerState;
 import frc.robot.subsystems.Hopper.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -147,9 +149,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Limelight button
-    limelightButton.whenHeld(new AutoAim());
-    //slimelightButton.whileActiveContinuous(new RotateDrivetrainByLimelightAngle(true));
-
+    //limelightButton.whenHeld(new AutoAim());
+    //limelightButton.whileActiveContinuous(new AutoAimUsingProfliedPID(true));
+    limelightButton.whileActiveContinuous(new AimShootUsedTogetherWithPrifiledPID());
+    limelightButton.whileActiveContinuous(new AutoAimUsingProfliedPID(true));
     // Hopper button
     //IntakeButton.whenHeld(new InstantCommand(() ->m_intake.runIntaker()));
     IntakeButton.whenPressed(new InstantCommand(() -> m_intake.stopSolenoid()));

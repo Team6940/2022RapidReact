@@ -123,8 +123,8 @@ public class ClimberNew extends SubsystemBase {
             setClimberRghtMotor(150000);
             break;
           case PULL:
-            setClimberLeftMotor(30000);
-            setClimberRghtMotor(30000); 
+            setClimberLeftMotor(210000);
+            setClimberRghtMotor(210000); 
             break;
           case INIT:
             setClimberLeftMotor(0);

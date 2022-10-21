@@ -25,6 +25,11 @@
         "header": {
           "open": true
         }
+      },
+      "Talon SRX[2]": {
+        "header": {
+          "open": true
+        }
       }
     },
     "PWM Outputs": {
@@ -237,8 +242,7 @@
       },
       "Summary": {
         "open": true
-      },
-      "open": true
+      }
     },
     "SmartDashboard": {
       "Auto": {
@@ -248,11 +252,17 @@
         "AimManager": {
           "open": true
         },
+        "Limglight": {
+          "open": true
+        },
         "VisionManager": {
           "open": true
         },
         "open": true
       },
+      "open": true
+    },
+    "limelight": {
       "open": true
     }
   }
